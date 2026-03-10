@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" spacing="20" prefWidth="400" prefHeight="350"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="yoanemoudilou.cahiertexte.ui.login.LoginController">
+
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
+
+    <!-- Titre -->
+    <Label text="Cahier de Texte Numérique" styleClass="title">
+        <font>
+            <Font name="System Bold" size="22"/>
+        </font>
+    </Label>
+
+    <Label text="Connexion" styleClass="subtitle">
+        <font>
+            <Font size="16"/>
+        </font>
+    </Label>
+
+    <!-- Formulaire -->
+    <VBox spacing="15" alignment="CENTER">
+        <TextField fx:id="emailField" promptText="Email" prefWidth="280"/>
+        <PasswordField fx:id="passwordField" promptText="Mot de passe" prefWidth="280"/>
+    </VBox>
+
+    <!-- Message d'erreur -->
+    <Label fx:id="messageLabel" textFill="RED" wrapText="true"/>
+
+    <!-- Boutons -->
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="Se connecter" onAction="#handleLogin" defaultButton="true" prefWidth="120"/>
+        <Button text="Quitter" onAction="#handleQuitter" cancelButton="true" prefWidth="100"/>
+    </HBox>
+
+</VBox>

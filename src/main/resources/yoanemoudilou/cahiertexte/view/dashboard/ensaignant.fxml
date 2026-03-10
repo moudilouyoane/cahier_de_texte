@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" prefWidth="900" prefHeight="650"
+            fx:controller="yoanemoudilou.cahiertexte.ui.dashboard.EnseignantDashboardController">
+
+    <!-- Header -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #16a085; -fx-padding: 15;">
+            <Label fx:id="bienvenuLabel" text="Bienvenue" textFill="WHITE">
+                <font><Font name="System Bold" size="18"/></font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Nouvelle séance" onAction="#handleNouvelleSeance" style="-fx-background-color: white;"/>
+            <Button text="Déconnexion" onAction="#handleLogout" style="-fx-background-color: #c0392b; -fx-text-fill: white;"/>
+        </HBox>
+    </top>
+
+    <!-- Centre -->
+    <center>
+        <VBox spacing="20" style="-fx-padding: 20;">
+
+            <!-- Statistiques personnelles -->
+            <TitledPane text="Mes statistiques" expanded="true">
+                <GridPane hgap="40" vgap="10" style="-fx-padding: 15;">
+                    <Label text="Mes cours:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Label fx:id="mesCoursCountLabel" text="0" style="-fx-font-weight: bold; -fx-font-size: 16;" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <Label text="Mes séances:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                    <Label fx:id="mesSeancesCountLabel" text="0" style="-fx-font-weight: bold; -fx-font-size: 16;" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+
+                    <Label text="En attente:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Label fx:id="seancesEnAttenteCountLabel" text="0" style="-fx-font-weight: bold; -fx-text-fill: #e67e22;" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                    <Label text="Validées:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                    <Label fx:id="seancesValideesCountLabel" text="0" style="-fx-font-weight: bold; -fx-text-fill: #27ae60;" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+
+                    <Label text="Rejetées:" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+                    <Label fx:id="seancesRejeteesCountLabel" text="0" style="-fx-font-weight: bold; -fx-text-fill: #c0392b;" GridPane.columnIndex="5" GridPane.rowIndex="1"/>
+                </GridPane>
+            </TitledPane>
+
+            <!-- Mes cours -->
+            <TitledPane text="Mes cours" expanded="true" VBox.vgrow="SOMETIMES">
+                <TableView fx:id="mesCoursTable" prefHeight="150">
+                    <columns>
+                        <TableColumn fx:id="coursCodeColumn" text="Code" prefWidth="100"/>
+                        <TableColumn fx:id="coursIntituleColumn" text="Intitulé" prefWidth="250"/>
+                        <TableColumn fx:id="coursVolumeColumn" text="Volume (h)" prefWidth="100"/>
+                    </columns>
+                </TableView>
+            </TitledPane>
+
+            <!-- Dernières séances -->
+            <TitledPane text="Mes dernières séances" expanded="true" VBox.vgrow="ALWAYS">
+                <TableView fx:id="dernieresSeancesTable" prefHeight="200">
+                    <columns>
+                        <TableColumn fx:id="seanceDateColumn" text="Date" prefWidth="100"/>
+                        <TableColumn fx:id="seanceHeureColumn" text="Heure" prefWidth="80"/>
+                        <TableColumn fx:id="seanceCoursColumn" text="Cours" prefWidth="150"/>
+                        <TableColumn fx:id="seanceStatutColumn" text="Statut" prefWidth="100"/>
+                        <TableColumn fx:id="seanceContenuColumn" text="Contenu" prefWidth="250"/>
+                    </columns>
+                </TableView>
+            </TitledPane>
+
+            <!-- Actions -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button text="📝 Voir toutes mes séances" onAction="#handleVoirMesSeances"/>
+                <Button text="📈 Statistiques" onAction="#handleOuvrirStatistiques"/>
+                <Button text="🔄 Rafraîchir" onAction="#handleRafraichir"/>
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

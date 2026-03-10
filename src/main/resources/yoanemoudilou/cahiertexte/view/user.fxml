@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" prefWidth="950" prefHeight="650"
+            fx:controller="yoanemoudilou.cahiertexte.ui.users.UserManagementController">
+
+    <!-- Header -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: #2c3e50; -fx-padding: 15;">
+            <Label text="Gestion des utilisateurs" textFill="WHITE">
+                <font><Font name="System Bold" size="18"/></font>
+            </Label>
+        </HBox>
+    </top>
+
+    <!-- Centre -->
+    <center>
+        <VBox spacing="15" style="-fx-padding: 20;">
+
+            <!-- Tableau -->
+            <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+                    <TableColumn fx:id="nomColumn" text="Nom" prefWidth="120"/>
+                    <TableColumn fx:id="prenomColumn" text="Prénom" prefWidth="120"/>
+                    <TableColumn fx:id="emailColumn" text="Email" prefWidth="200"/>
+                    <TableColumn fx:id="roleColumn" text="Rôle" prefWidth="150"/>
+                    <TableColumn fx:id="valideColumn" text="Validé" prefWidth="70"/>
+                    <TableColumn fx:id="actifColumn" text="Actif" prefWidth="70"/>
+                </columns>
+            </TableView>
+
+            <Separator/>
+
+            <!-- Formulaire -->
+            <GridPane hgap="15" vgap="10">
+                <Label text="Nom:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <TextField fx:id="nomField" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                <Label text="Prénom:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                <TextField fx:id="prenomField" prefWidth="200" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+
+                <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <TextField fx:id="emailField" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                <Label text="Mot de passe:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                <PasswordField fx:id="passwordField" prefWidth="200" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+
+                <Label text="Rôle:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <ComboBox fx:id="roleComboBox" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                <CheckBox fx:id="valideCheckBox" text="Validé" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                <CheckBox fx:id="actifCheckBox" text="Actif" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+            </GridPane>
+
+            <!-- Boutons -->
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="➕ Nouveau" onAction="#handleNouveau" prefWidth="100"/>
+                <Button text="💾 Enregistrer" onAction="#handleEnregistrer" prefWidth="100" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+                <Button text="🗑 Supprimer" onAction="#handleSupprimer" prefWidth="100" style="-fx-background-color: #c0392b; -fx-text-fill: white;"/>
+                <Separator orientation="VERTICAL"/>
+                <Button text="✅ Valider compte" onAction="#handleValiderUtilisateur" prefWidth="120"/>
+                <Button text="🔄 Activer/Désactiver" onAction="#handleBasculerActivation" prefWidth="140"/>
+                <Separator orientation="VERTICAL"/>
+                <Button text="🔄 Rafraîchir" onAction="#handleRafraichir" prefWidth="100"/>
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

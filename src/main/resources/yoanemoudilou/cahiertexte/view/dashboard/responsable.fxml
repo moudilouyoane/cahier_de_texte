@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" prefWidth="950" prefHeight="700"
+            fx:controller="yoanemoudilou.cahiertexte.ui.dashboard.ResponsableDashboardController">
+
+    <!-- Header -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #8e44ad; -fx-padding: 15;">
+            <Label fx:id="bienvenuLabel" text="Bienvenue" textFill="WHITE">
+                <font><Font name="System Bold" size="18"/></font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Déconnexion" onAction="#handleLogout" style="-fx-background-color: #c0392b; -fx-text-fill: white;"/>
+        </HBox>
+    </top>
+
+    <!-- Centre -->
+    <center>
+        <VBox spacing="15" style="-fx-padding: 20;">
+
+            <!-- Filtres et stats -->
+            <HBox spacing="30" alignment="CENTER_LEFT">
+                <VBox spacing="5">
+                    <Label text="Filtrer par classe:"/>
+                    <ComboBox fx:id="classeFilterComboBox" prefWidth="200" onAction="#handleFiltrerParClasse"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Cours"/>
+                    <Label fx:id="totalCoursLabel" text="0" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Séances"/>
+                    <Label fx:id="totalSeancesLabel" text="0" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="En attente"/>
+                    <Label fx:id="seancesEnAttenteLabel" text="0" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #e67e22;"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Validées"/>
+                    <Label fx:id="seancesValideesLabel" text="0" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #27ae60;"/>
+                </VBox>
+            </HBox>
+
+            <Separator/>
+
+            <!-- Tableau des séances -->
+            <Label text="Séances à valider">
+                <font><Font name="System Bold" size="14"/></font>
+            </Label>
+
+            <TableView fx:id="seancesTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="dateColumn" text="Date" prefWidth="100"/>
+                    <TableColumn fx:id="heureColumn" text="Heure" prefWidth="80"/>
+                    <TableColumn fx:id="coursColumn" text="Cours" prefWidth="150"/>
+                    <TableColumn fx:id="enseignantColumn" text="Enseignant" prefWidth="150"/>
+                    <TableColumn fx:id="statutColumn" text="Statut" prefWidth="100"/>
+                    <TableColumn fx:id="contenuColumn" text="Contenu" prefWidth="250"/>
+                </columns>
+            </TableView>
+
+            <!-- Validation -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Commentaire de validation:"/>
+                    <TextArea fx:id="commentaireArea" prefHeight="60" prefWidth="400"/>
+                </VBox>
+
+                <VBox spacing="10" alignment="CENTER">
+                    <Button text="✅ Valider" onAction="#handleValiderSeance" style="-fx-background-color: #27ae60; -fx-text-fill: white;" prefWidth="120"/>
+                    <Button text="❌ Rejeter" onAction="#handleRejeterSeance" style="-fx-background-color: #c0392b; -fx-text-fill: white;" prefWidth="120"/>
+                </VBox>
+            </HBox>
+
+            <!-- Actions -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button text="📈 Statistiques" onAction="#handleOuvrirStatistiques"/>
+                <Button text="📄 Rapports" onAction="#handleOuvrirRapports"/>
+                <Button text="🔄 Rafraîchir" onAction="#handleRafraichir"/>
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

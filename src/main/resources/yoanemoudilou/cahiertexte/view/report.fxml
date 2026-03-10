@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" prefWidth="700" prefHeight="500"
+            fx:controller="yoanemoudilou.cahiertexte.ui.reports.ReportController">
+
+    <!-- Header -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: #d35400; -fx-padding: 15;">
+            <Label text="Génération de rapports" textFill="WHITE">
+                <font><Font name="System Bold" size="18"/></font>
+            </Label>
+        </HBox>
+    </top>
+
+    <!-- Centre -->
+    <center>
+        <VBox spacing="25" alignment="CENTER" style="-fx-padding: 30;">
+
+            <Label text="Sélectionne le type de rapport et les filtres">
+                <font><Font size="14"/></font>
+            </Label>
+
+            <!-- Type de rapport -->
+            <HBox spacing="15" alignment="CENTER">
+                <Label text="Type de rapport:"/>
+                <ComboBox fx:id="typeRapportComboBox" prefWidth="200"/>
+            </HBox>
+
+            <Separator/>
+
+            <!-- Filtres -->
+            <GridPane hgap="20" vgap="15" alignment="CENTER">
+                <Label text="Classe:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <ComboBox fx:id="classeFilterComboBox" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                <Label text="Enseignant:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <ComboBox fx:id="enseignantFilterComboBox" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                <Label text="Date début:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <DatePicker fx:id="dateDebutPicker" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                <Label text="Date fin:" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                <DatePicker fx:id="dateFinPicker" prefWidth="150" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+            </GridPane>
+
+            <Separator/>
+
+            <!-- Boutons d'export -->
+            <HBox spacing="30" alignment="CENTER">
+                <Button text="📄 Générer PDF" onAction="#handleExporterPdf" prefWidth="150" prefHeight="40"
+                        style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-font-size: 14;"/>
+                <Button text="📊 Générer Excel" onAction="#handleExporterExcel" prefWidth="150" prefHeight="40"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 14;"/>
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>
