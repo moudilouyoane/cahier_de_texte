@@ -1,5 +1,8 @@
 package yoanemoudilou.cahiertexte.ui.dashboard;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import yoanemoudilou.cahiertexte.config.SessionManager;
 import yoanemoudilou.cahiertexte.model.StatutSeance;
 import yoanemoudilou.cahiertexte.model.User;
@@ -8,14 +11,7 @@ import yoanemoudilou.cahiertexte.service.CoursService;
 import yoanemoudilou.cahiertexte.service.SeanceService;
 import yoanemoudilou.cahiertexte.service.UserService;
 import yoanemoudilou.cahiertexte.utils.AlertUtils;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.stage.Stage;
+import yoanemoudilou.cahiertexte.utils.AppNavigator;
 
 /**
  * Contrôleur du tableau de bord principal.
@@ -63,29 +59,29 @@ public class DashboardController {
 
     @FXML
     private void handleOuvrirUtilisateurs(ActionEvent event) {
-        ouvrirVue(event, "/view/users.fxml", "Gestion des utilisateurs");
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/user.fxml", "Gestion des utilisateurs");
     }
 
     @FXML
     private void handleOuvrirCours(ActionEvent event) {
-        ouvrirVue(event, "/view/cours.fxml", "Gestion des cours");
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/cours.fxml", "Gestion des cours");
     }
 
     @FXML
     private void handleOuvrirSeances(ActionEvent event) {
-        ouvrirVue(event, "/view/seances.fxml", "Gestion des séances");
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/seance.fxml", "Gestion des séances");
     }
 
     @FXML
     private void handleOuvrirValidationSeances(ActionEvent event) {
-        ouvrirVue(event, "/view/validation-seances.fxml", "Validation des séances");
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/validation.fxml", "Validation des séances");
     }
 
     @FXML
     private void handleLogout(ActionEvent event) {
         try {
             authService.logout();
-            ouvrirVue(event, "/view/login.fxml", "Connexion");
+            AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/login.fxml", "Connexion");
         } catch (Exception e) {
             AlertUtils.showException("Erreur", "Impossible de fermer la session.", e);
         }
@@ -140,28 +136,8 @@ public class DashboardController {
                         String.valueOf(seanceService.getSeancesByStatut(StatutSeance.EN_ATTENTE).size())
                 );
             }
-
         } catch (Exception e) {
             AlertUtils.showException("Erreur", "Impossible de charger les statistiques.", e);
-        }
-    }
-
-    private void ouvrirVue(ActionEvent event, String fxmlPath, String titre) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setTitle(titre);
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-
-        } catch (Exception e) {
-            AlertUtils.showException(
-                    "Navigation impossible",
-                    "Impossible de charger la vue : " + fxmlPath,
-                    e
-            );
         }
     }
 }

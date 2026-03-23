@@ -1,5 +1,6 @@
 package yoanemoudilou.cahiertexte.ui.users;
 
+import javafx.event.ActionEvent;
 import yoanemoudilou.cahiertexte.model.ChefDepartement;
 import yoanemoudilou.cahiertexte.model.Enseignant;
 import yoanemoudilou.cahiertexte.model.ResponsableClasse;
@@ -7,6 +8,7 @@ import yoanemoudilou.cahiertexte.model.Role;
 import yoanemoudilou.cahiertexte.model.User;
 import yoanemoudilou.cahiertexte.service.UserService;
 import yoanemoudilou.cahiertexte.utils.AlertUtils;
+import yoanemoudilou.cahiertexte.utils.AppNavigator;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
@@ -182,6 +184,11 @@ public class UserManagementController {
     @FXML
     private void handleRafraichir() {
         chargerUtilisateurs();
+    }
+
+    @FXML
+    private void handleRetourDashboard(ActionEvent event) {
+        AppNavigator.goToDashboardForCurrentUser();
     }
 
     private void configurerTable() {

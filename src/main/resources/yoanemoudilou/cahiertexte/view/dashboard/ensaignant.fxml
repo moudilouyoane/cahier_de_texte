@@ -8,10 +8,9 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml" prefWidth="900" prefHeight="650"
             fx:controller="yoanemoudilou.cahiertexte.ui.dashboard.EnseignantDashboardController">
 
-    <!-- Header -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #16a085; -fx-padding: 15;">
-            <Label fx:id="bienvenuLabel" text="Bienvenue" textFill="WHITE">
+            <Label fx:id="bienvenuLabel" text="Bienvenue" styleClass="header-label">
                 <font><Font name="System Bold" size="18"/></font>
             </Label>
             <Region HBox.hgrow="ALWAYS"/>
@@ -20,11 +19,8 @@
         </HBox>
     </top>
 
-    <!-- Centre -->
     <center>
         <VBox spacing="20" style="-fx-padding: 20;">
-
-            <!-- Statistiques personnelles -->
             <TitledPane text="Mes statistiques" expanded="true">
                 <GridPane hgap="40" vgap="10" style="-fx-padding: 15;">
                     <Label text="Mes cours:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
@@ -44,7 +40,6 @@
                 </GridPane>
             </TitledPane>
 
-            <!-- Mes cours -->
             <TitledPane text="Mes cours" expanded="true" VBox.vgrow="SOMETIMES">
                 <TableView fx:id="mesCoursTable" prefHeight="150">
                     <columns>
@@ -55,7 +50,6 @@
                 </TableView>
             </TitledPane>
 
-            <!-- Dernières séances -->
             <TitledPane text="Mes dernières séances" expanded="true" VBox.vgrow="ALWAYS">
                 <TableView fx:id="dernieresSeancesTable" prefHeight="200">
                     <columns>
@@ -68,13 +62,10 @@
                 </TableView>
             </TitledPane>
 
-            <!-- Actions -->
             <HBox spacing="15" alignment="CENTER">
-                <Button text="📝 Voir toutes mes séances" onAction="#handleVoirMesSeances"/>
-                <Button text="📈 Statistiques" onAction="#handleOuvrirStatistiques"/>
-                <Button text="🔄 Rafraîchir" onAction="#handleRafraichir"/>
+                <Button text="Voir toutes mes séances" onAction="#handleVoirMesSeances"/>
+                <Button text="Rafraîchir" onAction="#handleRafraichir"/>
             </HBox>
-
         </VBox>
     </center>
 

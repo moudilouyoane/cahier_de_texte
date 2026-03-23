@@ -17,6 +17,16 @@
     -fx-text-fill: #5f7391;
 }
 
+.label.header-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.label.header-label-muted {
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+    -fx-font-weight: 600;
+}
+
 /* Boutons */
 .button {
     -fx-background-color: #2f6fad;

@@ -10,12 +10,14 @@ import yoanemoudilou.cahiertexte.service.CoursService;
 import yoanemoudilou.cahiertexte.service.SeanceService;
 import yoanemoudilou.cahiertexte.service.UserService;
 import yoanemoudilou.cahiertexte.utils.AlertUtils;
+import yoanemoudilou.cahiertexte.utils.AppNavigator;
 import yoanemoudilou.cahiertexte.utils.DateUtils;
 import yoanemoudilou.cahiertexte.utils.ExcelGenerator;
 import yoanemoudilou.cahiertexte.utils.PdfGenerator;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -103,6 +105,11 @@ public class ReportController {
     @FXML
     private void handleExporterExcel() {
         exporter(false);
+    }
+
+    @FXML
+    private void handleRetourDashboard(ActionEvent event) {
+        AppNavigator.goToDashboardForCurrentUser();
     }
 
     private void configurerTable() {

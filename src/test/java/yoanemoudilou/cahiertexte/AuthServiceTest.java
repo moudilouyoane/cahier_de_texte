@@ -3,6 +3,7 @@ package yoanemoudilou.cahiertexte;
 import yoanemoudilou.cahiertexte.config.SessionManager;
 import yoanemoudilou.cahiertexte.model.Enseignant;
 import yoanemoudilou.cahiertexte.model.Role;
+import yoanemoudilou.cahiertexte.model.ResponsableClasse;
 import yoanemoudilou.cahiertexte.model.User;
 import yoanemoudilou.cahiertexte.repository.UserRepository;
 import yoanemoudilou.cahiertexte.service.AuthService;
@@ -61,6 +62,44 @@ class AuthServiceTest {
         assertTrue(logged);
         assertNotNull(sessionManager.getUtilisateurConnecte());
         assertEquals("john@test.com", sessionManager.getUtilisateurConnecte().getEmail());
+    }
+
+    @Test
+    void inscrire_shouldCreateUserWithNormalizedEmailAndHashedPassword() {
+        Enseignant user = new Enseignant();
+        user.setId(2);
+        user.setNom("Dupont");
+        user.setPrenom("Alice");
+        user.setEmail("  ALICE@TEST.COM ");
+        user.setMotDePasse("motdepasse");
+        user.setRole(Role.ENSEIGNANT);
+        user.setValide(false);
+        user.setActif(true);
+
+        User created = authService.inscrire(user);
+
+        assertEquals("alice@test.com", created.getEmail());
+        assertNotEquals("motdepasse", created.getMotDePasse());
+        assertTrue(PasswordUtils.verifyPassword("motdepasse", created.getMotDePasse()));
+    }
+
+    @Test
+    void inscrire_shouldRejectDuplicateEmail() {
+        ResponsableClasse user = new ResponsableClasse();
+        user.setNom("Doe");
+        user.setPrenom("Jane");
+        user.setEmail("JOHN@test.com");
+        user.setMotDePasse("secret123");
+        user.setRole(Role.RESPONSABLE_CLASSE);
+        user.setValide(false);
+        user.setActif(true);
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> authService.inscrire(user)
+        );
+
+        assertEquals("Un utilisateur avec cet email existe dÃ©jÃ .", exception.getMessage());
     }
 
     private static class FakeUserRepository implements UserRepository {

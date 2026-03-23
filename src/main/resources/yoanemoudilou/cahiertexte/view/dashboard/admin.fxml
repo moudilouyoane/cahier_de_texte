@@ -11,11 +11,11 @@
     <!-- Header -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #2c3e50; -fx-padding: 15;">
-            <Label fx:id="bienvenuLabel" text="Bienvenue" textFill="WHITE">
+            <Label fx:id="bienvenuLabel" text="Bienvenue" styleClass="header-label">
                 <font><Font name="System Bold" size="18"/></font>
             </Label>
             <Region HBox.hgrow="ALWAYS"/>
-            <Label fx:id="roleLabel" text="CHEF_DEPARTEMENT" textFill="LIGHTGRAY"/>
+            <Label fx:id="roleLabel" text="CHEF_DEPARTEMENT" styleClass="header-label-muted"/>
             <Button text="Déconnexion" onAction="#handleLogout" style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
         </HBox>
     </top>
@@ -23,7 +23,7 @@
     <!-- Sidebar -->
     <left>
         <VBox spacing="10" style="-fx-background-color: #34495e; -fx-padding: 15;" prefWidth="200">
-            <Label text="Navigation" textFill="WHITE">
+            <Label text="Navigation" styleClass="header-label">
                 <font><Font name="System Bold" size="14"/></font>
             </Label>
             <Separator/>

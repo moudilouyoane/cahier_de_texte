@@ -1,41 +1,103 @@
 package yoanemoudilou.cahiertexte.ui.dashboard;
 
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import yoanemoudilou.cahiertexte.config.SessionManager;
+import yoanemoudilou.cahiertexte.model.Cours;
+import yoanemoudilou.cahiertexte.model.Seance;
 import yoanemoudilou.cahiertexte.model.StatutSeance;
 import yoanemoudilou.cahiertexte.model.User;
-import yoanemoudilou.cahiertexte.service.AffectationService;
 import yoanemoudilou.cahiertexte.service.AuthService;
 import yoanemoudilou.cahiertexte.service.CoursService;
 import yoanemoudilou.cahiertexte.service.SeanceService;
 import yoanemoudilou.cahiertexte.utils.AlertUtils;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.stage.Stage;
+import yoanemoudilou.cahiertexte.utils.AppNavigator;
+import yoanemoudilou.cahiertexte.utils.DateUtils;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Contrôleur du dashboard enseignant.
+ */
 public class EnseignantDashboardController {
 
-    @FXML private Label utilisateurLabel;
-    @FXML private Label totalCoursLabel;
-    @FXML private Label totalAffectationsLabel;
-    @FXML private Label totalSeancesLabel;
-    @FXML private Label pendingSeancesLabel;
-    @FXML private Label valideesSeancesLabel;
-    @FXML private Label rejeteesSeancesLabel;
+    @FXML
+    private Label bienvenuLabel;
+
+    @FXML
+    private Label mesCoursCountLabel;
+
+    @FXML
+    private Label mesSeancesCountLabel;
+
+    @FXML
+    private Label seancesEnAttenteCountLabel;
+
+    @FXML
+    private Label seancesValideesCountLabel;
+
+    @FXML
+    private Label seancesRejeteesCountLabel;
+
+    @FXML
+    private TableView<Cours> mesCoursTable;
+
+    @FXML
+    private TableColumn<Cours, String> coursCodeColumn;
+
+    @FXML
+    private TableColumn<Cours, String> coursIntituleColumn;
+
+    @FXML
+    private TableColumn<Cours, Integer> coursVolumeColumn;
+
+    @FXML
+    private TableView<Seance> dernieresSeancesTable;
+
+    @FXML
+    private TableColumn<Seance, String> seanceDateColumn;
+
+    @FXML
+    private TableColumn<Seance, String> seanceHeureColumn;
+
+    @FXML
+    private TableColumn<Seance, String> seanceCoursColumn;
+
+    @FXML
+    private TableColumn<Seance, String> seanceStatutColumn;
+
+    @FXML
+    private TableColumn<Seance, String> seanceContenuColumn;
 
     private final SessionManager sessionManager = SessionManager.getInstance();
     private final AuthService authService = new AuthService();
     private final CoursService coursService = new CoursService();
-    private final AffectationService affectationService = new AffectationService();
     private final SeanceService seanceService = new SeanceService();
+    private final Map<Integer, String> coursLabels = new HashMap<>();
 
     @FXML
     private void initialize() {
+        configurerTables();
         chargerInfos();
+    }
+
+    @FXML
+    private void handleNouvelleSeance(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/seance.fxml", "Nouvelle séance");
+    }
+
+    @FXML
+    private void handleVoirMesSeances(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/seance.fxml", "Mes séances");
     }
 
     @FXML
@@ -44,24 +106,44 @@ public class EnseignantDashboardController {
     }
 
     @FXML
-    private void handleMesSeances(ActionEvent event) {
-        ouvrirVue(event, "/view/seances.fxml", "Mes séances");
-    }
-
-    @FXML
-    private void handleRapports(ActionEvent event) {
-        ouvrirVue(event, "/view/reports.fxml", "Mes rapports");
-    }
-
-    @FXML
-    private void handleStatistiques(ActionEvent event) {
-        ouvrirVue(event, "/view/statistiques.fxml", "Mes statistiques");
-    }
-
-    @FXML
     private void handleLogout(ActionEvent event) {
         authService.logout();
-        ouvrirVue(event, "/view/login.fxml", "Connexion");
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/login.fxml", "Connexion");
+    }
+
+    private void configurerTables() {
+        if (coursCodeColumn != null) {
+            coursCodeColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getCode()));
+        }
+        if (coursIntituleColumn != null) {
+            coursIntituleColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getIntitule()));
+        }
+        if (coursVolumeColumn != null) {
+            coursVolumeColumn.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getVolumeHoraire()));
+        }
+        if (seanceDateColumn != null) {
+            seanceDateColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(
+                    DateUtils.formatDate(data.getValue().getDateSeance()))
+            );
+        }
+        if (seanceHeureColumn != null) {
+            seanceHeureColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(
+                    DateUtils.formatTime(data.getValue().getHeureSeance()))
+            );
+        }
+        if (seanceCoursColumn != null) {
+            seanceCoursColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(
+                    coursLabels.getOrDefault(data.getValue().getCoursId(), "Cours #" + data.getValue().getCoursId()))
+            );
+        }
+        if (seanceStatutColumn != null) {
+            seanceStatutColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(
+                    data.getValue().getStatut() != null ? data.getValue().getStatut().name() : "")
+            );
+        }
+        if (seanceContenuColumn != null) {
+            seanceContenuColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getContenu()));
+        }
     }
 
     private void chargerInfos() {
@@ -72,54 +154,50 @@ public class EnseignantDashboardController {
                 return;
             }
 
-            if (utilisateurLabel != null) {
-                utilisateurLabel.setText(currentUser.getNomComplet());
-            }
-            if (totalCoursLabel != null) {
-                totalCoursLabel.setText(String.valueOf(coursService.getCoursByEnseignantId(currentUser.getId()).size()));
-            }
-            if (totalAffectationsLabel != null) {
-                totalAffectationsLabel.setText(String.valueOf(
-                        affectationService.getAffectationsByEnseignantId(currentUser.getId()).size()
-                ));
+            List<Cours> mesCours = coursService.getCoursByEnseignantId(currentUser.getId());
+            List<Seance> mesSeances = seanceService.getSeancesByEnseignantId(currentUser.getId());
+
+            coursLabels.clear();
+            for (Cours cours : mesCours) {
+                if (cours.getId() != null) {
+                    coursLabels.put(cours.getId(), cours.getCode() + " - " + cours.getIntitule());
+                }
             }
 
-            var seances = seanceService.getSeancesByEnseignantId(currentUser.getId());
+            setLabel(bienvenuLabel, "Bienvenue, " + currentUser.getNomComplet());
+            setLabel(mesCoursCountLabel, String.valueOf(mesCours.size()));
+            setLabel(mesSeancesCountLabel, String.valueOf(mesSeances.size()));
+            setLabel(seancesEnAttenteCountLabel, String.valueOf(
+                    mesSeances.stream().filter(s -> s.getStatut() == StatutSeance.EN_ATTENTE).count()
+            ));
+            setLabel(seancesValideesCountLabel, String.valueOf(
+                    mesSeances.stream().filter(s -> s.getStatut() == StatutSeance.VALIDEE).count()
+            ));
+            setLabel(seancesRejeteesCountLabel, String.valueOf(
+                    mesSeances.stream().filter(s -> s.getStatut() == StatutSeance.REJETEE).count()
+            ));
 
-            if (totalSeancesLabel != null) {
-                totalSeancesLabel.setText(String.valueOf(seances.size()));
-            }
-            if (pendingSeancesLabel != null) {
-                pendingSeancesLabel.setText(String.valueOf(
-                        seances.stream().filter(s -> s.getStatut() == StatutSeance.EN_ATTENTE).count()
-                ));
-            }
-            if (valideesSeancesLabel != null) {
-                valideesSeancesLabel.setText(String.valueOf(
-                        seances.stream().filter(s -> s.getStatut() == StatutSeance.VALIDEE).count()
-                ));
-            }
-            if (rejeteesSeancesLabel != null) {
-                rejeteesSeancesLabel.setText(String.valueOf(
-                        seances.stream().filter(s -> s.getStatut() == StatutSeance.REJETEE).count()
-                ));
+            if (mesCoursTable != null) {
+                mesCoursTable.setItems(FXCollections.observableArrayList(mesCours));
             }
 
+            if (dernieresSeancesTable != null) {
+                List<Seance> recentes = mesSeances.stream()
+                        .sorted(Comparator
+                                .comparing(Seance::getDateSeance, Comparator.nullsLast(Comparator.reverseOrder()))
+                                .thenComparing(Seance::getHeureSeance, Comparator.nullsLast(Comparator.reverseOrder())))
+                        .limit(10)
+                        .toList();
+                dernieresSeancesTable.setItems(FXCollections.observableArrayList(recentes));
+            }
         } catch (Exception e) {
             AlertUtils.showException("Erreur", "Impossible de charger le dashboard enseignant.", e);
         }
     }
 
-    private void ouvrirVue(ActionEvent event, String path, String title) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setTitle(title);
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-        } catch (Exception e) {
-            AlertUtils.showException("Navigation impossible", "Impossible de charger la vue : " + path, e);
+    private void setLabel(Label label, String value) {
+        if (label != null) {
+            label.setText(value != null ? value : "");
         }
     }
 }

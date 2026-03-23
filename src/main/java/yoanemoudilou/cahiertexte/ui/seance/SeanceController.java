@@ -9,7 +9,9 @@ import yoanemoudilou.cahiertexte.service.CoursService;
 import yoanemoudilou.cahiertexte.service.SeanceService;
 import yoanemoudilou.cahiertexte.service.UserService;
 import yoanemoudilou.cahiertexte.utils.AlertUtils;
+import yoanemoudilou.cahiertexte.utils.AppNavigator;
 import yoanemoudilou.cahiertexte.utils.DateUtils;
+import javafx.event.ActionEvent;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
@@ -178,6 +180,11 @@ public class SeanceController {
         chargerReferences();
         configurerUtilisateurConnecte();
         chargerSeances();
+    }
+
+    @FXML
+    private void handleRetourDashboard(ActionEvent event) {
+        AppNavigator.goToDashboardForCurrentUser();
     }
 
     private void configurerTable() {

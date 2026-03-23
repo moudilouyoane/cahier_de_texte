@@ -1,10 +1,12 @@
 package yoanemoudilou.cahiertexte.ui.cours;
 
+import javafx.event.ActionEvent;
 import yoanemoudilou.cahiertexte.model.Classe;
 import yoanemoudilou.cahiertexte.model.Cours;
 import yoanemoudilou.cahiertexte.service.ClasseService;
 import yoanemoudilou.cahiertexte.service.CoursService;
 import yoanemoudilou.cahiertexte.utils.AlertUtils;
+import yoanemoudilou.cahiertexte.utils.AppNavigator;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
@@ -134,6 +136,11 @@ public class CoursController {
     private void handleRafraichir() {
         chargerClasses();
         chargerCours();
+    }
+
+    @FXML
+    private void handleRetourDashboard(ActionEvent event) {
+        AppNavigator.goToDashboardForCurrentUser();
     }
 
     private void configurerTable() {

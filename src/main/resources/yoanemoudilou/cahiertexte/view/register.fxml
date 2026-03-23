@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" spacing="18" prefWidth="420" prefHeight="480"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="yoanemoudilou.cahiertexte.ui.login.RegisterController">
+
+    <padding>
+        <Insets top="35" right="40" bottom="35" left="40"/>
+    </padding>
+
+    <Label text="Cahier de Texte NumÃ©rique" styleClass="title">
+        <font>
+            <Font name="System Bold" size="22"/>
+        </font>
+    </Label>
+
+    <Label text="Inscription" styleClass="subtitle">
+        <font>
+            <Font size="16"/>
+        </font>
+    </Label>
+
+    <VBox spacing="12" alignment="CENTER">
+        <TextField fx:id="nomField" promptText="Nom" prefWidth="300"/>
+        <TextField fx:id="prenomField" promptText="PrÃ©nom" prefWidth="300"/>
+        <TextField fx:id="emailField" promptText="Email" prefWidth="300"/>
+        <ComboBox fx:id="roleComboBox" promptText="RÃ´le" prefWidth="300"/>
+        <PasswordField fx:id="passwordField" promptText="Mot de passe" prefWidth="300"/>
+        <PasswordField fx:id="confirmPasswordField" promptText="Confirmer le mot de passe" prefWidth="300"/>
+    </VBox>
+
+    <Label fx:id="messageLabel" textFill="RED" wrapText="true"/>
+
+    <HBox spacing="12" alignment="CENTER">
+        <Button text="S'inscrire" onAction="#handleRegister" defaultButton="true" prefWidth="120"/>
+        <Button text="Retour" onAction="#handleBackToLogin" cancelButton="true" prefWidth="100" styleClass="button-accent"/>
+    </HBox>
+
+</VBox>

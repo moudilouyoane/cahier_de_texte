@@ -1,5 +1,6 @@
 package yoanemoudilou.cahiertexte.ui.validation;
 
+import javafx.event.ActionEvent;
 import yoanemoudilou.cahiertexte.model.Cours;
 import yoanemoudilou.cahiertexte.model.Role;
 import yoanemoudilou.cahiertexte.model.Seance;
@@ -9,6 +10,7 @@ import yoanemoudilou.cahiertexte.service.CoursService;
 import yoanemoudilou.cahiertexte.service.SeanceService;
 import yoanemoudilou.cahiertexte.service.UserService;
 import yoanemoudilou.cahiertexte.utils.AlertUtils;
+import yoanemoudilou.cahiertexte.utils.AppNavigator;
 import yoanemoudilou.cahiertexte.utils.DateUtils;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -103,6 +105,11 @@ public class ValidationSeanceController {
     @FXML
     private void handleRemettreEnAttente() {
         mettreAJourStatut(StatutSeance.EN_ATTENTE, "Séance remise en attente avec succès.");
+    }
+
+    @FXML
+    private void handleRetourDashboard(ActionEvent event) {
+        AppNavigator.goToDashboardForCurrentUser();
     }
 
     private void configurerTable() {

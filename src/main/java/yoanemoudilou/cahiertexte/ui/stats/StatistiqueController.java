@@ -3,6 +3,7 @@ package yoanemoudilou.cahiertexte.ui.stats;
 import yoanemoudilou.cahiertexte.model.*;
 import yoanemoudilou.cahiertexte.service.*;
 import yoanemoudilou.cahiertexte.utils.AlertUtils;
+import yoanemoudilou.cahiertexte.utils.AppNavigator;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
@@ -132,6 +133,11 @@ public class StatistiqueController {
     private void handleRafraichir(ActionEvent event) {
         chargerFiltres();
         chargerStatistiques();
+    }
+
+    @FXML
+    private void handleRetourDashboard(ActionEvent event) {
+        AppNavigator.goToDashboardForCurrentUser();
     }
 
     // ===================

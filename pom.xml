@@ -167,7 +167,7 @@
         <artifactId>javafx-maven-plugin</artifactId>
         <version>0.0.8</version>
         <configuration>
-          <mainClass>com.universite.cahierdetexte.MainApp</mainClass>
+          <mainClass>yoanemoudilou.cahierdetexte.AppMain</mainClass>
           <launcher>app</launcher>
           <jlinkZipName>app</jlinkZipName>
           <jlinkImageName>app</jlinkImageName>

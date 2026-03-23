@@ -4,20 +4,17 @@ import yoanemoudilou.cahiertexte.utils.AlertUtils;
 import yoanemoudilou.cahiertexte.service.AuthService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import yoanemoudilou.cahiertexte.utils.AppNavigator;
 
 /**
  * Contrôleur de l'écran de connexion.
  */
 public class LoginController {
+
+    private static String pendingInfoMessage;
 
     @FXML
     private TextField emailField;
@@ -33,10 +30,9 @@ public class LoginController {
     @FXML
     private void initialize() {
         if (messageLabel != null) {
-            messageLabel.setText("");
+            messageLabel.setText(consumePendingInfoMessage());
         }
     }
-
 
     @FXML
     private void handleLogin(ActionEvent event) {
@@ -53,9 +49,6 @@ public class LoginController {
 
             AppNavigator.goToDashboardForCurrentUser();
 
-
-            AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/login.fxml", "Tableau de bord");
-
         } catch (Exception e) {
             setMessage("Erreur lors de la connexion.");
             AlertUtils.showException(
@@ -67,33 +60,28 @@ public class LoginController {
     }
 
     @FXML
-    private void handleQuitter(ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.close();
+    private void handleOpenRegistration(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/register.fxml", "Inscription");
     }
 
-    private void ouvrirVue(ActionEvent event, String fxmlPath, String titre) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
+    @FXML
+    private void handleQuitter() {
+        AppNavigator.getPrimaryStage().close();
+    }
 
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setTitle(titre);
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-
-        } catch (Exception e) {
-            AlertUtils.showException(
-                    "Navigation impossible",
-                    "Impossible de charger la vue : " + fxmlPath,
-                    e
-            );
-        }
+    public static void showInfoMessageOnNextDisplay(String message) {
+        pendingInfoMessage = message;
     }
 
     private void setMessage(String message) {
         if (messageLabel != null) {
             messageLabel.setText(message != null ? message : "");
         }
+    }
+
+    private String consumePendingInfoMessage() {
+        String message = pendingInfoMessage;
+        pendingInfoMessage = null;
+        return message != null ? message : "";
     }
 }

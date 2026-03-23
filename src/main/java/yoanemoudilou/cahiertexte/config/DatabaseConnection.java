@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * - charger le driver MySQL ;
  * - créer la base de données si elle n'existe pas ;
  * - fournir une connexion JDBC ;
- * - exécuter automatiquement le script schema.sql si présent.
+ * - exécuter automatiquement le script SQL du projet si présent.
  */
 public final class DatabaseConnection {
 
@@ -26,7 +26,7 @@ public final class DatabaseConnection {
 
     private static final String DB_HOST = getEnvOrDefault("DB_HOST", "localhost");
     private static final String DB_PORT = getEnvOrDefault("DB_PORT", "3306");
-    private static final String DB_NAME = getEnvOrDefault("DB_NAME", "gestion_cahier_texte");
+    private static final String DB_NAME = getEnvOrDefault("DB_NAME", "cahier");
     private static final String DB_USER = getEnvOrDefault("DB_USER", "root");
     private static final String DB_PASSWORD = getEnvOrDefault("DB_PASSWORD", "");
 
@@ -61,7 +61,7 @@ public final class DatabaseConnection {
     /**
      * Initialise la base de données :
      * - création de la base si elle n'existe pas ;
-     * - exécution du script schema.sql si présent dans resources/sql/.
+     * - exécution du script SQL si présent dans les resources du projet.
      */
     public static void initializeDatabase() {
         createDatabaseIfNotExists();
@@ -101,21 +101,23 @@ public final class DatabaseConnection {
     }
 
     /**
-     * Exécute le script schema.sql s'il existe dans le classpath.
+     * Exécute le script SQL du projet s'il existe dans le classpath.
      */
     private static void executeSchemaIfPresent() {
-        InputStream inputStream = DatabaseConnection.class.getResourceAsStream("/sql/schema.sql");
+        InputStream inputStream = DatabaseConnection.class.getResourceAsStream(
+                "/yoanemoudilou/cahiertexte/script/gestion_cahier_texte.sql"
+        );
 
         if (inputStream == null) {
-            LOGGER.info("Aucun fichier schema.sql trouvé dans resources/sql/. Initialisation ignorée.");
+            LOGGER.info("Aucun script SQL projet trouvé dans les resources. Initialisation ignorée.");
             return;
         }
 
         try (Connection connection = getConnection()) {
             executeSqlScript(connection, inputStream);
-            LOGGER.info("Script schema.sql exécuté avec succès.");
+            LOGGER.info("Script SQL projet exécuté avec succès.");
         } catch (SQLException | IOException e) {
-            LOGGER.log(Level.SEVERE, "Erreur lors de l'exécution du script schema.sql.", e);
+            LOGGER.log(Level.SEVERE, "Erreur lors de l'exécution du script SQL projet.", e);
         }
     }
 

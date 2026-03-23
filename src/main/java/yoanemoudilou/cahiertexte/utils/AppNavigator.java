@@ -41,7 +41,7 @@ public final class AppNavigator {
         if (user.getRole() == Role.CHEF_DEPARTEMENT) {
             navigate("/yoanemoudilou/cahiertexte/view/dashboard/admin.fxml", "Dashboard Admin");
         } else if (user.getRole() == Role.ENSEIGNANT) {
-            navigate("/yoanemoudilou/cahiertexte/view/dashboard/enseignant.fxml", "Dashboard Enseignant");
+            navigate("/yoanemoudilou/cahiertexte/view/dashboard/ensaignant.fxml", "Dashboard Enseignant");
         } else if (user.getRole() == Role.RESPONSABLE_CLASSE) {
             navigate("/yoanemoudilou/cahiertexte/view/dashboard/responsable.fxml", "Dashboard Responsable");
         }

@@ -11,11 +11,12 @@
     <!-- Header -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: #16a085; -fx-padding: 15;">
-            <Label text="Gestion des séances" textFill="WHITE">
+            <Label text="Gestion des séances" styleClass="header-label">
                 <font><Font name="System Bold" size="18"/></font>
             </Label>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="sessionInfoLabel" text="" textFill="LIGHTYELLOW"/>
+            <Button text="Retour au dashboard" onAction="#handleRetourDashboard" styleClass="button-accent"/>
         </HBox>
     </top>
 

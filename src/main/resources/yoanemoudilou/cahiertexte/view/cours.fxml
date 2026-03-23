@@ -11,9 +11,11 @@
     <!-- Header -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: #2980b9; -fx-padding: 15;">
-            <Label text="Gestion des cours" textFill="WHITE">
+            <Label text="Gestion des cours" styleClass="header-label">
                 <font><Font name="System Bold" size="18"/></font>
             </Label>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Retour au dashboard" onAction="#handleRetourDashboard" styleClass="button-accent"/>
         </HBox>
     </top>
 

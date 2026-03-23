@@ -8,10 +8,9 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml" prefWidth="950" prefHeight="700"
             fx:controller="yoanemoudilou.cahiertexte.ui.dashboard.ResponsableDashboardController">
 
-    <!-- Header -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #8e44ad; -fx-padding: 15;">
-            <Label fx:id="bienvenuLabel" text="Bienvenue" textFill="WHITE">
+            <Label fx:id="bienvenuLabel" text="Bienvenue" styleClass="header-label">
                 <font><Font name="System Bold" size="18"/></font>
             </Label>
             <Region HBox.hgrow="ALWAYS"/>
@@ -19,11 +18,8 @@
         </HBox>
     </top>
 
-    <!-- Centre -->
     <center>
         <VBox spacing="15" style="-fx-padding: 20;">
-
-            <!-- Filtres et stats -->
             <HBox spacing="30" alignment="CENTER_LEFT">
                 <VBox spacing="5">
                     <Label text="Filtrer par classe:"/>
@@ -53,7 +49,6 @@
 
             <Separator/>
 
-            <!-- Tableau des séances -->
             <Label text="Séances à valider">
                 <font><Font name="System Bold" size="14"/></font>
             </Label>
@@ -69,7 +64,6 @@
                 </columns>
             </TableView>
 
-            <!-- Validation -->
             <HBox spacing="15" alignment="CENTER_LEFT">
                 <VBox spacing="5" HBox.hgrow="ALWAYS">
                     <Label text="Commentaire de validation:"/>
@@ -77,18 +71,15 @@
                 </VBox>
 
                 <VBox spacing="10" alignment="CENTER">
-                    <Button text="✅ Valider" onAction="#handleValiderSeance" style="-fx-background-color: #27ae60; -fx-text-fill: white;" prefWidth="120"/>
-                    <Button text="❌ Rejeter" onAction="#handleRejeterSeance" style="-fx-background-color: #c0392b; -fx-text-fill: white;" prefWidth="120"/>
+                    <Button text="Valider" onAction="#handleValiderSeance" style="-fx-background-color: #27ae60; -fx-text-fill: white;" prefWidth="120"/>
+                    <Button text="Rejeter" onAction="#handleRejeterSeance" style="-fx-background-color: #c0392b; -fx-text-fill: white;" prefWidth="120"/>
                 </VBox>
             </HBox>
 
-            <!-- Actions -->
             <HBox spacing="15" alignment="CENTER">
-                <Button text="📈 Statistiques" onAction="#handleOuvrirStatistiques"/>
-                <Button text="📄 Rapports" onAction="#handleOuvrirRapports"/>
-                <Button text="🔄 Rafraîchir" onAction="#handleRafraichir"/>
+                <Button text="Rapports" onAction="#handleOuvrirRapports"/>
+                <Button text="Rafraîchir" onAction="#handleRafraichir"/>
             </HBox>
-
         </VBox>
     </center>
 

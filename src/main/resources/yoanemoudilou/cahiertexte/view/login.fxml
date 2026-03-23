@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="20" prefWidth="400" prefHeight="350"
+<VBox alignment="CENTER" spacing="20" prefWidth="400" prefHeight="380"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="yoanemoudilou.cahiertexte.ui.login.LoginController">
 
@@ -40,5 +40,7 @@
         <Button text="Se connecter" onAction="#handleLogin" defaultButton="true" prefWidth="120"/>
         <Button text="Quitter" onAction="#handleQuitter" cancelButton="true" prefWidth="100"/>
     </HBox>
+
+    <Button text="Créer un compte" onAction="#handleOpenRegistration" prefWidth="180" styleClass="button-accent"/>
 
 </VBox>

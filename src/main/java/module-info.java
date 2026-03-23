@@ -19,6 +19,12 @@ module yoanemoudilou.cahiertexte {
 
     opens yoanemoudilou.cahiertexte.ui.login to javafx.fxml;
     opens yoanemoudilou.cahiertexte.ui.dashboard to javafx.fxml;
+    opens yoanemoudilou.cahiertexte.ui.cours to javafx.fxml;
+    opens yoanemoudilou.cahiertexte.ui.seance to javafx.fxml;
+    opens yoanemoudilou.cahiertexte.ui.users to javafx.fxml;
+    opens yoanemoudilou.cahiertexte.ui.validation to javafx.fxml;
+    opens yoanemoudilou.cahiertexte.ui.reports to javafx.fxml;
+    opens yoanemoudilou.cahiertexte.ui.stats to javafx.fxml;
     opens yoanemoudilou.cahiertexte to javafx.fxml;
     exports yoanemoudilou.cahiertexte;
 }
