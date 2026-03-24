@@ -94,6 +94,11 @@ public class AdminDashboardController {
     }
 
     @FXML
+    private void handleEnseignants(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/enseignant-admin.fxml", "Enseignants");
+    }
+
+    @FXML
     private void handleOuvrirFilieres(ActionEvent event) {
         AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/filiere.fxml", "Gestion des filieres");
     }

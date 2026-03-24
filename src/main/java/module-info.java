@@ -16,9 +16,11 @@ module yoanemoudilou.cahiertexte {
     requires org.apache.poi.poi;
     requires org.apache.poi.ooxml;
     requires mysql.connector.j;
+    requires jakarta.mail;
 
     opens yoanemoudilou.cahiertexte.ui.login to javafx.fxml;
     opens yoanemoudilou.cahiertexte.ui.dashboard to javafx.fxml;
+    opens yoanemoudilou.cahiertexte.ui.enseignants to javafx.fxml;
     opens yoanemoudilou.cahiertexte.ui.cours to javafx.fxml;
     opens yoanemoudilou.cahiertexte.ui.seance to javafx.fxml;
     opens yoanemoudilou.cahiertexte.ui.users to javafx.fxml;

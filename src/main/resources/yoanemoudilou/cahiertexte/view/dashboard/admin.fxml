@@ -35,6 +35,7 @@
             <Separator/>
             <Button text="Tableau de bord" onAction="#handleRafraichir" prefWidth="170"/>
             <Button text="Utilisateurs" onAction="#handleUsers" prefWidth="170"/>
+            <Button text="Enseignants" onAction="#handleEnseignants" prefWidth="170"/>
             <Button text="Filieres" onAction="#handleOuvrirFilieres" prefWidth="170"/>
             <Button text="Classes" onAction="#handleOuvrirClasses" prefWidth="170"/>
             <Button text="Cours" onAction="#handleCours" prefWidth="170"/>

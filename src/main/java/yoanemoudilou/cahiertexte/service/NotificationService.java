@@ -21,15 +21,31 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserService userService;
     private final CoursService coursService;
+    private final ClasseService classeService;
+    private final EmailService emailService;
 
     public NotificationService() {
-        this(new NotificationRepositoryImpl(), new UserService(), new CoursService());
+        this(
+                new NotificationRepositoryImpl(),
+                new UserService(),
+                new CoursService(),
+                new ClasseService(),
+                new EmailService()
+        );
     }
 
-    public NotificationService(NotificationRepository notificationRepository, UserService userService, CoursService coursService) {
+    public NotificationService(
+            NotificationRepository notificationRepository,
+            UserService userService,
+            CoursService coursService,
+            ClasseService classeService,
+            EmailService emailService
+    ) {
         this.notificationRepository = notificationRepository;
         this.userService = userService;
         this.coursService = coursService;
+        this.classeService = classeService;
+        this.emailService = emailService;
     }
 
     public NotificationApp creerNotification(Integer destinataireId, String titre, String message) {
@@ -84,12 +100,20 @@ public class NotificationService {
 
     public void notifierCoursAttribue(Integer enseignantId, Integer coursId) {
         Cours cours = chargerCours(coursId);
+        User enseignant = chargerUtilisateur(enseignantId);
         String libelleCours = cours.getCode() + " - " + cours.getIntitule();
         creerNotification(
                 enseignantId,
                 "Nouveau cours attribue",
                 "Le cours " + libelleCours + " t'a ete attribue."
         );
+
+        if (cours.getClasseId() == null) {
+            return;
+        }
+
+        classeService.getClasseById(cours.getClasseId())
+                .ifPresent(classe -> emailService.envoyerCoursAttribueAsync(enseignant, cours, classe));
     }
 
     public void notifierResponsablePourVerification(Seance seance) {
@@ -130,5 +154,10 @@ public class NotificationService {
     private Cours chargerCours(Integer coursId) {
         return coursService.getCoursById(coursId)
                 .orElseThrow(() -> new IllegalArgumentException("Cours introuvable pour la notification."));
+    }
+
+    private User chargerUtilisateur(Integer userId) {
+        return userService.getUtilisateurById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur introuvable pour la notification."));
     }
 }
