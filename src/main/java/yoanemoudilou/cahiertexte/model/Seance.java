@@ -4,11 +4,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
- * Représente une séance de cours enregistrée dans le cahier de texte.
+ * Représente une séance de cours enregistrée dans un cahier de texte.
  */
 public class Seance {
 
     private Integer id;
+    private Integer cahierTexteId;
     private Integer coursId;
     private Integer enseignantId;
     private LocalDate dateSeance;
@@ -19,19 +20,18 @@ public class Seance {
     private StatutSeance statut;
     private String commentaireValidation;
 
-    /**
-     * Constructeur vide.
-     */
     public Seance() {
         this.statut = StatutSeance.EN_ATTENTE;
     }
 
-    /**
-     * Constructeur sans identifiant.
-     */
     public Seance(Integer coursId, Integer enseignantId, LocalDate dateSeance, LocalTime heureSeance,
-                  Integer duree, String contenu, String observations,
-                  StatutSeance statut, String commentaireValidation) {
+                  Integer duree, String contenu, String observations, StatutSeance statut, String commentaireValidation) {
+        this(null, coursId, enseignantId, dateSeance, heureSeance, duree, contenu, observations, statut, commentaireValidation);
+    }
+
+    public Seance(Integer cahierTexteId, Integer coursId, Integer enseignantId, LocalDate dateSeance, LocalTime heureSeance,
+                  Integer duree, String contenu, String observations, StatutSeance statut, String commentaireValidation) {
+        this.cahierTexteId = cahierTexteId;
         this.coursId = coursId;
         this.enseignantId = enseignantId;
         this.dateSeance = dateSeance;
@@ -43,13 +43,11 @@ public class Seance {
         this.commentaireValidation = commentaireValidation;
     }
 
-    /**
-     * Constructeur complet.
-     */
-    public Seance(Integer id, Integer coursId, Integer enseignantId, LocalDate dateSeance,
-                  LocalTime heureSeance, Integer duree, String contenu,
-                  String observations, StatutSeance statut, String commentaireValidation) {
+    public Seance(Integer id, Integer cahierTexteId, Integer coursId, Integer enseignantId, LocalDate dateSeance,
+                  LocalTime heureSeance, Integer duree, String contenu, String observations,
+                  StatutSeance statut, String commentaireValidation) {
         this.id = id;
+        this.cahierTexteId = cahierTexteId;
         this.coursId = coursId;
         this.enseignantId = enseignantId;
         this.dateSeance = dateSeance;
@@ -67,6 +65,14 @@ public class Seance {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getCahierTexteId() {
+        return cahierTexteId;
+    }
+
+    public void setCahierTexteId(Integer cahierTexteId) {
+        this.cahierTexteId = cahierTexteId;
     }
 
     public Integer getCoursId() {
@@ -145,6 +151,7 @@ public class Seance {
     public String toString() {
         return "Seance{" +
                 "id=" + id +
+                ", cahierTexteId=" + cahierTexteId +
                 ", coursId=" + coursId +
                 ", enseignantId=" + enseignantId +
                 ", dateSeance=" + dateSeance +

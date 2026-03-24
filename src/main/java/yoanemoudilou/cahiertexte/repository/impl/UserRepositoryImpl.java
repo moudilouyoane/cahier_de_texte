@@ -2,7 +2,9 @@ package yoanemoudilou.cahiertexte.repository.impl;
 
 import yoanemoudilou.cahiertexte.config.DatabaseConnection;
 import yoanemoudilou.cahiertexte.model.ChefDepartement;
+import yoanemoudilou.cahiertexte.model.Classe;
 import yoanemoudilou.cahiertexte.model.Enseignant;
+import yoanemoudilou.cahiertexte.model.Filiere;
 import yoanemoudilou.cahiertexte.model.ResponsableClasse;
 import yoanemoudilou.cahiertexte.model.Role;
 import yoanemoudilou.cahiertexte.model.User;
@@ -19,6 +21,19 @@ import java.util.Optional;
 
 public class UserRepositoryImpl implements UserRepository {
 
+    private static final String BASE_SELECT =
+            "SELECT u.id, u.nom, u.prenom, u.email, u.mot_de_passe, u.role, u.valide, u.actif, " +
+                    "rc.classe_id AS responsable_classe_id, " +
+                    "cl.nom_classe AS responsable_nom_classe, " +
+                    "cl.niveau AS responsable_niveau_classe, " +
+                    "f.id AS responsable_filiere_id, " +
+                    "f.code AS responsable_filiere_code, " +
+                    "f.nom AS responsable_filiere_nom " +
+                    "FROM utilisateurs u " +
+                    "LEFT JOIN responsables_classes rc ON rc.utilisateur_id = u.id " +
+                    "LEFT JOIN classes cl ON rc.classe_id = cl.id " +
+                    "LEFT JOIN filieres f ON cl.filiere_id = f.id ";
+
     private static final String INSERT_SQL =
             "INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role, valide, actif) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -26,6 +41,12 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String UPDATE_SQL =
             "UPDATE utilisateurs SET nom = ?, prenom = ?, email = ?, mot_de_passe = ?, role = ?, valide = ?, actif = ? " +
                     "WHERE id = ?";
+
+    private static final String INSERT_RESPONSABLE_CLASSE_SQL =
+            "INSERT INTO responsables_classes (utilisateur_id, classe_id) VALUES (?, ?)";
+
+    private static final String DELETE_RESPONSABLE_CLASSE_SQL =
+            "DELETE FROM responsables_classes WHERE utilisateur_id = ?";
 
     @Override
     public User save(User user) throws SQLException {
@@ -52,6 +73,7 @@ public class UserRepositoryImpl implements UserRepository {
                 }
             }
 
+            syncResponsableClasse(connection, user);
             return user;
         }
     }
@@ -74,7 +96,12 @@ public class UserRepositoryImpl implements UserRepository {
             ps.setBoolean(7, user.isActif());
             ps.setInt(8, user.getId());
 
-            return ps.executeUpdate() > 0;
+            boolean updated = ps.executeUpdate() > 0;
+            if (updated) {
+                syncResponsableClasse(connection, user);
+            }
+
+            return updated;
         }
     }
 
@@ -92,7 +119,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findById(Integer id) throws SQLException {
-        String sql = "SELECT * FROM utilisateurs WHERE id = ?";
+        String sql = BASE_SELECT + "WHERE u.id = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -111,7 +138,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findByEmail(String email) throws SQLException {
-        String sql = "SELECT * FROM utilisateurs WHERE email = ?";
+        String sql = BASE_SELECT + "WHERE u.email = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -130,7 +157,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> findAll() throws SQLException {
-        String sql = "SELECT * FROM utilisateurs ORDER BY nom, prenom";
+        String sql = BASE_SELECT + "ORDER BY u.nom, u.prenom";
         List<User> users = new ArrayList<>();
 
         try (Connection connection = DatabaseConnection.getConnection();
@@ -153,7 +180,7 @@ public class UserRepositoryImpl implements UserRepository {
             return users;
         }
 
-        String sql = "SELECT * FROM utilisateurs WHERE role = ? ORDER BY nom, prenom";
+        String sql = BASE_SELECT + "WHERE u.role = ? ORDER BY u.nom, u.prenom";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -171,8 +198,28 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Optional<User> findResponsableByClasseId(Integer classeId) throws SQLException {
+        String sql = BASE_SELECT + "WHERE rc.classe_id = ? AND u.role = ? LIMIT 1";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, classeId);
+            ps.setString(2, Role.RESPONSABLE_CLASSE.name());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapUser(rs));
+                }
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
     public List<User> findPendingValidation() throws SQLException {
-        String sql = "SELECT * FROM utilisateurs WHERE valide = FALSE ORDER BY nom, prenom";
+        String sql = BASE_SELECT + "WHERE u.valide = FALSE ORDER BY u.nom, u.prenom";
         List<User> users = new ArrayList<>();
 
         try (Connection connection = DatabaseConnection.getConnection();
@@ -215,6 +262,31 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+    private void syncResponsableClasse(Connection connection, User user) throws SQLException {
+        if (user.getId() == null) {
+            return;
+        }
+
+        try (PreparedStatement deletePs = connection.prepareStatement(DELETE_RESPONSABLE_CLASSE_SQL)) {
+            deletePs.setInt(1, user.getId());
+            deletePs.executeUpdate();
+        }
+
+        if (user.getRole() != Role.RESPONSABLE_CLASSE) {
+            return;
+        }
+
+        if (!(user instanceof ResponsableClasse responsableClasse) || responsableClasse.getClasseId() == null) {
+            return;
+        }
+
+        try (PreparedStatement insertPs = connection.prepareStatement(INSERT_RESPONSABLE_CLASSE_SQL)) {
+            insertPs.setInt(1, user.getId());
+            insertPs.setInt(2, responsableClasse.getClasseId());
+            insertPs.executeUpdate();
+        }
+    }
+
     private User mapUser(ResultSet rs) throws SQLException {
         Role role = parseRole(rs.getString("role"));
         User user = createUserInstance(role);
@@ -227,6 +299,26 @@ public class UserRepositoryImpl implements UserRepository {
         user.setRole(role);
         user.setValide(rs.getBoolean("valide"));
         user.setActif(rs.getBoolean("actif"));
+
+        if (user instanceof ResponsableClasse responsableClasse) {
+            Integer classeId = rs.getObject("responsable_classe_id", Integer.class);
+            if (classeId != null) {
+                Integer filiereId = rs.getObject("responsable_filiere_id", Integer.class);
+                Filiere filiere = filiereId != null
+                        ? new Filiere(
+                        filiereId,
+                        rs.getString("responsable_filiere_code"),
+                        rs.getString("responsable_filiere_nom"))
+                        : null;
+
+                responsableClasse.setClasse(new Classe(
+                        classeId,
+                        rs.getString("responsable_nom_classe"),
+                        rs.getString("responsable_niveau_classe"),
+                        filiere
+                ));
+            }
+        }
 
         return user;
     }

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service métier lié aux utilisateurs.
+ * Service metier lie aux utilisateurs.
  */
 public class UserService {
 
@@ -34,7 +34,7 @@ public class UserService {
 
             Optional<User> existing = userRepository.findByEmail(normalizedEmail);
             if (existing.isPresent()) {
-                throw new IllegalArgumentException("Un utilisateur avec cet email existe déjà.");
+                throw new IllegalArgumentException("Un utilisateur avec cet email existe deja.");
             }
 
             if (!PasswordUtils.isBCryptHash(user.getMotDePasse())) {
@@ -44,7 +44,7 @@ public class UserService {
             return userRepository.save(user);
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de la création de l'utilisateur.", e);
+            throw new RuntimeException("Erreur lors de la creation de l'utilisateur.", e);
         }
     }
 
@@ -66,7 +66,7 @@ public class UserService {
 
             Optional<User> existingByEmail = userRepository.findByEmail(normalizedEmail);
             if (existingByEmail.isPresent() && !existingByEmail.get().getId().equals(user.getId())) {
-                throw new IllegalArgumentException("Cet email est déjà utilisé par un autre utilisateur.");
+                throw new IllegalArgumentException("Cet email est deja utilise par un autre utilisateur.");
             }
 
             if (user.getMotDePasse() == null || user.getMotDePasse().isBlank()) {
@@ -122,19 +122,31 @@ public class UserService {
         try {
             return userRepository.findAll();
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de la récupération des utilisateurs.", e);
+            throw new RuntimeException("Erreur lors de la recuperation des utilisateurs.", e);
         }
     }
 
     public List<User> getUtilisateursByRole(Role role) {
         if (role == null) {
-            throw new IllegalArgumentException("Le rôle est requis.");
+            throw new IllegalArgumentException("Le role est requis.");
         }
 
         try {
             return userRepository.findByRole(role);
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de la récupération des utilisateurs par rôle.", e);
+            throw new RuntimeException("Erreur lors de la recuperation des utilisateurs par role.", e);
+        }
+    }
+
+    public Optional<User> getResponsableByClasseId(Integer classeId) {
+        if (classeId == null) {
+            throw new IllegalArgumentException("L'id de la classe est requis.");
+        }
+
+        try {
+            return userRepository.findResponsableByClasseId(classeId);
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la recherche du responsable de classe.", e);
         }
     }
 
@@ -142,7 +154,7 @@ public class UserService {
         try {
             return userRepository.findPendingValidation();
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de la récupération des utilisateurs en attente.", e);
+            throw new RuntimeException("Erreur lors de la recuperation des utilisateurs en attente.", e);
         }
     }
 
@@ -166,7 +178,7 @@ public class UserService {
         try {
             return userRepository.updateValidationStatus(userId, false);
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de la mise à jour du statut de validation.", e);
+            throw new RuntimeException("Erreur lors de la mise a jour du statut de validation.", e);
         }
     }
 
@@ -190,7 +202,7 @@ public class UserService {
         try {
             return userRepository.updateActiveStatus(userId, false);
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de la désactivation de l'utilisateur.", e);
+            throw new RuntimeException("Erreur lors de la desactivation de l'utilisateur.", e);
         }
     }
 
@@ -212,7 +224,7 @@ public class UserService {
         }
 
         if (user.getPrenom() == null || user.getPrenom().isBlank()) {
-            throw new IllegalArgumentException("Le prénom est requis.");
+            throw new IllegalArgumentException("Le prenom est requis.");
         }
 
         if (user.getEmail() == null || user.getEmail().isBlank()) {
@@ -220,7 +232,7 @@ public class UserService {
         }
 
         if (user.getRole() == null) {
-            throw new IllegalArgumentException("Le rôle est requis.");
+            throw new IllegalArgumentException("Le role est requis.");
         }
     }
 

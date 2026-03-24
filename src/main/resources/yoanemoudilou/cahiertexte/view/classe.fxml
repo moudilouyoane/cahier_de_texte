@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" prefWidth="950" prefHeight="650"
+            fx:controller="yoanemoudilou.cahiertexte.ui.classes.ClasseManagementController">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: #2c3e50; -fx-padding: 15;">
+            <Label text="Gestion des classes" styleClass="header-label">
+                <font><Font name="System Bold" size="18"/></font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Retour au dashboard" onAction="#handleRetourDashboard" styleClass="button-accent"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="15" style="-fx-padding: 20;">
+            <TableView fx:id="classesTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="70"/>
+                    <TableColumn fx:id="nomClasseColumn" text="Classe" prefWidth="220"/>
+                    <TableColumn fx:id="niveauColumn" text="Niveau" prefWidth="180"/>
+                    <TableColumn fx:id="filiereColumn" text="Filiere" prefWidth="280"/>
+                </columns>
+            </TableView>
+
+            <Separator/>
+
+            <GridPane hgap="15" vgap="10">
+                <Label text="Nom de classe:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <TextField fx:id="nomClasseField" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                <Label text="Niveau:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                <TextField fx:id="niveauField" prefWidth="220" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+
+                <Label text="Filiere:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <ComboBox fx:id="filiereComboBox" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            </GridPane>
+
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Nouveau" onAction="#handleNouveau" prefWidth="100"/>
+                <Button text="Enregistrer" onAction="#handleEnregistrer" prefWidth="110"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+                <Button text="Supprimer" onAction="#handleSupprimer" prefWidth="100"
+                        style="-fx-background-color: #c0392b; -fx-text-fill: white;"/>
+                <Button text="Rafraichir" onAction="#handleRafraichir" prefWidth="100"/>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>

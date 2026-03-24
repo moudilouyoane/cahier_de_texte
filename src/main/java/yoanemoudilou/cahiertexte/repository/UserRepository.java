@@ -26,6 +26,8 @@ public interface UserRepository {
 
     List<User> findByRole(Role role) throws SQLException;
 
+    Optional<User> findResponsableByClasseId(Integer classeId) throws SQLException;
+
     List<User> findPendingValidation() throws SQLException;
 
     boolean updateValidationStatus(Integer userId, boolean valide) throws SQLException;

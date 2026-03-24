@@ -1,27 +1,32 @@
 package yoanemoudilou.cahiertexte.ui.cours;
 
-import javafx.event.ActionEvent;
-import yoanemoudilou.cahiertexte.model.Classe;
-import yoanemoudilou.cahiertexte.model.Cours;
-import yoanemoudilou.cahiertexte.service.ClasseService;
-import yoanemoudilou.cahiertexte.service.CoursService;
-import yoanemoudilou.cahiertexte.utils.AlertUtils;
-import yoanemoudilou.cahiertexte.utils.AppNavigator;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
+import yoanemoudilou.cahiertexte.model.Affectation;
+import yoanemoudilou.cahiertexte.model.Classe;
+import yoanemoudilou.cahiertexte.model.Cours;
+import yoanemoudilou.cahiertexte.model.Role;
+import yoanemoudilou.cahiertexte.model.User;
+import yoanemoudilou.cahiertexte.service.AffectationService;
+import yoanemoudilou.cahiertexte.service.ClasseService;
+import yoanemoudilou.cahiertexte.service.CoursService;
+import yoanemoudilou.cahiertexte.service.UserService;
+import yoanemoudilou.cahiertexte.utils.AlertUtils;
+import yoanemoudilou.cahiertexte.utils.AppNavigator;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Contrôleur de gestion des cours.
+ * Controleur de gestion des cours.
  */
 public class CoursController {
 
@@ -53,10 +58,18 @@ public class CoursController {
     private TextField volumeHoraireField;
 
     @FXML
+    private TextField filiereField;
+
+    @FXML
     private ComboBox<Classe> classeComboBox;
+
+    @FXML
+    private ComboBox<User> enseignantComboBox;
 
     private final CoursService coursService = new CoursService();
     private final ClasseService classeService = new ClasseService();
+    private final UserService userService = new UserService();
+    private final AffectationService affectationService = new AffectationService();
 
     private final Map<Integer, Classe> classesById = new HashMap<>();
 
@@ -66,7 +79,10 @@ public class CoursController {
     private void initialize() {
         configurerTable();
         configurerComboBoxClasses();
+        configurerComboBoxEnseignants();
+        ecouterSelectionClasse();
         chargerClasses();
+        chargerEnseignants();
         chargerCours();
         ecouterSelectionTable();
     }
@@ -84,11 +100,11 @@ public class CoursController {
 
             if (selectedCours == null || selectedCours.getId() == null) {
                 coursService.creerCours(cours);
-                AlertUtils.showInformation("Succès", "Création réussie", "Cours créé avec succès.");
+                AlertUtils.showInformation("Succes", "Creation reussie", "Cours cree avec succes.");
             } else {
                 cours.setId(selectedCours.getId());
                 coursService.modifierCours(cours);
-                AlertUtils.showInformation("Succès", "Modification réussie", "Cours modifié avec succès.");
+                AlertUtils.showInformation("Succes", "Modification reussie", "Cours modifie avec succes.");
             }
 
             chargerCours();
@@ -96,7 +112,7 @@ public class CoursController {
             selectedCours = null;
 
         } catch (NumberFormatException e) {
-            AlertUtils.showWarning("Saisie invalide", null, "Le volume horaire doit être un nombre entier.");
+            AlertUtils.showWarning("Saisie invalide", null, "Le volume horaire doit etre un nombre entier.");
         } catch (Exception e) {
             AlertUtils.showException("Erreur", "Impossible d'enregistrer le cours.", e);
         }
@@ -106,7 +122,7 @@ public class CoursController {
     private void handleSupprimer() {
         try {
             if (selectedCours == null || selectedCours.getId() == null) {
-                AlertUtils.showWarning("Sélection requise", null, "Sélectionne un cours à supprimer.");
+                AlertUtils.showWarning("Selection requise", null, "Selectionne un cours a supprimer.");
                 return;
             }
 
@@ -125,7 +141,7 @@ public class CoursController {
             viderFormulaire();
             selectedCours = null;
 
-            AlertUtils.showInformation("Succès", "Suppression réussie", "Cours supprimé avec succès.");
+            AlertUtils.showInformation("Succes", "Suppression reussie", "Cours supprime avec succes.");
 
         } catch (Exception e) {
             AlertUtils.showException("Erreur", "Impossible de supprimer le cours.", e);
@@ -133,8 +149,29 @@ public class CoursController {
     }
 
     @FXML
+    private void handleAttribuerCours() {
+        try {
+            if (selectedCours == null || selectedCours.getId() == null) {
+                AlertUtils.showWarning("Selection requise", null, "Selectionne d'abord un cours.");
+                return;
+            }
+
+            User enseignant = enseignantComboBox != null ? enseignantComboBox.getValue() : null;
+            if (enseignant == null || enseignant.getId() == null) {
+                throw new IllegalArgumentException("L'enseignant est requis pour l'affectation.");
+            }
+
+            affectationService.creerAffectation(new Affectation(enseignant.getId(), selectedCours.getId()));
+            AlertUtils.showInformation("Succes", "Affectation reussie", "Le cours a ete attribue et la notification a ete envoyee.");
+        } catch (Exception e) {
+            AlertUtils.showException("Erreur", "Impossible d'attribuer le cours.", e);
+        }
+    }
+
+    @FXML
     private void handleRafraichir() {
         chargerClasses();
+        chargerEnseignants();
         chargerCours();
     }
 
@@ -172,14 +209,27 @@ public class CoursController {
             classeComboBox.setConverter(new StringConverter<>() {
                 @Override
                 public String toString(Classe classe) {
-                    if (classe == null) {
-                        return "";
-                    }
-                    return classe.getNomClasse() + " - " + classe.getNiveau();
+                    return formatClasseFiliere(classe);
                 }
 
                 @Override
                 public Classe fromString(String string) {
+                    return null;
+                }
+            });
+        }
+    }
+
+    private void configurerComboBoxEnseignants() {
+        if (enseignantComboBox != null) {
+            enseignantComboBox.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(User user) {
+                    return user == null ? "" : user.getNomComplet();
+                }
+
+                @Override
+                public User fromString(String string) {
                     return null;
                 }
             });
@@ -199,6 +249,20 @@ public class CoursController {
 
         if (classeComboBox != null) {
             classeComboBox.setItems(FXCollections.observableArrayList(classes));
+        }
+    }
+
+    private void chargerEnseignants() {
+        if (enseignantComboBox != null) {
+            enseignantComboBox.setItems(FXCollections.observableArrayList(
+                    userService.getUtilisateursByRole(Role.ENSEIGNANT)
+            ));
+        }
+    }
+
+    private void ecouterSelectionClasse() {
+        if (classeComboBox != null) {
+            classeComboBox.valueProperty().addListener((obs, oldValue, newValue) -> remplirFiliere(newValue));
         }
     }
 
@@ -234,6 +298,7 @@ public class CoursController {
         if (classeComboBox != null) {
             classeComboBox.setValue(classesById.get(cours.getClasseId()));
         }
+        remplirFiliere(classesById.get(cours.getClasseId()));
     }
 
     private void viderFormulaire() {
@@ -246,8 +311,14 @@ public class CoursController {
         if (volumeHoraireField != null) {
             volumeHoraireField.clear();
         }
+        if (filiereField != null) {
+            filiereField.clear();
+        }
         if (classeComboBox != null) {
             classeComboBox.setValue(null);
+        }
+        if (enseignantComboBox != null) {
+            enseignantComboBox.setValue(null);
         }
     }
 
@@ -276,6 +347,32 @@ public class CoursController {
             return "Classe #" + classeId;
         }
 
-        return classe.getNomClasse() + " - " + classe.getNiveau();
+        return formatClasseFiliere(classe);
+    }
+
+    private void remplirFiliere(Classe classe) {
+        if (filiereField == null) {
+            return;
+        }
+
+        if (classe == null || classe.getFiliere() == null) {
+            filiereField.clear();
+            return;
+        }
+
+        filiereField.setText(classe.getFiliere().getNom());
+    }
+
+    private String formatClasseFiliere(Classe classe) {
+        if (classe == null) {
+            return "";
+        }
+
+        String filiereNom = classe.getFiliere() != null ? classe.getFiliere().getNom() : "";
+        if (filiereNom == null || filiereNom.isBlank()) {
+            return classe.getNomClasse();
+        }
+
+        return classe.getNomClasse() + " - " + filiereNom;
     }
 }

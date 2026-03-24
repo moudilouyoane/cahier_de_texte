@@ -9,18 +9,24 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service métier lié aux affectations.
+ * Service metier lie aux affectations.
  */
 public class AffectationService {
 
     private final AffectationRepository affectationRepository;
+    private final NotificationService notificationService;
 
     public AffectationService() {
-        this(new AffectationRepositoryImpl());
+        this(new AffectationRepositoryImpl(), new NotificationService());
     }
 
     public AffectationService(AffectationRepository affectationRepository) {
+        this(affectationRepository, new NotificationService());
+    }
+
+    public AffectationService(AffectationRepository affectationRepository, NotificationService notificationService) {
         this.affectationRepository = affectationRepository;
+        this.notificationService = notificationService;
     }
 
     public Affectation creerAffectation(Affectation affectation) {
@@ -33,13 +39,15 @@ public class AffectationService {
             );
 
             if (alreadyExists) {
-                throw new IllegalArgumentException("Cette affectation existe déjà.");
+                throw new IllegalArgumentException("Cette affectation existe deja.");
             }
 
-            return affectationRepository.save(affectation);
+            Affectation saved = affectationRepository.save(affectation);
+            notificationService.notifierCoursAttribue(saved.getEnseignantId(), saved.getCoursId());
+            return saved;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de la création de l'affectation.", e);
+            throw new RuntimeException("Erreur lors de la creation de l'affectation.", e);
         }
     }
 
@@ -57,7 +65,7 @@ public class AffectationService {
             );
 
             if (existing.isPresent() && !existing.get().getId().equals(affectation.getId())) {
-                throw new IllegalArgumentException("Une autre affectation identique existe déjà.");
+                throw new IllegalArgumentException("Une autre affectation identique existe deja.");
             }
 
             return affectationRepository.update(affectation);
@@ -95,7 +103,7 @@ public class AffectationService {
         try {
             return affectationRepository.findAll();
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de la récupération des affectations.", e);
+            throw new RuntimeException("Erreur lors de la recuperation des affectations.", e);
         }
     }
 
@@ -107,7 +115,7 @@ public class AffectationService {
         try {
             return affectationRepository.findByEnseignantId(enseignantId);
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de la récupération des affectations par enseignant.", e);
+            throw new RuntimeException("Erreur lors de la recuperation des affectations par enseignant.", e);
         }
     }
 
@@ -119,7 +127,7 @@ public class AffectationService {
         try {
             return affectationRepository.findByCoursId(coursId);
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de la récupération des affectations par cours.", e);
+            throw new RuntimeException("Erreur lors de la recuperation des affectations par cours.", e);
         }
     }
 
@@ -131,7 +139,7 @@ public class AffectationService {
         try {
             return affectationRepository.existsByEnseignantIdAndCoursId(enseignantId, coursId);
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de la vérification de l'affectation.", e);
+            throw new RuntimeException("Erreur lors de la verification de l'affectation.", e);
         }
     }
 

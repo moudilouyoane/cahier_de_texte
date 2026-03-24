@@ -1,17 +1,9 @@
 package yoanemoudilou.cahiertexte.ui.users;
 
-import javafx.event.ActionEvent;
-import yoanemoudilou.cahiertexte.model.ChefDepartement;
-import yoanemoudilou.cahiertexte.model.Enseignant;
-import yoanemoudilou.cahiertexte.model.ResponsableClasse;
-import yoanemoudilou.cahiertexte.model.Role;
-import yoanemoudilou.cahiertexte.model.User;
-import yoanemoudilou.cahiertexte.service.UserService;
-import yoanemoudilou.cahiertexte.utils.AlertUtils;
-import yoanemoudilou.cahiertexte.utils.AppNavigator;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -19,6 +11,17 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.util.StringConverter;
+import yoanemoudilou.cahiertexte.model.ChefDepartement;
+import yoanemoudilou.cahiertexte.model.Classe;
+import yoanemoudilou.cahiertexte.model.Enseignant;
+import yoanemoudilou.cahiertexte.model.ResponsableClasse;
+import yoanemoudilou.cahiertexte.model.Role;
+import yoanemoudilou.cahiertexte.model.User;
+import yoanemoudilou.cahiertexte.service.ClasseService;
+import yoanemoudilou.cahiertexte.service.UserService;
+import yoanemoudilou.cahiertexte.utils.AlertUtils;
+import yoanemoudilou.cahiertexte.utils.AppNavigator;
 
 /**
  * Contrôleur de gestion des utilisateurs.
@@ -65,12 +68,16 @@ public class UserManagementController {
     private ComboBox<Role> roleComboBox;
 
     @FXML
+    private ComboBox<Classe> classeComboBox;
+
+    @FXML
     private CheckBox valideCheckBox;
 
     @FXML
     private CheckBox actifCheckBox;
 
     private final UserService userService = new UserService();
+    private final ClasseService classeService = new ClasseService();
 
     private User selectedUser;
 
@@ -78,6 +85,8 @@ public class UserManagementController {
     private void initialize() {
         configurerTable();
         chargerRoles();
+        chargerClasses();
+        ecouterChangementRole();
         chargerUtilisateurs();
         ecouterSelectionTable();
         viderFormulaire();
@@ -96,11 +105,11 @@ public class UserManagementController {
 
             if (selectedUser == null || selectedUser.getId() == null) {
                 userService.creerUtilisateur(user);
-                AlertUtils.showInformation("Succès", "Création réussie", "Utilisateur créé avec succès.");
+                AlertUtils.showInformation("Succes", "Creation reussie", "Utilisateur cree avec succes.");
             } else {
                 user.setId(selectedUser.getId());
                 userService.modifierUtilisateur(user);
-                AlertUtils.showInformation("Succès", "Modification réussie", "Utilisateur modifié avec succès.");
+                AlertUtils.showInformation("Succes", "Modification reussie", "Utilisateur modifie avec succes.");
             }
 
             chargerUtilisateurs();
@@ -116,7 +125,7 @@ public class UserManagementController {
     private void handleSupprimer() {
         try {
             if (selectedUser == null || selectedUser.getId() == null) {
-                AlertUtils.showWarning("Sélection requise", null, "Sélectionne un utilisateur à supprimer.");
+                AlertUtils.showWarning("Selection requise", null, "Selectionne un utilisateur a supprimer.");
                 return;
             }
 
@@ -135,7 +144,7 @@ public class UserManagementController {
             viderFormulaire();
             selectedUser = null;
 
-            AlertUtils.showInformation("Succès", "Suppression réussie", "Utilisateur supprimé avec succès.");
+            AlertUtils.showInformation("Succes", "Suppression reussie", "Utilisateur supprime avec succes.");
 
         } catch (Exception e) {
             AlertUtils.showException("Erreur", "Impossible de supprimer l'utilisateur.", e);
@@ -146,13 +155,13 @@ public class UserManagementController {
     private void handleValiderUtilisateur() {
         try {
             if (selectedUser == null || selectedUser.getId() == null) {
-                AlertUtils.showWarning("Sélection requise", null, "Sélectionne un utilisateur à valider.");
+                AlertUtils.showWarning("Selection requise", null, "Selectionne un utilisateur a valider.");
                 return;
             }
 
             userService.validerUtilisateur(selectedUser.getId());
             chargerUtilisateurs();
-            AlertUtils.showInformation("Succès", "Validation réussie", "Utilisateur validé avec succès.");
+            AlertUtils.showInformation("Succes", "Validation reussie", "Utilisateur valide avec succes.");
 
         } catch (Exception e) {
             AlertUtils.showException("Erreur", "Impossible de valider l'utilisateur.", e);
@@ -163,7 +172,7 @@ public class UserManagementController {
     private void handleBasculerActivation() {
         try {
             if (selectedUser == null || selectedUser.getId() == null) {
-                AlertUtils.showWarning("Sélection requise", null, "Sélectionne un utilisateur.");
+                AlertUtils.showWarning("Selection requise", null, "Selectionne un utilisateur.");
                 return;
             }
 
@@ -174,15 +183,16 @@ public class UserManagementController {
             }
 
             chargerUtilisateurs();
-            AlertUtils.showInformation("Succès", "Mise à jour réussie", "Statut actif mis à jour.");
+            AlertUtils.showInformation("Succes", "Mise a jour reussie", "Statut actif mis a jour.");
 
         } catch (Exception e) {
-            AlertUtils.showException("Erreur", "Impossible de modifier l'état actif.", e);
+            AlertUtils.showException("Erreur", "Impossible de modifier l'etat actif.", e);
         }
     }
 
     @FXML
     private void handleRafraichir() {
+        chargerClasses();
         chargerUtilisateurs();
     }
 
@@ -229,6 +239,31 @@ public class UserManagementController {
         }
     }
 
+    private void chargerClasses() {
+        if (classeComboBox == null) {
+            return;
+        }
+
+        classeComboBox.setItems(FXCollections.observableArrayList(classeService.getAllClasses()));
+        classeComboBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Classe classe) {
+                return classe == null ? "" : classe.getNomClasse() + " - " + classe.getNiveau();
+            }
+
+            @Override
+            public Classe fromString(String string) {
+                return null;
+            }
+        });
+    }
+
+    private void ecouterChangementRole() {
+        if (roleComboBox != null) {
+            roleComboBox.valueProperty().addListener((obs, oldValue, newValue) -> mettreAJourChampClasse(newValue));
+        }
+    }
+
     private void chargerUtilisateurs() {
         if (usersTable != null) {
             usersTable.setItems(FXCollections.observableArrayList(userService.getAllUtilisateurs()));
@@ -270,6 +305,13 @@ public class UserManagementController {
         if (actifCheckBox != null) {
             actifCheckBox.setSelected(user.isActif());
         }
+
+        if (classeComboBox != null) {
+            Classe classe = user instanceof ResponsableClasse responsableClasse ? responsableClasse.getClasse() : null;
+            selectClasse(classe);
+        }
+
+        mettreAJourChampClasse(user.getRole());
     }
 
     private void viderFormulaire() {
@@ -288,6 +330,10 @@ public class UserManagementController {
         if (roleComboBox != null) {
             roleComboBox.setValue(null);
         }
+        if (classeComboBox != null) {
+            classeComboBox.setValue(null);
+            classeComboBox.setDisable(true);
+        }
         if (valideCheckBox != null) {
             valideCheckBox.setSelected(false);
         }
@@ -303,7 +349,7 @@ public class UserManagementController {
             case ENSEIGNANT -> new Enseignant();
             case RESPONSABLE_CLASSE -> new ResponsableClasse();
             case CHEF_DEPARTEMENT -> new ChefDepartement();
-            case null -> throw new IllegalArgumentException("Le rôle est requis.");
+            case null -> throw new IllegalArgumentException("Le role est requis.");
         };
 
         user.setNom(nomField != null ? nomField.getText() : null);
@@ -314,6 +360,42 @@ public class UserManagementController {
         user.setValide(valideCheckBox != null && valideCheckBox.isSelected());
         user.setActif(actifCheckBox == null || actifCheckBox.isSelected());
 
+        if (user instanceof ResponsableClasse responsableClasse) {
+            Classe classe = classeComboBox != null ? classeComboBox.getValue() : null;
+            if (classe == null || classe.getId() == null) {
+                throw new IllegalArgumentException("La classe du responsable est requise.");
+            }
+            responsableClasse.setClasse(classe);
+        }
+
         return user;
+    }
+
+    private void mettreAJourChampClasse(Role role) {
+        if (classeComboBox == null) {
+            return;
+        }
+
+        boolean isResponsable = role == Role.RESPONSABLE_CLASSE;
+        classeComboBox.setDisable(!isResponsable);
+        if (!isResponsable) {
+            classeComboBox.setValue(null);
+        }
+    }
+
+    private void selectClasse(Classe classe) {
+        if (classeComboBox == null) {
+            return;
+        }
+
+        if (classe == null || classe.getId() == null) {
+            classeComboBox.setValue(null);
+            return;
+        }
+
+        classeComboBox.getItems().stream()
+                .filter(item -> item.getId() != null && item.getId().equals(classe.getId()))
+                .findFirst()
+                .ifPresentOrElse(classeComboBox::setValue, () -> classeComboBox.setValue(classe));
     }
 }

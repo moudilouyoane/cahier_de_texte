@@ -2,7 +2,9 @@ package yoanemoudilou.cahiertexte.ui.dashboard;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.collections.FXCollections;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import yoanemoudilou.cahiertexte.config.SessionManager;
 import yoanemoudilou.cahiertexte.model.Role;
 import yoanemoudilou.cahiertexte.model.StatutSeance;
@@ -11,13 +13,14 @@ import yoanemoudilou.cahiertexte.service.AuthService;
 import yoanemoudilou.cahiertexte.service.ClasseService;
 import yoanemoudilou.cahiertexte.service.CoursService;
 import yoanemoudilou.cahiertexte.service.FiliereService;
+import yoanemoudilou.cahiertexte.service.NotificationService;
 import yoanemoudilou.cahiertexte.service.SeanceService;
 import yoanemoudilou.cahiertexte.service.UserService;
 import yoanemoudilou.cahiertexte.utils.AlertUtils;
 import yoanemoudilou.cahiertexte.utils.AppNavigator;
 
 /**
- * Contrôleur du dashboard chef de département.
+ * Controleur du dashboard chef de departement.
  */
 public class AdminDashboardController {
 
@@ -60,12 +63,19 @@ public class AdminDashboardController {
     @FXML
     private Label seancesRejeteesLabel;
 
+    @FXML
+    private Label notificationsCountLabel;
+
+    @FXML
+    private ListView<String> notificationsListView;
+
     private final SessionManager sessionManager = SessionManager.getInstance();
     private final AuthService authService = new AuthService();
     private final UserService userService = new UserService();
     private final FiliereService filiereService = new FiliereService();
     private final ClasseService classeService = new ClasseService();
     private final CoursService coursService = new CoursService();
+    private final NotificationService notificationService = new NotificationService();
     private final SeanceService seanceService = new SeanceService();
 
     @FXML
@@ -84,21 +94,13 @@ public class AdminDashboardController {
     }
 
     @FXML
-    private void handleOuvrirFilieres() {
-        AlertUtils.showInformation(
-                "Vue indisponible",
-                "Gestion des filières",
-                "Aucune vue dédiée aux filières n'est encore disponible dans ce projet."
-        );
+    private void handleOuvrirFilieres(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/filiere.fxml", "Gestion des filieres");
     }
 
     @FXML
-    private void handleOuvrirClasses() {
-        AlertUtils.showInformation(
-                "Vue indisponible",
-                "Gestion des classes",
-                "Aucune vue dédiée aux classes n'est encore disponible dans ce projet."
-        );
+    private void handleOuvrirClasses(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/classe.fxml", "Gestion des classes");
     }
 
     @FXML
@@ -107,13 +109,13 @@ public class AdminDashboardController {
     }
 
     @FXML
-    private void handleSeances(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/seance.fxml", "Gestion des séances");
+    private void handleOuvrirCahiers(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/cahier.fxml", "Cahiers de texte");
     }
 
     @FXML
     private void handleValidationSeances(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/validation.fxml", "Validation des séances");
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/validation.fxml", "Validation des seances");
     }
 
     @FXML
@@ -156,9 +158,29 @@ public class AdminDashboardController {
             setLabel(seancesRejeteesLabel, String.valueOf(
                     seances.stream().filter(s -> s.getStatut() == StatutSeance.REJETEE).count()
             ));
+            chargerNotifications(user);
         } catch (Exception e) {
             AlertUtils.showException("Erreur", "Impossible de charger le dashboard admin.", e);
         }
+    }
+
+    private void chargerNotifications(User user) {
+        if (user == null || user.getId() == null) {
+            return;
+        }
+
+        var notifications = notificationService.getNotificationsPourUtilisateur(user.getId(), 8);
+
+        if (notificationsListView != null) {
+            notificationsListView.setItems(FXCollections.observableArrayList(
+                    notifications.stream()
+                            .map(n -> n.getTitre() + " - " + n.getMessage())
+                            .toList()
+            ));
+        }
+
+        setLabel(notificationsCountLabel, String.valueOf(notificationService.countNotificationsNonLues(user.getId())));
+        notificationService.marquerToutesCommeLues(user.getId());
     }
 
     private void setLabel(Label label, String value) {

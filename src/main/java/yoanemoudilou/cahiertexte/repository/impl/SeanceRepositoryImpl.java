@@ -12,40 +12,40 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class SeanceRepositoryImpl implements SeanceRepository {
 
     private static final String INSERT_SQL =
-            "INSERT INTO seances (cours_id, enseignant_id, date_seance, heure_seance, duree, contenu, observations, statut, commentaire_validation) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            "INSERT INTO seances (cahier_texte_id, cours_id, enseignant_id, date_seance, heure_seance, duree, contenu, observations, statut, commentaire_validation) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE_SQL =
-            "UPDATE seances SET cours_id = ?, enseignant_id = ?, date_seance = ?, heure_seance = ?, duree = ?, contenu = ?, observations = ?, statut = ?, commentaire_validation = ? " +
+            "UPDATE seances SET cahier_texte_id = ?, cours_id = ?, enseignant_id = ?, date_seance = ?, heure_seance = ?, duree = ?, contenu = ?, observations = ?, statut = ?, commentaire_validation = ? " +
                     "WHERE id = ?";
 
     @Override
     public Seance save(Seance seance) throws SQLException {
         if (seance == null) {
-            throw new IllegalArgumentException("La séance ne peut pas être null.");
+            throw new IllegalArgumentException("La seance ne peut pas etre null.");
         }
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement ps = connection.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setObject(1, seance.getCoursId());
-            ps.setObject(2, seance.getEnseignantId());
-            ps.setDate(3, seance.getDateSeance() != null ? Date.valueOf(seance.getDateSeance()) : null);
-            ps.setTime(4, seance.getHeureSeance() != null ? Time.valueOf(seance.getHeureSeance()) : null);
-            ps.setObject(5, seance.getDuree());
-            ps.setString(6, seance.getContenu());
-            ps.setString(7, seance.getObservations());
-            ps.setString(8, seance.getStatut() != null ? seance.getStatut().name() : StatutSeance.EN_ATTENTE.name());
-            ps.setString(9, seance.getCommentaireValidation());
+            ps.setObject(1, seance.getCahierTexteId());
+            ps.setObject(2, seance.getCoursId());
+            ps.setObject(3, seance.getEnseignantId());
+            ps.setDate(4, seance.getDateSeance() != null ? Date.valueOf(seance.getDateSeance()) : null);
+            ps.setTime(5, seance.getHeureSeance() != null ? Time.valueOf(seance.getHeureSeance()) : null);
+            ps.setObject(6, seance.getDuree());
+            ps.setString(7, seance.getContenu());
+            ps.setString(8, seance.getObservations());
+            ps.setString(9, seance.getStatut() != null ? seance.getStatut().name() : StatutSeance.EN_ATTENTE.name());
+            ps.setString(10, seance.getCommentaireValidation());
 
             ps.executeUpdate();
 
@@ -62,22 +62,23 @@ public class SeanceRepositoryImpl implements SeanceRepository {
     @Override
     public boolean update(Seance seance) throws SQLException {
         if (seance == null || seance.getId() == null) {
-            throw new IllegalArgumentException("La séance ou son id est invalide.");
+            throw new IllegalArgumentException("La seance ou son id est invalide.");
         }
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement ps = connection.prepareStatement(UPDATE_SQL)) {
 
-            ps.setObject(1, seance.getCoursId());
-            ps.setObject(2, seance.getEnseignantId());
-            ps.setDate(3, seance.getDateSeance() != null ? Date.valueOf(seance.getDateSeance()) : null);
-            ps.setTime(4, seance.getHeureSeance() != null ? Time.valueOf(seance.getHeureSeance()) : null);
-            ps.setObject(5, seance.getDuree());
-            ps.setString(6, seance.getContenu());
-            ps.setString(7, seance.getObservations());
-            ps.setString(8, seance.getStatut() != null ? seance.getStatut().name() : StatutSeance.EN_ATTENTE.name());
-            ps.setString(9, seance.getCommentaireValidation());
-            ps.setInt(10, seance.getId());
+            ps.setObject(1, seance.getCahierTexteId());
+            ps.setObject(2, seance.getCoursId());
+            ps.setObject(3, seance.getEnseignantId());
+            ps.setDate(4, seance.getDateSeance() != null ? Date.valueOf(seance.getDateSeance()) : null);
+            ps.setTime(5, seance.getHeureSeance() != null ? Time.valueOf(seance.getHeureSeance()) : null);
+            ps.setObject(6, seance.getDuree());
+            ps.setString(7, seance.getContenu());
+            ps.setString(8, seance.getObservations());
+            ps.setString(9, seance.getStatut() != null ? seance.getStatut().name() : StatutSeance.EN_ATTENTE.name());
+            ps.setString(10, seance.getCommentaireValidation());
+            ps.setInt(11, seance.getId());
 
             return ps.executeUpdate() > 0;
         }
@@ -152,6 +153,26 @@ public class SeanceRepositoryImpl implements SeanceRepository {
     }
 
     @Override
+    public List<Seance> findByCahierTexteId(Integer cahierTexteId) throws SQLException {
+        String sql = "SELECT * FROM seances WHERE cahier_texte_id = ? ORDER BY date_seance DESC, heure_seance DESC";
+        List<Seance> seances = new ArrayList<>();
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, cahierTexteId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    seances.add(mapSeance(rs));
+                }
+            }
+        }
+
+        return seances;
+    }
+
+    @Override
     public List<Seance> findByEnseignantId(Integer enseignantId) throws SQLException {
         String sql = "SELECT * FROM seances WHERE enseignant_id = ? ORDER BY date_seance DESC, heure_seance DESC";
         List<Seance> seances = new ArrayList<>();
@@ -176,8 +197,8 @@ public class SeanceRepositoryImpl implements SeanceRepository {
         String sql =
                 "SELECT s.* " +
                         "FROM seances s " +
-                        "INNER JOIN cours c ON s.cours_id = c.id " +
-                        "WHERE c.classe_id = ? " +
+                        "INNER JOIN cahiers_texte ct ON s.cahier_texte_id = ct.id " +
+                        "WHERE ct.classe_id = ? " +
                         "ORDER BY s.date_seance DESC, s.heure_seance DESC";
 
         List<Seance> seances = new ArrayList<>();
@@ -267,6 +288,7 @@ public class SeanceRepositoryImpl implements SeanceRepository {
 
         return new Seance(
                 rs.getInt("id"),
+                rs.getObject("cahier_texte_id", Integer.class),
                 rs.getObject("cours_id", Integer.class),
                 rs.getObject("enseignant_id", Integer.class),
                 sqlDate != null ? sqlDate.toLocalDate() : null,

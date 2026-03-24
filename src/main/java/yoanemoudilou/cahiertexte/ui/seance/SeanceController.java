@@ -6,6 +6,7 @@ import yoanemoudilou.cahiertexte.model.Role;
 import yoanemoudilou.cahiertexte.model.Seance;
 import yoanemoudilou.cahiertexte.model.User;
 import yoanemoudilou.cahiertexte.service.CoursService;
+import yoanemoudilou.cahiertexte.service.NotificationService;
 import yoanemoudilou.cahiertexte.service.SeanceService;
 import yoanemoudilou.cahiertexte.service.UserService;
 import yoanemoudilou.cahiertexte.utils.AlertUtils;
@@ -91,6 +92,7 @@ public class SeanceController {
     private final SeanceService seanceService = new SeanceService();
     private final CoursService coursService = new CoursService();
     private final UserService userService = new UserService();
+    private final NotificationService notificationService = new NotificationService();
     private final SessionManager sessionManager = SessionManager.getInstance();
 
     private final Map<Integer, String> coursLabels = new HashMap<>();
@@ -121,7 +123,8 @@ public class SeanceController {
             Seance seance = construireSeanceDepuisFormulaire();
 
             if (selectedSeance == null || selectedSeance.getId() == null) {
-                seanceService.creerSeance(seance);
+                Seance saved = seanceService.creerSeance(seance);
+                notifierResponsableSiEnseignant(saved);
                 AlertUtils.showInformation("Succès", "Création réussie", "Séance créée avec succès.");
             } else {
                 seance.setId(selectedSeance.getId());
@@ -129,6 +132,7 @@ public class SeanceController {
                 seance.setCommentaireValidation(selectedSeance.getCommentaireValidation());
 
                 seanceService.modifierSeance(seance);
+                notifierResponsableSiEnseignant(seance);
                 AlertUtils.showInformation("Succès", "Modification réussie", "Séance modifiée avec succès.");
             }
 
@@ -429,5 +433,15 @@ public class SeanceController {
 
     private String getEnseignantLabel(Integer enseignantId) {
         return enseignantId != null ? enseignantsLabels.getOrDefault(enseignantId, "Enseignant #" + enseignantId) : "";
+    }
+
+    private void notifierResponsableSiEnseignant(Seance seance) {
+        User currentUser = sessionManager.getUtilisateurConnecte();
+        if (currentUser != null
+                && currentUser.getRole() == Role.ENSEIGNANT
+                && seance != null
+                && (seance.getStatut() == null || seance.getStatut() == yoanemoudilou.cahiertexte.model.StatutSeance.EN_ATTENTE)) {
+            notificationService.notifierResponsablePourVerification(seance);
+        }
     }
 }

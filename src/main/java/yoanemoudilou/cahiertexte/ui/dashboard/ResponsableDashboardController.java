@@ -2,23 +2,25 @@ package yoanemoudilou.cahiertexte.ui.dashboard;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.util.StringConverter;
-import javafx.event.ActionEvent;
 import yoanemoudilou.cahiertexte.config.SessionManager;
 import yoanemoudilou.cahiertexte.model.Classe;
 import yoanemoudilou.cahiertexte.model.Cours;
+import yoanemoudilou.cahiertexte.model.ResponsableClasse;
 import yoanemoudilou.cahiertexte.model.Seance;
 import yoanemoudilou.cahiertexte.model.StatutSeance;
 import yoanemoudilou.cahiertexte.model.User;
 import yoanemoudilou.cahiertexte.service.AuthService;
-import yoanemoudilou.cahiertexte.service.ClasseService;
 import yoanemoudilou.cahiertexte.service.CoursService;
+import yoanemoudilou.cahiertexte.service.NotificationService;
 import yoanemoudilou.cahiertexte.service.SeanceService;
 import yoanemoudilou.cahiertexte.service.UserService;
 import yoanemoudilou.cahiertexte.utils.AlertUtils;
@@ -76,10 +78,16 @@ public class ResponsableDashboardController {
     @FXML
     private TextArea commentaireArea;
 
+    @FXML
+    private Label notificationsCountLabel;
+
+    @FXML
+    private ListView<String> notificationsListView;
+
     private final SessionManager sessionManager = SessionManager.getInstance();
     private final AuthService authService = new AuthService();
-    private final ClasseService classeService = new ClasseService();
     private final CoursService coursService = new CoursService();
+    private final NotificationService notificationService = new NotificationService();
     private final SeanceService seanceService = new SeanceService();
     private final UserService userService = new UserService();
 
@@ -87,11 +95,12 @@ public class ResponsableDashboardController {
     private final Map<Integer, String> enseignantsLabels = new HashMap<>();
 
     private Seance selectedSeance;
+    private Classe classeResponsable;
 
     @FXML
     private void initialize() {
         configurerTable();
-        configurerFiltreClasse();
+        configurerClasseResponsable();
         chargerDonnees();
         ecouterSelection();
     }
@@ -103,17 +112,22 @@ public class ResponsableDashboardController {
 
     @FXML
     private void handleValiderSeance() {
-        mettreAJourStatut(StatutSeance.VALIDEE, "Séance validée avec succès.");
+        mettreAJourStatut(StatutSeance.VALIDEE, "Seance validee avec succes.");
     }
 
     @FXML
     private void handleRejeterSeance() {
-        mettreAJourStatut(StatutSeance.REJETEE, "Séance rejetée avec succès.");
+        mettreAJourStatut(StatutSeance.REJETEE, "Seance rejetee avec succes.");
     }
 
     @FXML
     private void handleOuvrirRapports(ActionEvent event) {
         AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/report.fxml", "Rapports");
+    }
+
+    @FXML
+    private void handleOuvrirCahierTexte(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/cahier.fxml", "Cahier de texte");
     }
 
     @FXML
@@ -160,12 +174,17 @@ public class ResponsableDashboardController {
         }
     }
 
-    private void configurerFiltreClasse() {
+    private void configurerClasseResponsable() {
+        User currentUser = sessionManager.getUtilisateurConnecte();
+        classeResponsable = currentUser instanceof ResponsableClasse responsableClasse
+                ? responsableClasse.getClasse()
+                : null;
+
         if (classeFilterComboBox != null) {
             classeFilterComboBox.setConverter(new StringConverter<>() {
                 @Override
                 public String toString(Classe classe) {
-                    return classe == null ? "Toutes les classes" : classe.getNomClasse() + " - " + classe.getNiveau();
+                    return classe == null ? "" : classe.getNomClasse() + " - " + classe.getNiveau();
                 }
 
                 @Override
@@ -173,6 +192,15 @@ public class ResponsableDashboardController {
                     return null;
                 }
             });
+
+            if (classeResponsable != null) {
+                classeFilterComboBox.setItems(FXCollections.observableArrayList(classeResponsable));
+                classeFilterComboBox.setValue(classeResponsable);
+            } else {
+                classeFilterComboBox.setItems(FXCollections.emptyObservableList());
+                classeFilterComboBox.setValue(null);
+            }
+            classeFilterComboBox.setDisable(true);
         }
     }
 
@@ -181,13 +209,12 @@ public class ResponsableDashboardController {
             User currentUser = sessionManager.getUtilisateurConnecte();
             setLabel(bienvenuLabel, currentUser != null ? "Bienvenue, " + currentUser.getNomComplet() : "Bienvenue");
 
-            List<Classe> classes = classeService.getAllClasses();
-            if (classeFilterComboBox != null) {
-                Classe selected = classeFilterComboBox.getValue();
-                classeFilterComboBox.setItems(FXCollections.observableArrayList(classes));
-                if (selected != null) {
-                    classeFilterComboBox.setValue(selected);
+            if (classeResponsable == null || classeResponsable.getId() == null) {
+                viderDonnees();
+                if (commentaireArea != null) {
+                    commentaireArea.setText("Aucune classe n'est associee a ce responsable.");
                 }
+                return;
             }
 
             List<User> enseignants = userService.getUtilisateursByRole(yoanemoudilou.cahiertexte.model.Role.ENSEIGNANT);
@@ -198,16 +225,11 @@ public class ResponsableDashboardController {
                 }
             }
 
-            Classe classe = classeFilterComboBox != null ? classeFilterComboBox.getValue() : null;
-            List<Cours> cours = classe != null && classe.getId() != null
-                    ? coursService.getCoursByClasseId(classe.getId())
-                    : coursService.getAllCours();
-            List<Seance> seances = classe != null && classe.getId() != null
-                    ? seanceService.getSeancesByClasseId(classe.getId())
-                    : seanceService.getAllSeances();
+            List<Cours> cours = coursService.getCoursByClasseId(classeResponsable.getId());
+            List<Seance> seances = seanceService.getSeancesByClasseId(classeResponsable.getId());
 
             coursLabels.clear();
-            for (Cours value : coursService.getAllCours()) {
+            for (Cours value : cours) {
                 if (value.getId() != null) {
                     coursLabels.put(value.getId(), value.getCode() + " - " + value.getIntitule());
                 }
@@ -225,6 +247,7 @@ public class ResponsableDashboardController {
             if (seancesTable != null) {
                 seancesTable.setItems(FXCollections.observableArrayList(seances));
             }
+            chargerNotifications(currentUser);
         } catch (Exception e) {
             AlertUtils.showException("Erreur", "Impossible de charger le dashboard responsable.", e);
         }
@@ -248,16 +271,49 @@ public class ResponsableDashboardController {
     private void mettreAJourStatut(StatutSeance statut, String message) {
         try {
             if (selectedSeance == null || selectedSeance.getId() == null) {
-                AlertUtils.showWarning("Sélection requise", null, "Sélectionne une séance à traiter.");
+                AlertUtils.showWarning("Selection requise", null, "Selectionne une seance a traiter.");
+                return;
+            }
+
+            if (!selectedSeanceAppartientAClasseResponsable()) {
+                AlertUtils.showWarning(
+                        "Acces refuse",
+                        null,
+                        "Tu ne peux traiter que les seances de ta classe."
+                );
                 return;
             }
 
             String commentaire = commentaireArea != null ? commentaireArea.getText() : null;
             seanceService.updateStatutSeance(selectedSeance.getId(), statut, commentaire);
+            if (statut == StatutSeance.VALIDEE) {
+                notificationService.notifierAdminsSeanceValidee(selectedSeance, sessionManager.getUtilisateurConnecte());
+            }
             chargerDonnees();
-            AlertUtils.showInformation("Succès", "Mise à jour réussie", message);
+            AlertUtils.showInformation("Succes", "Mise a jour reussie", message);
         } catch (Exception e) {
-            AlertUtils.showException("Erreur", "Impossible de mettre à jour la séance.", e);
+            AlertUtils.showException("Erreur", "Impossible de mettre a jour la seance.", e);
+        }
+    }
+
+    private boolean selectedSeanceAppartientAClasseResponsable() {
+        if (selectedSeance == null || selectedSeance.getCoursId() == null || classeResponsable == null || classeResponsable.getId() == null) {
+            return false;
+        }
+
+        return coursService.getCoursById(selectedSeance.getCoursId())
+                .map(cours -> classeResponsable.getId().equals(cours.getClasseId()))
+                .orElse(false);
+    }
+
+    private void viderDonnees() {
+        setLabel(totalCoursLabel, "0");
+        setLabel(totalSeancesLabel, "0");
+        setLabel(seancesEnAttenteLabel, "0");
+        setLabel(seancesValideesLabel, "0");
+        coursLabels.clear();
+        if (seancesTable != null) {
+            seancesTable.setItems(FXCollections.emptyObservableList());
         }
     }
 
@@ -265,5 +321,22 @@ public class ResponsableDashboardController {
         if (label != null) {
             label.setText(value != null ? value : "");
         }
+    }
+
+    private void chargerNotifications(User currentUser) {
+        if (currentUser == null || currentUser.getId() == null) {
+            return;
+        }
+
+        var notifications = notificationService.getNotificationsPourUtilisateur(currentUser.getId(), 6);
+        if (notificationsListView != null) {
+            notificationsListView.setItems(FXCollections.observableArrayList(
+                    notifications.stream()
+                            .map(n -> n.getTitre() + " - " + n.getMessage())
+                            .toList()
+            ));
+        }
+        setLabel(notificationsCountLabel, String.valueOf(notificationService.countNotificationsNonLues(currentUser.getId())));
+        notificationService.marquerToutesCommeLues(currentUser.getId());
     }
 }

@@ -25,6 +25,8 @@ public interface SeanceRepository {
 
     List<Seance> findByCoursId(Integer coursId) throws SQLException;
 
+    List<Seance> findByCahierTexteId(Integer cahierTexteId) throws SQLException;
+
     List<Seance> findByEnseignantId(Integer enseignantId) throws SQLException;
 
     List<Seance> findByClasseId(Integer classeId) throws SQLException;
