@@ -2,6 +2,7 @@ package yoanemoudilou.cahiertexte.utils;
 
 import yoanemoudilou.cahiertexte.model.Classe;
 import yoanemoudilou.cahiertexte.model.Cours;
+import yoanemoudilou.cahiertexte.model.Filiere;
 import yoanemoudilou.cahiertexte.model.Seance;
 import yoanemoudilou.cahiertexte.model.User;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -184,6 +185,141 @@ public final class ExcelGenerator {
             }
 
             for (int i = 0; i < 6; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            sheet.createFreezePane(0, 4);
+
+            try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+                workbook.write(outputStream);
+            }
+        }
+    }
+
+    public static void genererListeFilieres(String filePath,
+                                            String titre,
+                                            List<Filiere> filieres) throws IOException {
+
+        if (filePath == null || filePath.isBlank()) {
+            throw new IllegalArgumentException("Le chemin du fichier Excel est invalide.");
+        }
+
+        List<Filiere> safeFilieres = filieres != null ? filieres : Collections.emptyList();
+
+        Path path = Path.of(filePath);
+        if (path.getParent() != null) {
+            Files.createDirectories(path.getParent());
+        }
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = (XSSFSheet) workbook.createSheet("Filieres");
+
+            CellStyle titleStyle = createTitleStyle(workbook);
+            CellStyle headerStyle = createHeaderStyle(workbook);
+            CellStyle dataStyle = createDataStyle(workbook);
+
+            int rowIndex = 0;
+
+            Row titleRow = sheet.createRow(rowIndex++);
+            createCell(titleRow, 0, titre != null ? titre : "Liste des filieres", titleStyle);
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 2));
+
+            Row exportRow = sheet.createRow(rowIndex++);
+            createCell(exportRow, 0, "Date d'export : " + DateUtils.formatDateTime(LocalDateTime.now()), dataStyle);
+            sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 2));
+
+            rowIndex++;
+
+            Row headerRow = sheet.createRow(rowIndex++);
+            String[] headers = {"ID", "Code", "Nom"};
+
+            for (int i = 0; i < headers.length; i++) {
+                createCell(headerRow, i, headers[i], headerStyle);
+            }
+
+            if (safeFilieres.isEmpty()) {
+                Row row = sheet.createRow(rowIndex);
+                createCell(row, 0, "Aucune filiere disponible.", dataStyle);
+                sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 2));
+            } else {
+                for (Filiere filiere : safeFilieres) {
+                    Row row = sheet.createRow(rowIndex++);
+
+                    createCell(row, 0, filiere.getId() != null ? String.valueOf(filiere.getId()) : "", dataStyle);
+                    createCell(row, 1, filiere.getCode(), dataStyle);
+                    createCell(row, 2, filiere.getNom(), dataStyle);
+                }
+            }
+
+            for (int i = 0; i < 3; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            sheet.createFreezePane(0, 4);
+
+            try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+                workbook.write(outputStream);
+            }
+        }
+    }
+
+    public static void genererListeClasses(String filePath,
+                                           String titre,
+                                           List<Classe> classes) throws IOException {
+
+        if (filePath == null || filePath.isBlank()) {
+            throw new IllegalArgumentException("Le chemin du fichier Excel est invalide.");
+        }
+
+        List<Classe> safeClasses = classes != null ? classes : Collections.emptyList();
+
+        Path path = Path.of(filePath);
+        if (path.getParent() != null) {
+            Files.createDirectories(path.getParent());
+        }
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = (XSSFSheet) workbook.createSheet("Classes");
+
+            CellStyle titleStyle = createTitleStyle(workbook);
+            CellStyle headerStyle = createHeaderStyle(workbook);
+            CellStyle dataStyle = createDataStyle(workbook);
+
+            int rowIndex = 0;
+
+            Row titleRow = sheet.createRow(rowIndex++);
+            createCell(titleRow, 0, titre != null ? titre : "Liste des classes", titleStyle);
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 3));
+
+            Row exportRow = sheet.createRow(rowIndex++);
+            createCell(exportRow, 0, "Date d'export : " + DateUtils.formatDateTime(LocalDateTime.now()), dataStyle);
+            sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 3));
+
+            rowIndex++;
+
+            Row headerRow = sheet.createRow(rowIndex++);
+            String[] headers = {"ID", "Classe", "Niveau", "Filiere"};
+
+            for (int i = 0; i < headers.length; i++) {
+                createCell(headerRow, i, headers[i], headerStyle);
+            }
+
+            if (safeClasses.isEmpty()) {
+                Row row = sheet.createRow(rowIndex);
+                createCell(row, 0, "Aucune classe disponible.", dataStyle);
+                sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 3));
+            } else {
+                for (Classe classe : safeClasses) {
+                    Row row = sheet.createRow(rowIndex++);
+
+                    createCell(row, 0, classe.getId() != null ? String.valueOf(classe.getId()) : "", dataStyle);
+                    createCell(row, 1, classe.getNomClasse(), dataStyle);
+                    createCell(row, 2, classe.getNiveau(), dataStyle);
+                    createCell(row, 3, resolveFiliere(classe), dataStyle);
+                }
+            }
+
+            for (int i = 0; i < 4; i++) {
                 sheet.autoSizeColumn(i);
             }
 

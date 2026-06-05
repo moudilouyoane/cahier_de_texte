@@ -4,6 +4,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -29,6 +30,7 @@
     </top>
 
     <center>
+        <ScrollPane fitToWidth="true" styleClass="content-scroll">
         <VBox styleClass="page-content">
             <HBox spacing="16" styleClass="surface-card, hero-card">
                 <VBox spacing="6" HBox.hgrow="ALWAYS">
@@ -51,6 +53,9 @@
                     <ComboBox fx:id="statutComboBox" prefWidth="180" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
 
                     <Button text="Filtrer" onAction="#handleFiltrer" GridPane.columnIndex="3" GridPane.rowIndex="1" styleClass="button-accent"/>
+
+                    <Label text="Liste a exporter" styleClass="helper-text" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <ComboBox fx:id="exportTypeComboBox" prefWidth="220" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
                 </GridPane>
                 <Label fx:id="totalLabel" text="Total : 0" styleClass="metric-caption"/>
             </VBox>
@@ -75,6 +80,7 @@
                 <Button text="Exporter Excel" onAction="#handleExporterExcel" styleClass="button-soft"/>
             </HBox>
         </VBox>
+        </ScrollPane>
     </center>
 
 </BorderPane>

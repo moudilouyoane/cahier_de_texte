@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -40,6 +41,7 @@
 
     <center>
         <StackPane>
+            <ScrollPane fitToWidth="true" styleClass="content-scroll">
             <VBox styleClass="page-content">
             <HBox spacing="16" alignment="CENTER_LEFT" styleClass="surface-card, hero-card">
                 <VBox spacing="6" HBox.hgrow="ALWAYS">
@@ -98,6 +100,7 @@
                 </VBox>
             </HBox>
             </VBox>
+            </ScrollPane>
 
             <VBox fx:id="notificationsPanel"
                   spacing="10"

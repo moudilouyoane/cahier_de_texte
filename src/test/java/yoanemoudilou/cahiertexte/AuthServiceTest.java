@@ -118,6 +118,7 @@ class AuthServiceTest {
         @Override public Optional<User> findByEmail(String email) { return Optional.ofNullable(byEmail.get(email)); }
         @Override public List<User> findAll() { return new ArrayList<>(byId.values()); }
         @Override public List<User> findByRole(Role role) { return byId.values().stream().filter(u -> u.getRole() == role).toList(); }
+        @Override public Optional<User> findResponsableByClasseId(Integer classeId) { return Optional.empty(); }
         @Override public List<User> findPendingValidation() { return byId.values().stream().filter(u -> !u.isValide()).toList(); }
         @Override public boolean updateValidationStatus(Integer userId, boolean valide) { return true; }
         @Override public boolean updateActiveStatus(Integer userId, boolean actif) { return true; }

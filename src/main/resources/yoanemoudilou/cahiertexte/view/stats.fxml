@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -30,6 +31,7 @@
     </top>
 
     <center>
+        <ScrollPane fitToWidth="true" styleClass="content-scroll">
         <VBox styleClass="page-content">
             <HBox spacing="12" styleClass="surface-card, hero-card">
                 <DatePicker fx:id="dateDebutPicker" promptText="Date debut"/>
@@ -88,6 +90,7 @@
                 </VBox>
             </HBox>
         </VBox>
+        </ScrollPane>
     </center>
 
 </BorderPane>

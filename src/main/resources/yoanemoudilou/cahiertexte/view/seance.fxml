@@ -4,6 +4,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -32,6 +33,7 @@
     </top>
 
     <center>
+        <ScrollPane fitToWidth="true" styleClass="content-scroll">
         <VBox styleClass="page-content">
             <VBox styleClass="surface-card, hero-card">
                 <Label text="Saisie des seances" styleClass="page-title"/>
@@ -88,6 +90,7 @@
                 </HBox>
             </VBox>
         </VBox>
+        </ScrollPane>
     </center>
 
 </BorderPane>

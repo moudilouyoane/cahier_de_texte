@@ -12,6 +12,7 @@ import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import yoanemoudilou.cahiertexte.model.Classe;
 import yoanemoudilou.cahiertexte.model.Cours;
+import yoanemoudilou.cahiertexte.model.Filiere;
 import yoanemoudilou.cahiertexte.model.Seance;
 import yoanemoudilou.cahiertexte.model.User;
 
@@ -175,6 +176,124 @@ public final class PdfGenerator {
                     table.addCell(createDataCell(item.getIntitule()));
                     table.addCell(createDataCell(item.getVolumeHoraire() != null ? item.getVolumeHoraire() + " h" : ""));
                     table.addCell(createDataCell(classe != null ? classe.getNomClasse() : ""));
+                    table.addCell(createDataCell(resolveFiliere(classe)));
+                }
+            }
+
+            document.add(table);
+        }
+    }
+
+    public static void genererListeFilieres(String filePath,
+                                            String titre,
+                                            List<Filiere> filieres) throws IOException {
+
+        if (filePath == null || filePath.isBlank()) {
+            throw new IllegalArgumentException("Le chemin du fichier PDF est invalide.");
+        }
+
+        List<Filiere> safeFilieres = filieres != null ? filieres : Collections.emptyList();
+
+        Path path = Path.of(filePath);
+        if (path.getParent() != null) {
+            Files.createDirectories(path.getParent());
+        }
+
+        try (PdfWriter writer = new PdfWriter(filePath);
+             PdfDocument pdfDocument = new PdfDocument(writer);
+             Document document = new Document(pdfDocument, PageSize.A4)) {
+
+            document.setMargins(20, 20, 20, 20);
+
+            Paragraph title = new Paragraph(titre != null ? titre : "Liste des filieres")
+                    .setBold()
+                    .setFontSize(16)
+                    .setTextAlignment(TextAlignment.CENTER);
+
+            Paragraph exportDate = new Paragraph("Date d'export : " + DateUtils.formatDateTime(LocalDateTime.now()))
+                    .setFontSize(10)
+                    .setTextAlignment(TextAlignment.RIGHT);
+
+            document.add(title);
+            document.add(exportDate);
+            document.add(new Paragraph(" "));
+
+            Table table = new Table(UnitValue.createPercentArray(new float[]{12, 24, 64}))
+                    .useAllAvailableWidth();
+
+            addHeaderCell(table, "ID");
+            addHeaderCell(table, "Code");
+            addHeaderCell(table, "Nom");
+
+            if (safeFilieres.isEmpty()) {
+                Cell emptyCell = new Cell(1, 3)
+                        .add(new Paragraph("Aucune filiere disponible."))
+                        .setTextAlignment(TextAlignment.CENTER);
+                table.addCell(emptyCell);
+            } else {
+                for (Filiere filiere : safeFilieres) {
+                    table.addCell(createDataCell(filiere.getId() != null ? String.valueOf(filiere.getId()) : ""));
+                    table.addCell(createDataCell(filiere.getCode()));
+                    table.addCell(createDataCell(filiere.getNom()));
+                }
+            }
+
+            document.add(table);
+        }
+    }
+
+    public static void genererListeClasses(String filePath,
+                                           String titre,
+                                           List<Classe> classes) throws IOException {
+
+        if (filePath == null || filePath.isBlank()) {
+            throw new IllegalArgumentException("Le chemin du fichier PDF est invalide.");
+        }
+
+        List<Classe> safeClasses = classes != null ? classes : Collections.emptyList();
+
+        Path path = Path.of(filePath);
+        if (path.getParent() != null) {
+            Files.createDirectories(path.getParent());
+        }
+
+        try (PdfWriter writer = new PdfWriter(filePath);
+             PdfDocument pdfDocument = new PdfDocument(writer);
+             Document document = new Document(pdfDocument, PageSize.A4)) {
+
+            document.setMargins(20, 20, 20, 20);
+
+            Paragraph title = new Paragraph(titre != null ? titre : "Liste des classes")
+                    .setBold()
+                    .setFontSize(16)
+                    .setTextAlignment(TextAlignment.CENTER);
+
+            Paragraph exportDate = new Paragraph("Date d'export : " + DateUtils.formatDateTime(LocalDateTime.now()))
+                    .setFontSize(10)
+                    .setTextAlignment(TextAlignment.RIGHT);
+
+            document.add(title);
+            document.add(exportDate);
+            document.add(new Paragraph(" "));
+
+            Table table = new Table(UnitValue.createPercentArray(new float[]{10, 32, 20, 38}))
+                    .useAllAvailableWidth();
+
+            addHeaderCell(table, "ID");
+            addHeaderCell(table, "Classe");
+            addHeaderCell(table, "Niveau");
+            addHeaderCell(table, "Filiere");
+
+            if (safeClasses.isEmpty()) {
+                Cell emptyCell = new Cell(1, 4)
+                        .add(new Paragraph("Aucune classe disponible."))
+                        .setTextAlignment(TextAlignment.CENTER);
+                table.addCell(emptyCell);
+            } else {
+                for (Classe classe : safeClasses) {
+                    table.addCell(createDataCell(classe.getId() != null ? String.valueOf(classe.getId()) : ""));
+                    table.addCell(createDataCell(classe.getNomClasse()));
+                    table.addCell(createDataCell(classe.getNiveau()));
                     table.addCell(createDataCell(resolveFiliere(classe)));
                 }
             }

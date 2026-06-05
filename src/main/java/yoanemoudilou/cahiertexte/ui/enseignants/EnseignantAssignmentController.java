@@ -9,8 +9,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.stage.FileChooser;
-import javafx.stage.Window;
 import javafx.util.StringConverter;
 import yoanemoudilou.cahiertexte.model.Affectation;
 import yoanemoudilou.cahiertexte.model.Classe;
@@ -23,12 +21,8 @@ import yoanemoudilou.cahiertexte.service.CoursService;
 import yoanemoudilou.cahiertexte.service.UserService;
 import yoanemoudilou.cahiertexte.utils.AlertUtils;
 import yoanemoudilou.cahiertexte.utils.AppNavigator;
-import yoanemoudilou.cahiertexte.utils.ExcelGenerator;
-import yoanemoudilou.cahiertexte.utils.PdfGenerator;
 
-import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -140,16 +134,6 @@ public class EnseignantAssignmentController {
         chargerEnseignants();
         chargerCoursDisponibles();
         chargerAffectationsEnseignant(selectedEnseignant);
-    }
-
-    @FXML
-    private void handleExporterPdf() {
-        exporter(true);
-    }
-
-    @FXML
-    private void handleExporterExcel() {
-        exporter(false);
     }
 
     @FXML
@@ -310,42 +294,4 @@ public class EnseignantAssignmentController {
                 : classe.getNomClasse() + " - " + filiereNom;
     }
 
-    private void exporter(boolean pdf) {
-        try {
-            List<User> enseignants = enseignantsTable != null ? List.copyOf(enseignantsTable.getItems()) : List.of();
-
-            if (enseignants.isEmpty()) {
-                AlertUtils.showWarning("Export impossible", null, "Aucun enseignant a exporter.");
-                return;
-            }
-
-            FileChooser chooser = new FileChooser();
-            chooser.setTitle(pdf ? "Exporter les enseignants en PDF" : "Exporter les enseignants en Excel");
-            chooser.setInitialFileName(pdf ? "liste-enseignants.pdf" : "liste-enseignants.xlsx");
-            chooser.getExtensionFilters().add(
-                    pdf
-                            ? new FileChooser.ExtensionFilter("PDF", "*.pdf")
-                            : new FileChooser.ExtensionFilter("Excel", "*.xlsx")
-            );
-
-            Window window = enseignantsTable != null && enseignantsTable.getScene() != null
-                    ? enseignantsTable.getScene().getWindow()
-                    : null;
-
-            File file = chooser.showSaveDialog(window);
-            if (file == null) {
-                return;
-            }
-
-            if (pdf) {
-                PdfGenerator.genererListeEnseignants(file.getAbsolutePath(), "Liste des enseignants", enseignants);
-            } else {
-                ExcelGenerator.genererListeEnseignants(file.getAbsolutePath(), "Liste des enseignants", enseignants);
-            }
-
-            AlertUtils.showInformation("Succes", "Export termine", "La liste des enseignants a ete exportee avec succes.");
-        } catch (Exception e) {
-            AlertUtils.showException("Erreur", "Impossible d'exporter la liste des enseignants.", e);
-        }
-    }
 }
