@@ -1,10 +1,13 @@
 package yoanemoudilou.cahiertexte.ui.dashboard;
 
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.FXML;
-import javafx.collections.FXCollections;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.StackPane;
 import yoanemoudilou.cahiertexte.config.SessionManager;
 import yoanemoudilou.cahiertexte.model.Role;
 import yoanemoudilou.cahiertexte.model.StatutSeance;
@@ -23,6 +26,17 @@ import yoanemoudilou.cahiertexte.utils.AppNavigator;
  * Controleur du dashboard chef de departement.
  */
 public class AdminDashboardController {
+
+    private static final String USER_VIEW = "/yoanemoudilou/cahiertexte/view/user.fxml";
+    private static final String ENSEIGNANT_VIEW = "/yoanemoudilou/cahiertexte/view/enseignant-admin.fxml";
+    private static final String FILIERE_VIEW = "/yoanemoudilou/cahiertexte/view/filiere.fxml";
+    private static final String CLASSE_VIEW = "/yoanemoudilou/cahiertexte/view/classe.fxml";
+    private static final String COURS_VIEW = "/yoanemoudilou/cahiertexte/view/cours.fxml";
+    private static final String CAHIER_VIEW = "/yoanemoudilou/cahiertexte/view/cahier.fxml";
+    private static final String VALIDATION_VIEW = "/yoanemoudilou/cahiertexte/view/validation.fxml";
+    private static final String STATS_VIEW = "/yoanemoudilou/cahiertexte/view/stats.fxml";
+    private static final String REPORT_VIEW = "/yoanemoudilou/cahiertexte/view/report.fxml";
+    private static final String NOTIFICATIONS_VIEW = "/yoanemoudilou/cahiertexte/view/notifications.fxml";
 
     @FXML
     private Label bienvenuLabel;
@@ -67,7 +81,10 @@ public class AdminDashboardController {
     private Label notificationsCountLabel;
 
     @FXML
-    private ListView<String> notificationsListView;
+    private StackPane contentContainer;
+
+    @FXML
+    private ScrollPane dashboardContent;
 
     private final SessionManager sessionManager = SessionManager.getInstance();
     private final AuthService authService = new AuthService();
@@ -81,56 +98,63 @@ public class AdminDashboardController {
     @FXML
     private void initialize() {
         chargerInfos();
+        afficherDashboard();
     }
 
     @FXML
     private void handleRafraichir() {
         chargerInfos();
+        afficherDashboard();
     }
 
     @FXML
     private void handleUsers(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/user.fxml", "Gestion des utilisateurs");
+        afficherModule(USER_VIEW);
     }
 
     @FXML
     private void handleEnseignants(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/enseignant-admin.fxml", "Enseignants");
+        afficherModule(ENSEIGNANT_VIEW);
     }
 
     @FXML
     private void handleOuvrirFilieres(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/filiere.fxml", "Gestion des filieres");
+        afficherModule(FILIERE_VIEW);
     }
 
     @FXML
     private void handleOuvrirClasses(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/classe.fxml", "Gestion des classes");
+        afficherModule(CLASSE_VIEW);
     }
 
     @FXML
     private void handleCours(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/cours.fxml", "Gestion des cours");
+        afficherModule(COURS_VIEW);
     }
 
     @FXML
     private void handleOuvrirCahiers(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/cahier.fxml", "Cahiers de texte");
+        afficherModule(CAHIER_VIEW);
     }
 
     @FXML
     private void handleValidationSeances(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/validation.fxml", "Validation des seances");
+        afficherModule(VALIDATION_VIEW);
     }
 
     @FXML
     private void handleStatistiques(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/stats.fxml", "Statistiques");
+        afficherModule(STATS_VIEW);
     }
 
     @FXML
     private void handleRapports(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/report.fxml", "Rapports");
+        afficherModule(REPORT_VIEW);
+    }
+
+    @FXML
+    private void handleNotifications(ActionEvent event) {
+        afficherModule(NOTIFICATIONS_VIEW);
     }
 
     @FXML
@@ -174,23 +198,59 @@ public class AdminDashboardController {
             return;
         }
 
-        var notifications = notificationService.getNotificationsPourUtilisateur(user.getId(), 8);
-
-        if (notificationsListView != null) {
-            notificationsListView.setItems(FXCollections.observableArrayList(
-                    notifications.stream()
-                            .map(n -> n.getTitre() + " - " + n.getMessage())
-                            .toList()
-            ));
-        }
-
         setLabel(notificationsCountLabel, String.valueOf(notificationService.countNotificationsNonLues(user.getId())));
-        notificationService.marquerToutesCommeLues(user.getId());
     }
 
     private void setLabel(Label label, String value) {
         if (label != null) {
             label.setText(value != null ? value : "");
+        }
+    }
+
+    private void afficherDashboard() {
+        if (contentContainer != null && dashboardContent != null) {
+            contentContainer.getChildren().setAll(dashboardContent);
+        }
+    }
+
+    private void afficherModule(String fxmlPath) {
+        if (contentContainer == null) {
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            if (loader.getController() instanceof NotificationsCenterController notificationsController) {
+                notificationsController.setAfterRefresh(this::chargerInfos);
+            }
+            masquerBoutonsRetour(root);
+            contentContainer.getChildren().setAll(root);
+            chargerInfos();
+        } catch (Exception e) {
+            AlertUtils.showException("Erreur", "Impossible de charger le module.", e);
+        }
+    }
+
+    private void masquerBoutonsRetour(Parent root) {
+        if (root == null) {
+            return;
+        }
+
+        for (var node : root.lookupAll(".module-back-button")) {
+            node.setManaged(false);
+            node.setVisible(false);
+        }
+
+        for (var node : root.lookupAll(".top-bar")) {
+            if (node instanceof javafx.scene.layout.Pane pane) {
+                for (var child : pane.getChildren()) {
+                    if (child instanceof Button button && button.getStyleClass().contains("module-back-button")) {
+                        button.setManaged(false);
+                        button.setVisible(false);
+                    }
+                }
+            }
         }
     }
 }

@@ -9,6 +9,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import javafx.util.StringConverter;
 import yoanemoudilou.cahiertexte.model.Affectation;
 import yoanemoudilou.cahiertexte.model.Classe;
@@ -21,8 +23,12 @@ import yoanemoudilou.cahiertexte.service.CoursService;
 import yoanemoudilou.cahiertexte.service.UserService;
 import yoanemoudilou.cahiertexte.utils.AlertUtils;
 import yoanemoudilou.cahiertexte.utils.AppNavigator;
+import yoanemoudilou.cahiertexte.utils.ExcelGenerator;
+import yoanemoudilou.cahiertexte.utils.PdfGenerator;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -173,6 +179,16 @@ public class CoursController {
         chargerClasses();
         chargerEnseignants();
         chargerCours();
+    }
+
+    @FXML
+    private void handleExporterPdf() {
+        exporter(true);
+    }
+
+    @FXML
+    private void handleExporterExcel() {
+        exporter(false);
     }
 
     @FXML
@@ -374,5 +390,44 @@ public class CoursController {
         }
 
         return classe.getNomClasse() + " - " + filiereNom;
+    }
+
+    private void exporter(boolean pdf) {
+        try {
+            List<Cours> cours = coursTable != null ? List.copyOf(coursTable.getItems()) : List.of();
+
+            if (cours.isEmpty()) {
+                AlertUtils.showWarning("Export impossible", null, "Aucun cours a exporter.");
+                return;
+            }
+
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle(pdf ? "Exporter les cours en PDF" : "Exporter les cours en Excel");
+            chooser.setInitialFileName(pdf ? "liste-cours.pdf" : "liste-cours.xlsx");
+            chooser.getExtensionFilters().add(
+                    pdf
+                            ? new FileChooser.ExtensionFilter("PDF", "*.pdf")
+                            : new FileChooser.ExtensionFilter("Excel", "*.xlsx")
+            );
+
+            Window window = coursTable != null && coursTable.getScene() != null
+                    ? coursTable.getScene().getWindow()
+                    : null;
+
+            File file = chooser.showSaveDialog(window);
+            if (file == null) {
+                return;
+            }
+
+            if (pdf) {
+                PdfGenerator.genererListeCours(file.getAbsolutePath(), "Liste des cours", cours, classesById);
+            } else {
+                ExcelGenerator.genererListeCours(file.getAbsolutePath(), "Liste des cours", cours, classesById);
+            }
+
+            AlertUtils.showInformation("Succes", "Export termine", "La liste des cours a ete exportee avec succes.");
+        } catch (Exception e) {
+            AlertUtils.showException("Erreur", "Impossible d'exporter la liste des cours.", e);
+        }
     }
 }

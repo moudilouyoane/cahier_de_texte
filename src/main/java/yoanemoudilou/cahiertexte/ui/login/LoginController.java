@@ -53,8 +53,7 @@ public class LoginController {
             setMessage("Erreur lors de la connexion.");
             AlertUtils.showException(
                     "Erreur",
-                    "Une erreur est survenue pendant la connexion",
-                    e
+                    "Une erreur est survenue pendant la connexion",e
             );
         }
     }

@@ -3,7 +3,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -12,65 +11,77 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" prefWidth="900" prefHeight="600"
-            fx:controller="yoanemoudilou.cahiertexte.ui.cours.CoursController">
+<BorderPane xmlns:fx="http://javafx.com/fxml" prefWidth="1080" prefHeight="760"
+            fx:controller="yoanemoudilou.cahiertexte.ui.cours.CoursController"
+            styleClass="app-shell">
 
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: #2980b9; -fx-padding: 15;">
-            <Label text="Gestion des cours" styleClass="header-label">
-                <font>
-                    <Font name="System Bold" size="18" />
-                </font>
-            </Label>
-            <Region HBox.hgrow="ALWAYS" />
-            <Button text="Retour au dashboard" onAction="#handleRetourDashboard" styleClass="button-accent" />
+        <HBox styleClass="top-bar">
+            <Label text="CO" styleClass="icon-badge, icon-badge-light"/>
+            <VBox spacing="3">
+                <Label text="Gestion des cours" styleClass="header-label"/>
+                <Label text="Organisez les contenus et attribuez les enseignants depuis un seul ecran" styleClass="header-label-muted"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Dashboard" onAction="#handleRetourDashboard" styleClass="button-ghost, module-back-button"/>
         </HBox>
     </top>
 
     <center>
-        <VBox spacing="15" style="-fx-padding: 20;">
-            <TableView fx:id="coursTable" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="idColumn" text="ID" prefWidth="50" />
-                    <TableColumn fx:id="codeColumn" text="Code" prefWidth="100" />
-                    <TableColumn fx:id="intituleColumn" text="Intitule" prefWidth="250" />
-                    <TableColumn fx:id="volumeHoraireColumn" text="Volume (h)" prefWidth="110" />
-                    <TableColumn fx:id="classeColumn" text="Classe / Filiere" prefWidth="280" />
-                </columns>
-            </TableView>
+        <VBox styleClass="page-content">
+            <VBox styleClass="surface-card, hero-card">
+                <Label text="Referentiel des cours" styleClass="page-title"/>
+                <Label text="Gerez le code, l'intitule, la charge horaire et l'attribution a un enseignant dans une interface plus claire." styleClass="page-subtitle" wrapText="true"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Button text="Exporter PDF" onAction="#handleExporterPdf" prefWidth="150" styleClass="button-soft"/>
+                    <Button text="Exporter Excel" onAction="#handleExporterExcel" prefWidth="150" styleClass="button-accent"/>
+                </HBox>
+            </VBox>
 
-            <Separator />
+            <VBox styleClass="surface-card" VBox.vgrow="ALWAYS">
+                <Label text="Cours enregistres" styleClass="section-title"/>
+                <TableView fx:id="coursTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idColumn" text="ID" prefWidth="55"/>
+                        <TableColumn fx:id="codeColumn" text="Code" prefWidth="110"/>
+                        <TableColumn fx:id="intituleColumn" text="Intitule" prefWidth="280"/>
+                        <TableColumn fx:id="volumeHoraireColumn" text="Volume (h)" prefWidth="120"/>
+                        <TableColumn fx:id="classeColumn" text="Classe / Filiere" prefWidth="300"/>
+                    </columns>
+                </TableView>
+            </VBox>
 
-            <GridPane hgap="15" vgap="10">
-                <Label text="Code:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                <TextField fx:id="codeField" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <VBox styleClass="surface-card">
+                <Label text="Edition et attribution" styleClass="section-title"/>
+                <GridPane hgap="16" vgap="12">
+                    <Label text="Code" styleClass="helper-text" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <TextField fx:id="codeField" prefWidth="160" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
 
-                <Label text="Intitule:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                <TextField fx:id="intituleField" prefWidth="250" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                    <Label text="Intitule" styleClass="helper-text" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <TextField fx:id="intituleField" prefWidth="280" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-                <Label text="Volume horaire:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                <TextField fx:id="volumeHoraireField" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label text="Volume horaire" styleClass="helper-text" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                    <TextField fx:id="volumeHoraireField" prefWidth="160" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
 
-                <Label text="Filiere:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                <TextField fx:id="filiereField" prefWidth="250" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                    <Label text="Filiere" styleClass="helper-text" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <TextField fx:id="filiereField" prefWidth="220" editable="false" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
 
-                <Label text="Classe:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                <ComboBox fx:id="classeComboBox" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Label text="Classe" styleClass="helper-text" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                    <ComboBox fx:id="classeComboBox" prefWidth="240" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-                <Label text="Attribuer a:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                <ComboBox fx:id="enseignantComboBox" prefWidth="250" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                    <Label text="Attribuer a" styleClass="helper-text" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                    <ComboBox fx:id="enseignantComboBox" prefWidth="240" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+                </GridPane>
 
-                <Button text="Attribuer le cours" onAction="#handleAttribuerCours" prefWidth="160" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-            </GridPane>
-
-            <HBox spacing="10" alignment="CENTER">
-                <Button text="Nouveau" onAction="#handleNouveau" prefWidth="100" />
-                <Button text="Enregistrer" onAction="#handleEnregistrer" prefWidth="100" style="-fx-background-color: #27ae60; -fx-text-fill: white;" />
-                <Button text="Supprimer" onAction="#handleSupprimer" prefWidth="100" style="-fx-background-color: #c0392b; -fx-text-fill: white;" />
-                <Button text="Rafraichir" onAction="#handleRafraichir" prefWidth="100" />
-            </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Button text="+ Nouveau" onAction="#handleNouveau" prefWidth="120"/>
+                    <Button text="Enregistrer" onAction="#handleEnregistrer" prefWidth="150" styleClass="button-success"/>
+                    <Button text="Supprimer" onAction="#handleSupprimer" prefWidth="140" styleClass="button-danger"/>
+                    <Button text="Attribuer le cours" onAction="#handleAttribuerCours" prefWidth="180" styleClass="button-accent"/>
+                    <Button text="Rafraichir" onAction="#handleRafraichir" prefWidth="140" styleClass="button-soft"/>
+                </HBox>
+            </VBox>
         </VBox>
     </center>
 

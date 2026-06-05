@@ -189,15 +189,25 @@ public class CahierTexteController {
 
     private void chargerReferences() {
         try {
+            User currentUser = sessionManager.getUtilisateurConnecte();
+            classeRestreinte = resolveClasseRestreinte(currentUser);
+
             classesById.clear();
-            for (Classe classe : classeService.getAllClasses()) {
-                if (classe.getId() != null) {
-                    classesById.put(classe.getId(), classe);
+            if (classeRestreinte != null && classeRestreinte.getId() != null) {
+                classesById.put(classeRestreinte.getId(), classeRestreinte);
+            } else {
+                for (Classe classe : classeService.getAllClasses()) {
+                    if (classe.getId() != null) {
+                        classesById.put(classe.getId(), classe);
+                    }
                 }
             }
 
             coursLabels.clear();
-            for (Cours cours : coursService.getAllCours()) {
+            List<Cours> coursPourLabels = (classeRestreinte != null && classeRestreinte.getId() != null)
+                    ? coursService.getCoursByClasseId(classeRestreinte.getId())
+                    : coursService.getAllCours();
+            for (Cours cours : coursPourLabels) {
                 if (cours.getId() != null) {
                     String classeLabel = getClasseLabel(cours.getClasseId());
                     coursLabels.put(cours.getId(), cours.getCode() + " - " + cours.getIntitule() + " (" + classeLabel + ")");
@@ -210,11 +220,6 @@ public class CahierTexteController {
                     enseignantsLabels.put(user.getId(), user.getNomComplet());
                 }
             }
-
-            User currentUser = sessionManager.getUtilisateurConnecte();
-            classeRestreinte = currentUser instanceof ResponsableClasse responsableClasse
-                    ? responsableClasse.getClasse()
-                    : null;
 
             if (titreLabel != null) {
                 titreLabel.setText(classeRestreinte != null ? "Cahier de texte de ma classe" : "Cahiers de texte");
@@ -234,6 +239,22 @@ public class CahierTexteController {
         } catch (Exception e) {
             AlertUtils.showException("Erreur", "Impossible de charger les references du cahier de texte.", e);
         }
+    }
+
+    private Classe resolveClasseRestreinte(User currentUser) {
+        if (currentUser instanceof ResponsableClasse responsableClasse && responsableClasse.getClasse() != null) {
+            return responsableClasse.getClasse();
+        }
+
+        if (currentUser != null && currentUser.getRole() == Role.RESPONSABLE_CLASSE && currentUser.getId() != null) {
+            return userService.getUtilisateurById(currentUser.getId())
+                    .filter(ResponsableClasse.class::isInstance)
+                    .map(ResponsableClasse.class::cast)
+                    .map(ResponsableClasse::getClasse)
+                    .orElse(null);
+        }
+
+        return null;
     }
 
     private void chargerCahiers() {

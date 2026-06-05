@@ -17,7 +17,7 @@ import yoanemoudilou.cahiertexte.utils.AlertUtils;
 import yoanemoudilou.cahiertexte.utils.AppNavigator;
 
 /**
- * ContrÃ´leur de l'Ã©cran d'inscription.
+ * Controleur de l'écran d'inscription.
  */
 public class RegisterController {
 
@@ -65,7 +65,7 @@ public class RegisterController {
 
             authService.inscrire(buildUserFromForm());
             LoginController.showInfoMessageOnNextDisplay(
-                    "Inscription envoyÃ©e. Connecte-toi aprÃ¨s validation de ton compte."
+                    "Inscription reussie. Connecte-toi après validation de ton compte."
             );
             AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/login.fxml", "Connexion");
 
@@ -73,8 +73,7 @@ public class RegisterController {
             setMessage(e.getMessage() != null ? e.getMessage() : "Erreur lors de l'inscription.");
             AlertUtils.showException(
                     "Erreur",
-                    "Impossible de finaliser l'inscription.",
-                    e
+                    "Impossible de finaliser l'inscription.",e
             );
         }
     }
@@ -97,7 +96,7 @@ public class RegisterController {
             case ENSEIGNANT -> new Enseignant();
             case RESPONSABLE_CLASSE -> new ResponsableClasse();
             case CHEF_DEPARTEMENT -> new ChefDepartement();
-            case null -> throw new IllegalArgumentException("Le rÃ´le est requis.");
+            case null -> throw new IllegalArgumentException("Le role est requis.");
         };
 
         user.setNom(nomField != null ? nomField.getText() : null);

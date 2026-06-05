@@ -6,44 +6,65 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="18" prefWidth="420" prefHeight="480"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="yoanemoudilou.cahiertexte.ui.login.RegisterController">
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="yoanemoudilou.cahiertexte.ui.login.RegisterController"
+           prefWidth="1020" prefHeight="700" styleClass="auth-shell">
 
-    <padding>
-        <Insets top="35" right="40" bottom="35" left="40"/>
-    </padding>
+    <HBox maxWidth="950" maxHeight="610" spacing="0">
+        <VBox prefWidth="360" spacing="20" alignment="CENTER_LEFT" styleClass="auth-card, auth-hero">
+            <padding>
+                <Insets top="36" right="32" bottom="36" left="32"/>
+            </padding>
+            <Label text="CT" styleClass="icon-badge, icon-badge-light"/>
+            <VBox spacing="10">
+                <Label text="Creer un acces" styleClass="auth-title"/>
+                <Label text="L'inscription prepare votre compte pour validation par l'administration. Les informations restent simples et rapides a completer." styleClass="auth-copy" wrapText="true"/>
+            </VBox>
+            <VBox spacing="10">
+                <Label text="• Role choisi des l'inscription" styleClass="auth-copy"/>
+                <Label text="• Validation centralisee des comptes" styleClass="auth-copy"/>
+                <Label text="• Retour direct vers la connexion" styleClass="auth-copy"/>
+            </VBox>
+        </VBox>
 
-    <Label text="Cahier de Texte NumÃ©rique" styleClass="title">
-        <font>
-            <Font name="System Bold" size="22"/>
-        </font>
-    </Label>
+        <VBox prefWidth="510" spacing="16" alignment="CENTER_LEFT" styleClass="auth-card">
+            <padding>
+                <Insets top="32" right="38" bottom="32" left="38"/>
+            </padding>
+            <Label text="Inscription" styleClass="title"/>
+            <Label text="Renseignez vos informations principales pour envoyer une demande de compte." styleClass="subtitle" wrapText="true"/>
 
-    <Label text="Inscription" styleClass="subtitle">
-        <font>
-            <Font size="16"/>
-        </font>
-    </Label>
+            <GridPane hgap="14" vgap="12">
+                <Label text="Nom" styleClass="helper-text" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <TextField fx:id="nomField" promptText="Nom" prefWidth="220" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
 
-    <VBox spacing="12" alignment="CENTER">
-        <TextField fx:id="nomField" promptText="Nom" prefWidth="300"/>
-        <TextField fx:id="prenomField" promptText="PrÃ©nom" prefWidth="300"/>
-        <TextField fx:id="emailField" promptText="Email" prefWidth="300"/>
-        <ComboBox fx:id="roleComboBox" promptText="RÃ´le" prefWidth="300"/>
-        <PasswordField fx:id="passwordField" promptText="Mot de passe" prefWidth="300"/>
-        <PasswordField fx:id="confirmPasswordField" promptText="Confirmer le mot de passe" prefWidth="300"/>
-    </VBox>
+                <Label text="Prenom" styleClass="helper-text" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <TextField fx:id="prenomField" promptText="Prenom" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-    <Label fx:id="messageLabel" textFill="RED" wrapText="true"/>
+                <Label text="Adresse email" styleClass="helper-text" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <TextField fx:id="emailField" promptText="nom@etablissement.fr" prefWidth="220" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
 
-    <HBox spacing="12" alignment="CENTER">
-        <Button text="S'inscrire" onAction="#handleRegister" defaultButton="true" prefWidth="120"/>
-        <Button text="Retour" onAction="#handleBackToLogin" cancelButton="true" prefWidth="100" styleClass="button-accent"/>
+                <Label text="Role" styleClass="helper-text" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <ComboBox fx:id="roleComboBox" promptText="Selectionnez un role" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                <Label text="Mot de passe" styleClass="helper-text" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                <PasswordField fx:id="passwordField" promptText="Mot de passe" prefWidth="220" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+
+                <Label text="Confirmation" styleClass="helper-text" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                <PasswordField fx:id="confirmPasswordField" promptText="Confirmer le mot de passe" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+            </GridPane>
+
+            <Label fx:id="messageLabel" wrapText="true" styleClass="error-label"/>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Button text="S'inscrire" onAction="#handleRegister" defaultButton="true" prefWidth="140"/>
+                <Button text="Retour" onAction="#handleBackToLogin" cancelButton="true" prefWidth="110" styleClass="button-soft"/>
+            </HBox>
+        </VBox>
     </HBox>
-
-</VBox>
+</StackPane>

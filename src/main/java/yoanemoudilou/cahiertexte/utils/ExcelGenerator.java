@@ -1,6 +1,9 @@
 package yoanemoudilou.cahiertexte.utils;
 
+import yoanemoudilou.cahiertexte.model.Classe;
+import yoanemoudilou.cahiertexte.model.Cours;
 import yoanemoudilou.cahiertexte.model.Seance;
+import yoanemoudilou.cahiertexte.model.User;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -120,6 +123,147 @@ public final class ExcelGenerator {
         }
     }
 
+    public static void genererListeCours(String filePath,
+                                         String titre,
+                                         List<Cours> cours,
+                                         Map<Integer, Classe> classesParId) throws IOException {
+
+        if (filePath == null || filePath.isBlank()) {
+            throw new IllegalArgumentException("Le chemin du fichier Excel est invalide.");
+        }
+
+        List<Cours> safeCours = cours != null ? cours : Collections.emptyList();
+
+        Path path = Path.of(filePath);
+        if (path.getParent() != null) {
+            Files.createDirectories(path.getParent());
+        }
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = (XSSFSheet) workbook.createSheet("Cours");
+
+            CellStyle titleStyle = createTitleStyle(workbook);
+            CellStyle headerStyle = createHeaderStyle(workbook);
+            CellStyle dataStyle = createDataStyle(workbook);
+
+            int rowIndex = 0;
+
+            Row titleRow = sheet.createRow(rowIndex++);
+            createCell(titleRow, 0, titre != null ? titre : "Liste des cours", titleStyle);
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
+
+            Row exportRow = sheet.createRow(rowIndex++);
+            createCell(exportRow, 0, "Date d'export : " + DateUtils.formatDateTime(LocalDateTime.now()), dataStyle);
+            sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 5));
+
+            rowIndex++;
+
+            Row headerRow = sheet.createRow(rowIndex++);
+            String[] headers = {"ID", "Code", "Intitule", "Volume", "Classe", "Filiere"};
+
+            for (int i = 0; i < headers.length; i++) {
+                createCell(headerRow, i, headers[i], headerStyle);
+            }
+
+            if (safeCours.isEmpty()) {
+                Row row = sheet.createRow(rowIndex);
+                createCell(row, 0, "Aucun cours disponible.", dataStyle);
+                sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 5));
+            } else {
+                for (Cours item : safeCours) {
+                    Classe classe = item.getClasseId() != null ? classesParId.get(item.getClasseId()) : null;
+                    Row row = sheet.createRow(rowIndex++);
+
+                    createCell(row, 0, item.getId() != null ? String.valueOf(item.getId()) : "", dataStyle);
+                    createCell(row, 1, item.getCode(), dataStyle);
+                    createCell(row, 2, item.getIntitule(), dataStyle);
+                    createCell(row, 3, item.getVolumeHoraire() != null ? item.getVolumeHoraire() + " h" : "", dataStyle);
+                    createCell(row, 4, classe != null ? classe.getNomClasse() : "", dataStyle);
+                    createCell(row, 5, resolveFiliere(classe), dataStyle);
+                }
+            }
+
+            for (int i = 0; i < 6; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            sheet.createFreezePane(0, 4);
+
+            try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+                workbook.write(outputStream);
+            }
+        }
+    }
+
+    public static void genererListeEnseignants(String filePath,
+                                               String titre,
+                                               List<User> enseignants) throws IOException {
+
+        if (filePath == null || filePath.isBlank()) {
+            throw new IllegalArgumentException("Le chemin du fichier Excel est invalide.");
+        }
+
+        List<User> safeEnseignants = enseignants != null ? enseignants : Collections.emptyList();
+
+        Path path = Path.of(filePath);
+        if (path.getParent() != null) {
+            Files.createDirectories(path.getParent());
+        }
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = (XSSFSheet) workbook.createSheet("Enseignants");
+
+            CellStyle titleStyle = createTitleStyle(workbook);
+            CellStyle headerStyle = createHeaderStyle(workbook);
+            CellStyle dataStyle = createDataStyle(workbook);
+
+            int rowIndex = 0;
+
+            Row titleRow = sheet.createRow(rowIndex++);
+            createCell(titleRow, 0, titre != null ? titre : "Liste des enseignants", titleStyle);
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 4));
+
+            Row exportRow = sheet.createRow(rowIndex++);
+            createCell(exportRow, 0, "Date d'export : " + DateUtils.formatDateTime(LocalDateTime.now()), dataStyle);
+            sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 4));
+
+            rowIndex++;
+
+            Row headerRow = sheet.createRow(rowIndex++);
+            String[] headers = {"ID", "Enseignant", "Email", "Valide", "Actif"};
+
+            for (int i = 0; i < headers.length; i++) {
+                createCell(headerRow, i, headers[i], headerStyle);
+            }
+
+            if (safeEnseignants.isEmpty()) {
+                Row row = sheet.createRow(rowIndex);
+                createCell(row, 0, "Aucun enseignant disponible.", dataStyle);
+                sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 4));
+            } else {
+                for (User enseignant : safeEnseignants) {
+                    Row row = sheet.createRow(rowIndex++);
+
+                    createCell(row, 0, enseignant.getId() != null ? String.valueOf(enseignant.getId()) : "", dataStyle);
+                    createCell(row, 1, enseignant.getNomComplet(), dataStyle);
+                    createCell(row, 2, enseignant.getEmail(), dataStyle);
+                    createCell(row, 3, enseignant.isValide() ? "Oui" : "Non", dataStyle);
+                    createCell(row, 4, enseignant.isActif() ? "Oui" : "Non", dataStyle);
+                }
+            }
+
+            for (int i = 0; i < 5; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            sheet.createFreezePane(0, 4);
+
+            try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+                workbook.write(outputStream);
+            }
+        }
+    }
+
     private static CellStyle createTitleStyle(Workbook workbook) {
         CellStyle style = workbook.createCellStyle();
 
@@ -196,5 +340,13 @@ public final class ExcelGenerator {
         }
 
         return prefix + " #" + id;
+    }
+
+    private static String resolveFiliere(Classe classe) {
+        if (classe == null || classe.getFiliere() == null) {
+            return "";
+        }
+
+        return classe.getFiliere().getNom();
     }
 }

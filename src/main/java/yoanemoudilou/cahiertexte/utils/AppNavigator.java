@@ -1,14 +1,14 @@
 package yoanemoudilou.cahiertexte.utils;
 
-import yoanemoudilou.cahiertexte.config.SessionManager;
-import yoanemoudilou.cahiertexte.model.Role;
-import yoanemoudilou.cahiertexte.model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import yoanemoudilou.cahiertexte.config.SessionManager;
+import yoanemoudilou.cahiertexte.model.Role;
+import yoanemoudilou.cahiertexte.model.User;
 
 import java.net.URL;
 
@@ -16,6 +16,9 @@ public final class AppNavigator {
 
     private static final String APP_CSS = "/yoanemoudilou/cahiertexte/css/style.css";
     private static Stage primaryStage;
+
+    private record StageState(double x, double y, double width, double height, boolean maximized) {
+    }
 
     private AppNavigator() {
     }
@@ -50,18 +53,22 @@ public final class AppNavigator {
     public static void navigate(String fxmlPath, String title) {
         ensurePrimaryStage();
         Scene scene = loadScene(fxmlPath);
+        StageState previousState = captureStageState(primaryStage);
+
         primaryStage.setTitle(title);
         primaryStage.setScene(scene);
-        primaryStage.centerOnScreen();
+        restoreStageState(primaryStage, previousState);
         primaryStage.show();
     }
 
     public static void navigate(ActionEvent event, String fxmlPath, String title) {
         Stage stage = extractStage(event);
         Scene scene = loadScene(fxmlPath);
+        StageState previousState = captureStageState(stage);
+
         stage.setTitle(title);
         stage.setScene(scene);
-        stage.centerOnScreen();
+        restoreStageState(stage, previousState);
         stage.show();
         primaryStage = stage;
     }
@@ -88,7 +95,6 @@ public final class AppNavigator {
             }
 
             return scene;
-
         } catch (Exception e) {
             throw new RuntimeException("Erreur de navigation vers : " + fxmlPath, e);
         }
@@ -101,9 +107,41 @@ public final class AppNavigator {
         return getPrimaryStage();
     }
 
+    private static StageState captureStageState(Stage stage) {
+        if (stage == null || stage.getScene() == null) {
+            return null;
+        }
+
+        return new StageState(
+                stage.getX(),
+                stage.getY(),
+                stage.getWidth(),
+                stage.getHeight(),
+                stage.isMaximized()
+        );
+    }
+
+    private static void restoreStageState(Stage stage, StageState state) {
+        if (stage == null) {
+            return;
+        }
+
+        if (state == null) {
+            stage.centerOnScreen();
+            return;
+        }
+
+        stage.setMaximized(false);
+        stage.setX(state.x());
+        stage.setY(state.y());
+        stage.setWidth(state.width());
+        stage.setHeight(state.height());
+        stage.setMaximized(state.maximized());
+    }
+
     private static void ensurePrimaryStage() {
         if (primaryStage == null) {
-            throw new IllegalStateException("AppNavigator non initialisé.");
+            throw new IllegalStateException("AppNavigator non initialise.");
         }
     }
 }

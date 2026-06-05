@@ -1,62 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" prefWidth="700" prefHeight="500"
-            fx:controller="yoanemoudilou.cahiertexte.ui.reports.ReportController">
+<BorderPane xmlns:fx="http://javafx.com/fxml" prefWidth="980" prefHeight="740"
+            fx:controller="yoanemoudilou.cahiertexte.ui.reports.ReportController"
+            styleClass="app-shell">
 
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: #d35400; -fx-padding: 15;">
-            <Label text="Génération de rapports" styleClass="header-label">
-                <font><Font name="System Bold" size="18"/></font>
-            </Label>
+        <HBox styleClass="top-bar">
+            <Label text="RP" styleClass="icon-badge, icon-badge-light"/>
+            <VBox spacing="3">
+                <Label text="Generation de rapports" styleClass="header-label"/>
+                <Label text="Filtrez les donnees puis exportez les resultats dans un format propre" styleClass="header-label-muted"/>
+            </VBox>
             <Region HBox.hgrow="ALWAYS"/>
-            <Button text="Retour au dashboard" onAction="#handleRetourDashboard" styleClass="button-accent"/>
+            <Button text="Dashboard" onAction="#handleRetourDashboard" styleClass="button-ghost, module-back-button"/>
         </HBox>
     </top>
 
     <center>
-        <VBox spacing="25" alignment="CENTER" style="-fx-padding: 30;">
-            <Label text="Sélectionne le type de rapport et les filtres">
-                <font><Font size="14"/></font>
-            </Label>
-
-            <GridPane hgap="15" vgap="12" alignment="CENTER">
-                <Label text="Date début:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                <DatePicker fx:id="dateDebutPicker" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-
-                <Label text="Date fin:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                <DatePicker fx:id="dateFinPicker" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-
-                <Label text="Statut:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                <ComboBox fx:id="statutComboBox" prefWidth="180" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-            </GridPane>
-
-            <HBox spacing="15" alignment="CENTER">
-                <Button text="Filtrer" onAction="#handleFiltrer"/>
-                <Button text="Réinitialiser" onAction="#handleResetFiltres" styleClass="button-accent"/>
+        <VBox styleClass="page-content">
+            <HBox spacing="16" styleClass="surface-card, hero-card">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Centre de rapports" styleClass="page-title"/>
+                    <Label text="Choisissez une plage de dates et un statut pour preparer rapidement vos exports PDF ou Excel." styleClass="page-subtitle" wrapText="true"/>
+                </VBox>
+                <Button text="Reinitialiser" onAction="#handleResetFiltres" styleClass="button-soft"/>
             </HBox>
 
-            <Label fx:id="totalLabel" text="Total : 0"/>
+            <VBox styleClass="surface-card">
+                <Label text="Filtres" styleClass="section-title"/>
+                <GridPane hgap="16" vgap="12">
+                    <Label text="Date debut" styleClass="helper-text" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <DatePicker fx:id="dateDebutPicker" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
 
-            <TableView fx:id="seancesTable" prefHeight="220" prefWidth="620">
-                <columns>
-                    <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
-                    <TableColumn fx:id="dateColumn" text="Date" prefWidth="90"/>
-                    <TableColumn fx:id="heureColumn" text="Heure" prefWidth="80"/>
-                    <TableColumn fx:id="coursColumn" text="Cours" prefWidth="150"/>
-                    <TableColumn fx:id="enseignantColumn" text="Enseignant" prefWidth="140"/>
-                    <TableColumn fx:id="statutColumn" text="Statut" prefWidth="100"/>
-                    <TableColumn fx:id="dureeColumn" text="Durée" prefWidth="70"/>
-                </columns>
-            </TableView>
+                    <Label text="Date fin" styleClass="helper-text" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <DatePicker fx:id="dateFinPicker" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-            <HBox spacing="15" alignment="CENTER">
-                <Button text="Exporter PDF" onAction="#handleExporterPdf"/>
-                <Button text="Exporter Excel" onAction="#handleExporterExcel" styleClass="button-accent"/>
+                    <Label text="Statut" styleClass="helper-text" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                    <ComboBox fx:id="statutComboBox" prefWidth="180" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+
+                    <Button text="Filtrer" onAction="#handleFiltrer" GridPane.columnIndex="3" GridPane.rowIndex="1" styleClass="button-accent"/>
+                </GridPane>
+                <Label fx:id="totalLabel" text="Total : 0" styleClass="metric-caption"/>
+            </VBox>
+
+            <VBox styleClass="surface-card" VBox.vgrow="ALWAYS">
+                <Label text="Resultats" styleClass="section-title"/>
+                <TableView fx:id="seancesTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idColumn" text="ID" prefWidth="55"/>
+                        <TableColumn fx:id="dateColumn" text="Date" prefWidth="100"/>
+                        <TableColumn fx:id="heureColumn" text="Heure" prefWidth="90"/>
+                        <TableColumn fx:id="coursColumn" text="Cours" prefWidth="170"/>
+                        <TableColumn fx:id="enseignantColumn" text="Enseignant" prefWidth="170"/>
+                        <TableColumn fx:id="statutColumn" text="Statut" prefWidth="110"/>
+                        <TableColumn fx:id="dureeColumn" text="Duree" prefWidth="90"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Button text="Exporter PDF" onAction="#handleExporterPdf" styleClass="button-accent"/>
+                <Button text="Exporter Excel" onAction="#handleExporterExcel" styleClass="button-soft"/>
             </HBox>
         </VBox>
     </center>

@@ -10,7 +10,10 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+import yoanemoudilou.cahiertexte.model.Classe;
+import yoanemoudilou.cahiertexte.model.Cours;
 import yoanemoudilou.cahiertexte.model.Seance;
+import yoanemoudilou.cahiertexte.model.User;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -113,6 +116,135 @@ public final class PdfGenerator {
         }
     }
 
+    public static void genererListeCours(String filePath,
+                                         String titre,
+                                         List<Cours> cours,
+                                         Map<Integer, Classe> classesParId) throws IOException {
+
+        if (filePath == null || filePath.isBlank()) {
+            throw new IllegalArgumentException("Le chemin du fichier PDF est invalide.");
+        }
+
+        List<Cours> safeCours = cours != null ? cours : Collections.emptyList();
+
+        Path path = Path.of(filePath);
+        if (path.getParent() != null) {
+            Files.createDirectories(path.getParent());
+        }
+
+        try (PdfWriter writer = new PdfWriter(filePath);
+             PdfDocument pdfDocument = new PdfDocument(writer);
+             Document document = new Document(pdfDocument, PageSize.A4.rotate())) {
+
+            document.setMargins(20, 20, 20, 20);
+
+            Paragraph title = new Paragraph(titre != null ? titre : "Liste des cours")
+                    .setBold()
+                    .setFontSize(16)
+                    .setTextAlignment(TextAlignment.CENTER);
+
+            Paragraph exportDate = new Paragraph("Date d'export : " + DateUtils.formatDateTime(LocalDateTime.now()))
+                    .setFontSize(10)
+                    .setTextAlignment(TextAlignment.RIGHT);
+
+            document.add(title);
+            document.add(exportDate);
+            document.add(new Paragraph(" "));
+
+            Table table = new Table(UnitValue.createPercentArray(new float[]{6, 12, 28, 12, 20, 22}))
+                    .useAllAvailableWidth();
+
+            addHeaderCell(table, "ID");
+            addHeaderCell(table, "Code");
+            addHeaderCell(table, "Intitule");
+            addHeaderCell(table, "Volume");
+            addHeaderCell(table, "Classe");
+            addHeaderCell(table, "Filiere");
+
+            if (safeCours.isEmpty()) {
+                Cell emptyCell = new Cell(1, 6)
+                        .add(new Paragraph("Aucun cours disponible."))
+                        .setTextAlignment(TextAlignment.CENTER);
+                table.addCell(emptyCell);
+            } else {
+                for (Cours item : safeCours) {
+                    Classe classe = item.getClasseId() != null ? classesParId.get(item.getClasseId()) : null;
+
+                    table.addCell(createDataCell(item.getId() != null ? String.valueOf(item.getId()) : ""));
+                    table.addCell(createDataCell(item.getCode()));
+                    table.addCell(createDataCell(item.getIntitule()));
+                    table.addCell(createDataCell(item.getVolumeHoraire() != null ? item.getVolumeHoraire() + " h" : ""));
+                    table.addCell(createDataCell(classe != null ? classe.getNomClasse() : ""));
+                    table.addCell(createDataCell(resolveFiliere(classe)));
+                }
+            }
+
+            document.add(table);
+        }
+    }
+
+    public static void genererListeEnseignants(String filePath,
+                                               String titre,
+                                               List<User> enseignants) throws IOException {
+
+        if (filePath == null || filePath.isBlank()) {
+            throw new IllegalArgumentException("Le chemin du fichier PDF est invalide.");
+        }
+
+        List<User> safeEnseignants = enseignants != null ? enseignants : Collections.emptyList();
+
+        Path path = Path.of(filePath);
+        if (path.getParent() != null) {
+            Files.createDirectories(path.getParent());
+        }
+
+        try (PdfWriter writer = new PdfWriter(filePath);
+             PdfDocument pdfDocument = new PdfDocument(writer);
+             Document document = new Document(pdfDocument, PageSize.A4.rotate())) {
+
+            document.setMargins(20, 20, 20, 20);
+
+            Paragraph title = new Paragraph(titre != null ? titre : "Liste des enseignants")
+                    .setBold()
+                    .setFontSize(16)
+                    .setTextAlignment(TextAlignment.CENTER);
+
+            Paragraph exportDate = new Paragraph("Date d'export : " + DateUtils.formatDateTime(LocalDateTime.now()))
+                    .setFontSize(10)
+                    .setTextAlignment(TextAlignment.RIGHT);
+
+            document.add(title);
+            document.add(exportDate);
+            document.add(new Paragraph(" "));
+
+            Table table = new Table(UnitValue.createPercentArray(new float[]{8, 24, 34, 12, 12}))
+                    .useAllAvailableWidth();
+
+            addHeaderCell(table, "ID");
+            addHeaderCell(table, "Enseignant");
+            addHeaderCell(table, "Email");
+            addHeaderCell(table, "Valide");
+            addHeaderCell(table, "Actif");
+
+            if (safeEnseignants.isEmpty()) {
+                Cell emptyCell = new Cell(1, 5)
+                        .add(new Paragraph("Aucun enseignant disponible."))
+                        .setTextAlignment(TextAlignment.CENTER);
+                table.addCell(emptyCell);
+            } else {
+                for (User enseignant : safeEnseignants) {
+                    table.addCell(createDataCell(enseignant.getId() != null ? String.valueOf(enseignant.getId()) : ""));
+                    table.addCell(createDataCell(enseignant.getNomComplet()));
+                    table.addCell(createDataCell(enseignant.getEmail()));
+                    table.addCell(createDataCell(enseignant.isValide() ? "Oui" : "Non"));
+                    table.addCell(createDataCell(enseignant.isActif() ? "Oui" : "Non"));
+                }
+            }
+
+            document.add(table);
+        }
+    }
+
     private static void addHeaderCell(Table table, String text) {
         Cell cell = new Cell()
                 .add(new Paragraph(text))
@@ -140,5 +272,13 @@ public final class PdfGenerator {
         }
 
         return prefix + " #" + id;
+    }
+
+    private static String resolveFiliere(Classe classe) {
+        if (classe == null || classe.getFiliere() == null) {
+            return "";
+        }
+
+        return classe.getFiliere().getNom();
     }
 }

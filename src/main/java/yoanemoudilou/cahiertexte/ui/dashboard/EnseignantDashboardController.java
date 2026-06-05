@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.VBox;
 import yoanemoudilou.cahiertexte.config.SessionManager;
 import yoanemoudilou.cahiertexte.model.Classe;
 import yoanemoudilou.cahiertexte.model.Cours;
@@ -91,6 +92,9 @@ public class EnseignantDashboardController {
     @FXML
     private ListView<String> notificationsListView;
 
+    @FXML
+    private VBox notificationsPanel;
+
     private final SessionManager sessionManager = SessionManager.getInstance();
     private final AuthService authService = new AuthService();
     private final CoursService coursService = new CoursService();
@@ -125,6 +129,17 @@ public class EnseignantDashboardController {
     private void handleLogout(ActionEvent event) {
         authService.logout();
         AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/login.fxml", "Connexion");
+    }
+
+    @FXML
+    private void handleToggleNotifications() {
+        if (notificationsPanel == null) {
+            return;
+        }
+
+        boolean show = !notificationsPanel.isVisible();
+        notificationsPanel.setVisible(show);
+        notificationsPanel.setManaged(show);
     }
 
     private void configurerTables() {
