@@ -39,16 +39,22 @@ public class SeanceService {
         validateSeance(seance);
 
         try {
-            rattacherAuCahierTexte(seance);
-
             if (seance.getStatut() == null) {
                 seance.setStatut(StatutSeance.EN_ATTENTE);
             }
 
-            return seanceRepository.save(seance);
+            // Rattacher au cahier de texte avant la sauvegarde afin que
+            // le champ `cahier_texte_id` ne soit pas NULL (la colonne est NOT NULL)
+            rattacherAuCahierTexte(seance);
+
+            // Sauvegarder la seance (avec cahierTexteId défini)
+            Seance seanceCreee = seanceRepository.save(seance);
+
+            return seanceCreee;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de la creation de la seance.", e);
+            // Propager le message SQL pour faciliter le debug (ex: contrainte NOT NULL, FK, etc.)
+            throw new RuntimeException("Erreur lors de la creation de la seance: " + e.getMessage(), e);
         }
     }
 
@@ -61,11 +67,7 @@ public class SeanceService {
 
         try {
             rattacherAuCahierTexte(seance);
-
-            if (seance.getStatut() == null) {
-                seance.setStatut(StatutSeance.EN_ATTENTE);
-            }
-
+            seance.setStatut(StatutSeance.EN_ATTENTE);
             return seanceRepository.update(seance);
 
         } catch (SQLException e) {
@@ -211,43 +213,46 @@ public class SeanceService {
 
     private void validateSeance(Seance seance) {
         if (seance == null) {
-            throw new IllegalArgumentException("La seance est requise.");
+            throw new IllegalArgumentException("La séance ne peut pas être nulle.");
         }
 
         if (seance.getCoursId() == null) {
-            throw new IllegalArgumentException("Le cours est requis.");
+            throw new IllegalArgumentException("Le cours est obligatoire.");
         }
 
         if (seance.getEnseignantId() == null) {
-            throw new IllegalArgumentException("L'enseignant est requis.");
+            throw new IllegalArgumentException("L'enseignant est obligatoire.");
         }
 
         if (seance.getDateSeance() == null) {
-            throw new IllegalArgumentException("La date de seance est requise.");
+            throw new IllegalArgumentException("La date de la séance est obligatoire.");
         }
 
         if (seance.getHeureSeance() == null) {
-            throw new IllegalArgumentException("L'heure de seance est requise.");
+            throw new IllegalArgumentException("L'heure de la séance est obligatoire.");
         }
 
         if (seance.getDuree() == null || seance.getDuree() <= 0) {
-            throw new IllegalArgumentException("La duree doit etre superieure a 0.");
+            throw new IllegalArgumentException("La durée doit être un nombre entier positif.");
         }
 
         if (seance.getContenu() == null || seance.getContenu().isBlank()) {
-            throw new IllegalArgumentException("Le contenu de la seance est requis.");
+            throw new IllegalArgumentException("Le contenu de la séance est obligatoire.");
         }
     }
 
     private void rattacherAuCahierTexte(Seance seance) {
         Cours cours = coursService.getCoursById(seance.getCoursId())
-                .orElseThrow(() -> new IllegalArgumentException("Cours introuvable pour la seance."));
+                .orElseThrow(() -> new IllegalArgumentException("Le cours avec l'ID " + seance.getCoursId() + " n'existe pas."));
 
         if (cours.getClasseId() == null) {
-            throw new IllegalArgumentException("Le cours doit etre associe a une classe.");
+            throw new IllegalArgumentException("Le cours \"" + cours.getIntitule() + "\" n'est pas associé à une classe. Contactez l'administrateur.");
         }
 
         CahierTexte cahierTexte = cahierTexteService.obtenirOuCreerPourClasseEtDate(cours.getClasseId(), seance.getDateSeance());
+        if (cahierTexte == null || cahierTexte.getId() == null) {
+            throw new IllegalStateException("Impossible de trouver ou de créer le cahier de texte pour la classe " + cours.getClasseId());
+        }
         seance.setCahierTexteId(cahierTexte.getId());
     }
 }

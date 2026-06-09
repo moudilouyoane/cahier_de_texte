@@ -25,6 +25,9 @@ public class CahierTexteRepositoryImpl implements CahierTexteRepository {
         if (cahierTexte == null) {
             throw new IllegalArgumentException("Le cahier de texte est requis.");
         }
+        if (cahierTexte.getDateCreation() == null) {
+            cahierTexte.setDateCreation(java.time.LocalDateTime.now());
+        }
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement ps = connection.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
@@ -32,14 +35,20 @@ public class CahierTexteRepositoryImpl implements CahierTexteRepository {
             ps.setObject(1, cahierTexte.getClasseId());
             ps.setString(2, cahierTexte.getAnneeScolaire());
             ps.setString(3, cahierTexte.getSemestre() != null ? cahierTexte.getSemestre().name() : null);
-            ps.setTimestamp(4, cahierTexte.getDateCreation() != null ? Timestamp.valueOf(cahierTexte.getDateCreation()) : null);
+            ps.setTimestamp(4, Timestamp.valueOf(cahierTexte.getDateCreation()));
 
             ps.executeUpdate();
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     cahierTexte.setId(rs.getInt(1));
+                } else {
+                    throw new SQLException("Impossible d'obtenir l'identifiant du cahier de texte créé.");
                 }
+            }
+
+            if (cahierTexte.getId() == null) {
+                throw new SQLException("L'identifiant du cahier de texte est manquant après insertion.");
             }
 
             return cahierTexte;

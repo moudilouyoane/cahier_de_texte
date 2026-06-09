@@ -40,9 +40,13 @@ public class CahierTexteService {
                 return existant.get();
             }
 
-            return cahierTexteRepository.save(
+            CahierTexte nouveauCahier = cahierTexteRepository.save(
                     new CahierTexte(classeId, anneeScolaire, semestre, LocalDateTime.now())
             );
+            if (nouveauCahier == null || nouveauCahier.getId() == null) {
+                throw new RuntimeException("Impossible de créer le cahier de texte pour la classe " + classeId);
+            }
+            return nouveauCahier;
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de la gestion du cahier de texte.", e);
         }

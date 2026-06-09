@@ -32,6 +32,9 @@ public class SeanceRepositoryImpl implements SeanceRepository {
         if (seance == null) {
             throw new IllegalArgumentException("La seance ne peut pas etre null.");
         }
+        if (seance.getCahierTexteId() == null) {
+            throw new IllegalArgumentException("Le cahier de texte associé à la séance est requis.");
+        }
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement ps = connection.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
@@ -63,6 +66,9 @@ public class SeanceRepositoryImpl implements SeanceRepository {
     public boolean update(Seance seance) throws SQLException {
         if (seance == null || seance.getId() == null) {
             throw new IllegalArgumentException("La seance ou son id est invalide.");
+        }
+        if (seance.getCahierTexteId() == null) {
+            throw new IllegalArgumentException("Le cahier de texte associé à la séance est requis.");
         }
 
         try (Connection connection = DatabaseConnection.getConnection();

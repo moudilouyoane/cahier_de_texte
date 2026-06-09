@@ -81,6 +81,9 @@ public class CahierTexteController {
     @FXML
     private TableColumn<Seance, String> seanceContenuColumn;
 
+    @FXML
+    private TableColumn<Seance, String> seanceObservationsColumn;
+
     private final SessionManager sessionManager = SessionManager.getInstance();
     private final CahierTexteService cahierTexteService = new CahierTexteService();
     private final ClasseService classeService = new ClasseService();
@@ -166,8 +169,9 @@ public class CahierTexteController {
         }
         if (seanceContenuColumn != null) {
             seanceContenuColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getContenu()));
-        }
-    }
+        }        if (seanceObservationsColumn != null) {
+            seanceObservationsColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getObservations()));
+        }    }
 
     private void configurerFiltreClasse() {
         if (classeFilterComboBox == null) {

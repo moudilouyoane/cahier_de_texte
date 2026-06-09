@@ -1,10 +1,7 @@
 package yoanemoudilou.cahiertexte.ui.seance;
 
 import yoanemoudilou.cahiertexte.config.SessionManager;
-import yoanemoudilou.cahiertexte.model.Cours;
-import yoanemoudilou.cahiertexte.model.Role;
-import yoanemoudilou.cahiertexte.model.Seance;
-import yoanemoudilou.cahiertexte.model.User;
+import yoanemoudilou.cahiertexte.model.*;
 import yoanemoudilou.cahiertexte.service.CoursService;
 import yoanemoudilou.cahiertexte.service.NotificationService;
 import yoanemoudilou.cahiertexte.service.SeanceService;
@@ -120,6 +117,7 @@ public class SeanceController {
     @FXML
     private void handleEnregistrer() {
         try {
+            validerFormulaire();
             Seance seance = construireSeanceDepuisFormulaire();
 
             if (selectedSeance == null || selectedSeance.getId() == null) {
@@ -128,8 +126,8 @@ public class SeanceController {
                 AlertUtils.showInformation("Succès", "Création réussie", "Séance créée avec succès.");
             } else {
                 seance.setId(selectedSeance.getId());
-                seance.setStatut(selectedSeance.getStatut());
-                seance.setCommentaireValidation(selectedSeance.getCommentaireValidation());
+                seance.setStatut(StatutSeance.EN_ATTENTE);
+                seance.setCommentaireValidation(null);
 
                 seanceService.modifierSeance(seance);
                 notifierResponsableSiEnseignant(seance);
@@ -142,7 +140,11 @@ public class SeanceController {
             selectedSeance = null;
 
         } catch (NumberFormatException e) {
-            AlertUtils.showWarning("Saisie invalide", null, "La durée doit être un nombre entier.");
+            AlertUtils.showWarning("Saisie invalide", null, "La durée doit être un nombre entier positif.");
+        } catch (java.time.format.DateTimeParseException e) {
+            AlertUtils.showWarning("Format d'heure invalide", null, "L'heure doit être au format HH:mm (ex: 08:00)");
+        } catch (IllegalArgumentException e) {
+            AlertUtils.showWarning("Validation échouée", null, e.getMessage());
         } catch (Exception e) {
             AlertUtils.showException("Erreur", "Impossible d'enregistrer la séance.", e);
         }
@@ -270,7 +272,13 @@ public class SeanceController {
     }
 
     private void chargerReferences() {
-        List<Cours> cours = coursService.getAllCours();
+        User currentUser = sessionManager.getUtilisateurConnecte();
+        List<Cours> cours;
+        if (currentUser != null && currentUser.getRole() == Role.ENSEIGNANT && currentUser.getId() != null) {
+            cours = coursService.getCoursByEnseignantId(currentUser.getId());
+        } else {
+            cours = coursService.getAllCours();
+        }
         List<User> enseignants = userService.getUtilisateursByRole(Role.ENSEIGNANT);
 
         coursLabels.clear();
@@ -410,21 +418,61 @@ public class SeanceController {
         Cours cours = coursComboBox != null ? coursComboBox.getValue() : null;
         User enseignant = enseignantComboBox != null ? enseignantComboBox.getValue() : null;
 
-        Integer duree = dureeField != null && !dureeField.getText().isBlank()
-                ? Integer.parseInt(dureeField.getText().trim())
-                : null;
+        String heureText = heureField != null ? heureField.getText().trim().replaceAll("\\s+", "") : null;
+        String dureeText = dureeField != null ? dureeField.getText().trim() : null;
+
+        Integer duree = null;
+        if (dureeText != null && !dureeText.isBlank()) {
+            try {
+                duree = Integer.parseInt(dureeText);
+                if (duree <= 0) {
+                    throw new IllegalArgumentException("La durée doit être positive (> 0).");
+                }
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("La durée doit être un nombre entier valide.");
+            }
+        }
 
         return new Seance(
                 cours != null ? cours.getId() : null,
                 enseignant != null ? enseignant.getId() : null,
                 dateSeancePicker != null ? dateSeancePicker.getValue() : null,
-                DateUtils.parseTime(heureField != null ? heureField.getText() : null),
+                DateUtils.parseTime(heureText),
                 duree,
-                contenuArea != null ? contenuArea.getText() : null,
-                observationsArea != null ? observationsArea.getText() : null,
+                contenuArea != null ? contenuArea.getText().trim() : null,
+                observationsArea != null ? observationsArea.getText().trim() : null,
                 null,
                 null
         );
+    }
+
+    private void validerFormulaire() {
+        if (coursComboBox == null || coursComboBox.getValue() == null) {
+            throw new IllegalArgumentException("Veuillez sélectionner un cours.");
+        }
+
+        if (enseignantComboBox == null || enseignantComboBox.getValue() == null) {
+            throw new IllegalArgumentException("Veuillez sélectionner un enseignant.");
+        }
+
+        if (dateSeancePicker == null || dateSeancePicker.getValue() == null) {
+            throw new IllegalArgumentException("Veuillez sélectionner une date.");
+        }
+
+        String heureText = heureField != null ? heureField.getText() : null;
+        if (heureText == null || heureText.trim().isBlank()) {
+            throw new IllegalArgumentException("Veuillez saisir une heure (format: HH:mm).");
+        }
+
+        String dureeText = dureeField != null ? dureeField.getText() : null;
+        if (dureeText == null || dureeText.trim().isBlank()) {
+            throw new IllegalArgumentException("Veuillez saisir une durée en minutes.");
+        }
+
+        String contenu = contenuArea != null ? contenuArea.getText() : null;
+        if (contenu == null || contenu.trim().isBlank()) {
+            throw new IllegalArgumentException("Veuillez saisir le contenu de la séance.");
+        }
     }
 
     private String getCoursLabel(Integer coursId) {
