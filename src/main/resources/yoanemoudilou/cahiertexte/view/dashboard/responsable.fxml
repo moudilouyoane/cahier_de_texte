@@ -83,7 +83,8 @@
                         <TableColumn fx:id="coursColumn" text="Cours" prefWidth="180"/>
                         <TableColumn fx:id="enseignantColumn" text="Enseignant" prefWidth="180"/>
                         <TableColumn fx:id="statutColumn" text="Statut" prefWidth="120"/>
-                        <TableColumn fx:id="contenuColumn" text="Contenu" prefWidth="340"/>
+                        <TableColumn fx:id="contenuColumn" text="Contenu" prefWidth="260"/>
+                        <TableColumn fx:id="observationsColumn" text="Observations" prefWidth="240"/>
                     </columns>
                 </TableView>
             </VBox>

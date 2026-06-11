@@ -71,6 +71,7 @@
                         <TableColumn fx:id="enseignantColumn" text="Enseignant" prefWidth="170"/>
                         <TableColumn fx:id="statutColumn" text="Statut" prefWidth="110"/>
                         <TableColumn fx:id="dureeColumn" text="Duree" prefWidth="90"/>
+                        <TableColumn fx:id="observationsColumn" text="Observations" prefWidth="220"/>
                     </columns>
                 </TableView>
             </VBox>

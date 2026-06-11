@@ -151,6 +151,28 @@ public class NotificationService {
         }
     }
 
+    public void notifierEnseignantSeanceRejetee(Seance seance, User responsable, String commentaire) {
+        if (seance == null || seance.getEnseignantId() == null) {
+            return;
+        }
+
+        var enseignantOpt = userService.getUtilisateurById(seance.getEnseignantId());
+        if (enseignantOpt.isEmpty() || enseignantOpt.get().getId() == null) {
+            return;
+        }
+
+        Cours cours = chargerCours(seance.getCoursId());
+        String libelleCours = cours.getCode() + " - " + cours.getIntitule();
+        String auteur = responsable != null ? responsable.getNomComplet() : "Le responsable";
+
+        String message = auteur + " a rejete la seance du cours " + libelleCours + ".";
+        if (commentaire != null && !commentaire.isBlank()) {
+            message += " Commentaire: " + commentaire;
+        }
+
+        creerNotification(enseignantOpt.get().getId(), "Seance rejetee", message);
+    }
+
     private Cours chargerCours(Integer coursId) {
         return coursService.getCoursById(coursId)
                 .orElseThrow(() -> new IllegalArgumentException("Cours introuvable pour la notification."));

@@ -77,6 +77,9 @@ public class ResponsableDashboardController {
     private TableColumn<Seance, String> contenuColumn;
 
     @FXML
+    private TableColumn<Seance, String> observationsColumn;
+
+    @FXML
     private TextArea commentaireArea;
 
     @FXML
@@ -186,6 +189,9 @@ public class ResponsableDashboardController {
         }
         if (contenuColumn != null) {
             contenuColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getContenu()));
+        }
+        if (observationsColumn != null) {
+            observationsColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getObservations()));
         }
     }
 
@@ -303,6 +309,8 @@ public class ResponsableDashboardController {
             seanceService.updateStatutSeance(selectedSeance.getId(), statut, commentaire);
             if (statut == StatutSeance.VALIDEE) {
                 notificationService.notifierAdminsSeanceValidee(selectedSeance, sessionManager.getUtilisateurConnecte());
+            } else if (statut == StatutSeance.REJETEE) {
+                notificationService.notifierEnseignantSeanceRejetee(selectedSeance, sessionManager.getUtilisateurConnecte(), commentaire);
             }
             chargerDonnees();
             AlertUtils.showInformation("Succes", "Mise a jour reussie", message);

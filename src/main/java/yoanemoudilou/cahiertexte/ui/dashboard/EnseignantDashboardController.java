@@ -87,6 +87,9 @@ public class EnseignantDashboardController {
     private TableColumn<Seance, String> seanceContenuColumn;
 
     @FXML
+    private TableColumn<Seance, String> seanceObservationsColumn;
+
+    @FXML
     private Label notificationsCountLabel;
 
     @FXML
@@ -179,6 +182,9 @@ public class EnseignantDashboardController {
         }
         if (seanceContenuColumn != null) {
             seanceContenuColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getContenu()));
+        }
+        if (seanceObservationsColumn != null) {
+            seanceObservationsColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getObservations()));
         }
     }
 

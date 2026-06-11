@@ -47,6 +47,7 @@ public class ReportController {
     @FXML private TableColumn<Seance, String> enseignantColumn;
     @FXML private TableColumn<Seance, String> statutColumn;
     @FXML private TableColumn<Seance, Integer> dureeColumn;
+    @FXML private TableColumn<Seance, String> observationsColumn;
 
     @FXML private DatePicker dateDebutPicker;
     @FXML private DatePicker dateFinPicker;
@@ -147,6 +148,9 @@ public class ReportController {
         }
         if (dureeColumn != null) {
             dureeColumn.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getDuree()));
+        }
+        if (observationsColumn != null) {
+            observationsColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getObservations()));
         }
     }
 

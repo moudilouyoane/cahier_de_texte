@@ -45,7 +45,6 @@
             <Button text="▣ Classes" onAction="#handleOuvrirClasses" styleClass="nav-button"/>
             <Button text="◉ Cours" onAction="#handleCours" styleClass="nav-button"/>
             <Button text="☰ Cahiers de texte" onAction="#handleOuvrirCahiers" styleClass="nav-button"/>
-            <Button text="✓ Validation" onAction="#handleValidationSeances" styleClass="nav-button"/>
             <Region minHeight="12"/>
             <Button text="✉ Notifications" onAction="#handleNotifications" styleClass="nav-button"/>
             <Button text="◌ Statistiques" onAction="#handleStatistiques" styleClass="nav-button"/>

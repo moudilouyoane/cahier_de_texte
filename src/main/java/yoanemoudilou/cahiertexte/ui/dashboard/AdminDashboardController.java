@@ -33,7 +33,7 @@ public class AdminDashboardController {
     private static final String CLASSE_VIEW = "/yoanemoudilou/cahiertexte/view/classe.fxml";
     private static final String COURS_VIEW = "/yoanemoudilou/cahiertexte/view/cours.fxml";
     private static final String CAHIER_VIEW = "/yoanemoudilou/cahiertexte/view/cahier.fxml";
-    private static final String VALIDATION_VIEW = "/yoanemoudilou/cahiertexte/view/validation.fxml";
+    
     private static final String STATS_VIEW = "/yoanemoudilou/cahiertexte/view/stats.fxml";
     private static final String REPORT_VIEW = "/yoanemoudilou/cahiertexte/view/report.fxml";
     private static final String NOTIFICATIONS_VIEW = "/yoanemoudilou/cahiertexte/view/notifications.fxml";
@@ -135,11 +135,6 @@ public class AdminDashboardController {
     @FXML
     private void handleOuvrirCahiers(ActionEvent event) {
         afficherModule(CAHIER_VIEW);
-    }
-
-    @FXML
-    private void handleValidationSeances(ActionEvent event) {
-        afficherModule(VALIDATION_VIEW);
     }
 
     @FXML

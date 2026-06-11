@@ -84,7 +84,8 @@
                         <TableColumn fx:id="seanceHeureColumn" text="Heure" prefWidth="90"/>
                         <TableColumn fx:id="seanceCoursColumn" text="Cours" prefWidth="180"/>
                         <TableColumn fx:id="seanceStatutColumn" text="Statut" prefWidth="120"/>
-                        <TableColumn fx:id="seanceContenuColumn" text="Contenu" prefWidth="330"/>
+                        <TableColumn fx:id="seanceContenuColumn" text="Contenu" prefWidth="230"/>
+                        <TableColumn fx:id="seanceObservationsColumn" text="Observations" prefWidth="200"/>
                     </columns>
                 </TableView>
             </VBox>
