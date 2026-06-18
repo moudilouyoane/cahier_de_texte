@@ -3,142 +3,854 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" prefWidth="1140" prefHeight="760"
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            prefWidth="1200" prefHeight="820"
             fx:controller="yoanemoudilou.cahiertexte.ui.dashboard.AdminDashboardController"
             styleClass="app-shell">
 
-    <top>
-        <HBox styleClass="top-bar">
-            <Label text="CT" styleClass="icon-badge, icon-badge-light"/>
-            <VBox spacing="3">
-                <Label fx:id="bienvenuLabel" text="Bienvenue" styleClass="header-label"/>
-                <Label text="Pilotage de la structure pedagogique" styleClass="header-label-muted"/>
-            </VBox>
-            <Region HBox.hgrow="ALWAYS"/>
-            <HBox spacing="8" alignment="CENTER">
-                <Button text="🔔 Notifications" onAction="#handleNotifications" styleClass="notification-button"/>
-                <Label fx:id="notificationsCountLabel" text="0" styleClass="notification-badge"/>
-            </HBox>
-            <Label fx:id="roleLabel" text="CHEF_DEPARTEMENT" styleClass="status-pill"/>
-            <Button text="Deconnexion" onAction="#handleLogout" styleClass="button-ghost"/>
-        </HBox>
-    </top>
-
+    <!-- ══════════════════════════════════════ SIDEBAR ══ -->
     <left>
-        <VBox styleClass="sidebar">
-            <VBox spacing="3">
-                <Label text="Navigation" styleClass="nav-title"/>
-                <Label text="Acces rapide aux modules" styleClass="nav-subtitle"/>
+        <VBox styleClass="sidebar-v2" prefWidth="190" spacing="0">
+
+            <!-- Avatar block -->
+            <VBox alignment="CENTER" spacing="6"
+                  style="-fx-padding: 28 16 20 16;">
+                <StackPane styleClass="avatar-circle">
+                    <Label text="AD" style="-fx-font-size:16px; -fx-font-weight:800;
+                                -fx-text-fill:white;"/>
+                </StackPane>
+                <Label text="Administrateur"
+                       style="-fx-font-size:12px; -fx-font-weight:700;
+                              -fx-text-fill:white; -fx-wrap-text:true;
+                              -fx-text-alignment:center;"/>
+                <Label fx:id="roleLabel" text="CHEF DEPT."
+                       style="-fx-font-size:10px; -fx-text-fill:rgba(255,255,255,0.55);"/>
             </VBox>
-            <Button text="⌂ Tableau de bord" onAction="#handleRafraichir" styleClass="nav-button-active"/>
-            <Button text="◫ Utilisateurs" onAction="#handleUsers" styleClass="nav-button"/>
-            <Button text="✦ Enseignants" onAction="#handleEnseignants" styleClass="nav-button"/>
-            <Button text="◧ Filieres" onAction="#handleOuvrirFilieres" styleClass="nav-button"/>
-            <Button text="▣ Classes" onAction="#handleOuvrirClasses" styleClass="nav-button"/>
-            <Button text="◉ Cours" onAction="#handleCours" styleClass="nav-button"/>
-            <Button text="☰ Cahiers de texte" onAction="#handleOuvrirCahiers" styleClass="nav-button"/>
-            <Region minHeight="12"/>
-            <Button text="✉ Notifications" onAction="#handleNotifications" styleClass="nav-button"/>
-            <Button text="◌ Statistiques" onAction="#handleStatistiques" styleClass="nav-button"/>
-            <Button text="↗ Rapports" onAction="#handleRapports" styleClass="nav-button"/>
+
+            <Separator style="-fx-opacity:0.15;"/>
+
+            <!-- Nav items -->
+            <VBox spacing="2" style="-fx-padding:12 10 12 10;">
+
+                <Button text="⌂   Tableau de bord"
+                        onAction="#handleRafraichir"
+                        styleClass="nav-button-active-v2"/>
+
+                <Button text="◫   Utilisateurs"
+                        onAction="#handleUsers"
+                        styleClass="nav-button-v2"/>
+
+                <Button text="✦   Enseignants"
+                        onAction="#handleEnseignants"
+                        styleClass="nav-button-v2"/>
+
+                <Button text="◧   Filières"
+                        onAction="#handleOuvrirFilieres"
+                        styleClass="nav-button-v2"/>
+
+                <Button text="▣   Classes"
+                        onAction="#handleOuvrirClasses"
+                        styleClass="nav-button-v2"/>
+
+                <Button text="◉   Cours"
+                        onAction="#handleCours"
+                        styleClass="nav-button-v2"/>
+
+                <Button text="☰   Cahiers de texte"
+                        onAction="#handleOuvrirCahiers"
+                        styleClass="nav-button-v2"/>
+
+                <Button text="✉   Notifications"
+                        onAction="#handleNotifications"
+                        styleClass="nav-button-v2"/>
+
+                <Button text="◌   Statistiques"
+                        onAction="#handleStatistiques"
+                        styleClass="nav-button-v2"/>
+
+                <Button text="↗   Rapports"
+                        onAction="#handleRapports"
+                        styleClass="nav-button-v2"/>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Separator style="-fx-opacity:0.15;"/>
+            <VBox style="-fx-padding:12 10 20 10;">
+                <Button text="⏻   Déconnexion"
+                        onAction="#handleLogout"
+                        styleClass="nav-button-v2"/>
+            </VBox>
+
         </VBox>
     </left>
 
+    <!-- ══════════════════════════════════════ MAIN AREA ══ -->
     <center>
-        <StackPane fx:id="contentContainer">
-            <ScrollPane fx:id="dashboardContent" fitToWidth="true" styleClass="content-scroll">
-            <VBox styleClass="page-content">
-                <HBox spacing="18" styleClass="surface-card, hero-card">
-                    <VBox spacing="8" HBox.hgrow="ALWAYS">
-                        <Label text="Vue d'ensemble" styleClass="page-title"/>
-                        <Label text="Retrouvez les indicateurs essentiels, les validations en attente et les notifications recentes dans une interface plus lisible." styleClass="page-subtitle" wrapText="true"/>
-                    </VBox>
-                    <VBox alignment="CENTER_RIGHT" spacing="8">
-                        <Label text="Administration" styleClass="helper-text"/>
-                        <Button text="↻ Rafraichir" onAction="#handleRafraichir" prefWidth="150"/>
-                    </VBox>
+        <VBox spacing="0">
+
+            <!-- ── Top bar ── -->
+            <HBox styleClass="topbar-v2" spacing="14" alignment="CENTER_LEFT"
+                  style="-fx-padding:14 24 14 24;">
+
+                <!-- Title -->
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Tableau de bord"
+                           style="-fx-font-size:20px; -fx-font-weight:800;
+                                  -fx-text-fill:#14324d;"/>
+                    <Label text="Pilotage pédagogique · Administration"
+                           style="-fx-font-size:11px; -fx-text-fill:#8a9bb0;"/>
+                </VBox>
+
+                <!-- Search bar -->
+                <HBox styleClass="search-bar-v2" spacing="8" alignment="CENTER_LEFT">
+                    <Label text="🔍" style="-fx-font-size:12px; -fx-text-fill:#8a9bb0;"/>
+                    <TextField promptText="Rechercher..."
+                               style="-fx-background-color:transparent;
+                                      -fx-border-color:transparent;
+                                      -fx-font-size:12px; -fx-text-fill:#203247;
+                                      -fx-prompt-text-fill:#aabacb;
+                                      -fx-pref-width:160;"/>
                 </HBox>
 
-                <GridPane hgap="16" vgap="16">
-                    <VBox styleClass="metric-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                        <Label text="Utilisateurs" styleClass="metric-caption"/>
-                        <Label fx:id="totalUtilisateursLabel" text="0" styleClass="metric-value"/>
-                    </VBox>
-                    <VBox styleClass="metric-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                        <Label text="Enseignants" styleClass="metric-caption"/>
-                        <Label fx:id="totalEnseignantsLabel" text="0" styleClass="metric-value"/>
-                    </VBox>
-                    <VBox styleClass="metric-card" GridPane.columnIndex="2" GridPane.rowIndex="0">
-                        <Label text="Responsables" styleClass="metric-caption"/>
-                        <Label fx:id="totalResponsablesLabel" text="0" styleClass="metric-value"/>
-                    </VBox>
-                    <VBox styleClass="metric-card" GridPane.columnIndex="3" GridPane.rowIndex="0">
-                        <Label text="En attente de validation" styleClass="metric-caption"/>
-                        <Label fx:id="utilisateursEnAttenteLabel" text="0" styleClass="metric-value-warning"/>
-                    </VBox>
-                </GridPane>
+                <!-- Right actions -->
+                <HBox spacing="10" alignment="CENTER">
+                    <Button text="↻" onAction="#handleRafraichir"
+                            styleClass="icon-btn-v2"
+                            style="-fx-font-size:14px;"/>
+                    <StackPane>
+                        <Button text="🔔" onAction="#handleNotifications"
+                                styleClass="icon-btn-v2"/>
+                        <Label fx:id="notificationsCountLabel" text="3"
+                               styleClass="notification-badge"
+                               style="-fx-translate-x:14; -fx-translate-y:-10;"/>
+                    </StackPane>
+                </HBox>
+            </HBox>
 
-                <GridPane hgap="16" vgap="16">
-                    <columnConstraints>
-                        <ColumnConstraints percentWidth="50"/>
-                        <ColumnConstraints percentWidth="50"/>
-                    </columnConstraints>
-                    <VBox styleClass="surface-card, summary-panel" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                        <Label text="Structure pedagogique" styleClass="section-title"/>
-                        <Label text="Organisation globale des filieres, classes et cours" styleClass="section-subtitle"/>
-                        <HBox spacing="14">
-                            <VBox styleClass="summary-stat" HBox.hgrow="ALWAYS">
-                                <Label text="Filieres" styleClass="metric-caption"/>
-                                <Label fx:id="totalFilieresLabel" text="0" styleClass="metric-value"/>
+            <!-- ── Scrollable content ── -->
+            <StackPane fx:id="contentContainer" VBox.vgrow="ALWAYS">
+                <ScrollPane fx:id="dashboardContent" fitToWidth="true"
+                            styleClass="content-scroll">
+                    <VBox styleClass="page-content" spacing="20">
+
+                        <!-- ── Welcome banner ── -->
+                        <HBox styleClass="welcome-banner-v2" spacing="16"
+                              alignment="CENTER_LEFT">
+                            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                <Label fx:id="bienvenuLabel"
+                                       text="Bienvenue !"
+                                       style="-fx-font-size:22px; -fx-font-weight:800;
+                                              -fx-text-fill:#14324d;"/>
+                                <Label text="Voici un aperçu de votre structure pédagogique aujourd'hui."
+                                       style="-fx-font-size:12px; -fx-text-fill:#7a8ea3;"/>
                             </VBox>
-                            <VBox styleClass="summary-stat" HBox.hgrow="ALWAYS">
-                                <Label text="Classes" styleClass="metric-caption"/>
-                                <Label fx:id="totalClassesLabel" text="0" styleClass="metric-value"/>
-                            </VBox>
-                            <VBox styleClass="summary-stat" HBox.hgrow="ALWAYS">
-                                <Label text="Cours" styleClass="metric-caption"/>
-                                <Label fx:id="totalCoursLabel" text="0" styleClass="metric-value"/>
-                            </VBox>
+                            <HBox spacing="8" alignment="CENTER_RIGHT">
+                                <Button text="📊 Rapports" onAction="#handleRapports"
+                                        styleClass="button-soft"
+                                        style="-fx-font-size:12px;"/>
+                                <Button text="↻ Rafraîchir" onAction="#handleRafraichir"
+                                        styleClass="button"
+                                        style="-fx-font-size:12px;"/>
+                            </HBox>
                         </HBox>
-                    </VBox>
 
-                    <VBox styleClass="surface-card, summary-panel" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                        <Label text="Suivi des seances" styleClass="section-title"/>
-                        <Label text="Etat des saisies et validations" styleClass="section-subtitle"/>
+                        <!-- ── KPI row (style image: 4 cards horizontales) ── -->
+                        <GridPane hgap="14" vgap="0">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="25"/>
+                                <ColumnConstraints percentWidth="25"/>
+                                <ColumnConstraints percentWidth="25"/>
+                                <ColumnConstraints percentWidth="25"/>
+                            </columnConstraints>
+
+                            <!-- Utilisateurs -->
+                            <HBox styleClass="kpi-card-v2"
+                                  GridPane.columnIndex="0" spacing="14"
+                                  alignment="CENTER_LEFT">
+                                <StackPane styleClass="kpi-icon-box-v2 kpi-icon-blue">
+                                    <Label text="👤"
+                                           style="-fx-font-size:20px;"/>
+                                </StackPane>
+                                <VBox spacing="3">
+                                    <Label fx:id="totalUtilisateursLabel" text="0"
+                                           styleClass="kpi-value-v2"/>
+                                    <Label text="Utilisateurs"
+                                           styleClass="kpi-caption-v2"/>
+                                    <Label text="↑ Comptes actifs"
+                                           styleClass="trend-up"/>
+                                </VBox>
+                            </HBox>
+
+                            <!-- Enseignants -->
+                            <HBox styleClass="kpi-card-v2"
+                                  GridPane.columnIndex="1" spacing="14"
+                                  alignment="CENTER_LEFT">
+                                <StackPane styleClass="kpi-icon-box-v2 kpi-icon-teal">
+                                    <Label text="🎓"
+                                           style="-fx-font-size:20px;"/>
+                                </StackPane>
+                                <VBox spacing="3">
+                                    <Label fx:id="totalEnseignantsLabel" text="0"
+                                           styleClass="kpi-value-v2"/>
+                                    <Label text="Enseignants"
+                                           styleClass="kpi-caption-v2"/>
+                                    <Label text="— Ce semestre"
+                                           styleClass="trend-neutral"/>
+                                </VBox>
+                            </HBox>
+
+                            <!-- Responsables -->
+                            <HBox styleClass="kpi-card-v2"
+                                  GridPane.columnIndex="2" spacing="14"
+                                  alignment="CENTER_LEFT">
+                                <StackPane styleClass="kpi-icon-box-v2 kpi-icon-green">
+                                    <Label text="🏫"
+                                           style="-fx-font-size:20px;"/>
+                                </StackPane>
+                                <VBox spacing="3">
+                                    <Label fx:id="totalResponsablesLabel" text="0"
+                                           styleClass="kpi-value-v2"/>
+                                    <Label text="Responsables"
+                                           styleClass="kpi-caption-v2"/>
+                                    <Label text="— Chefs de dépt."
+                                           styleClass="trend-neutral"/>
+                                </VBox>
+                            </HBox>
+
+                            <!-- En attente -->
+                            <HBox styleClass="kpi-card-v2 kpi-card-warning-v2"
+                                  GridPane.columnIndex="3" spacing="14"
+                                  alignment="CENTER_LEFT">
+                                <StackPane styleClass="kpi-icon-box-v2 kpi-icon-amber">
+                                    <Label text="⏳"
+                                           style="-fx-font-size:20px;"/>
+                                </StackPane>
+                                <VBox spacing="3">
+                                    <Label fx:id="utilisateursEnAttenteLabel" text="0"
+                                           styleClass="kpi-value-warning-v2"/>
+                                    <Label text="En attente"
+                                           styleClass="kpi-caption-v2"/>
+                                    <Label text="● Action requise"
+                                           styleClass="trend-alert"/>
+                                </VBox>
+                            </HBox>
+                        </GridPane>
+
+                        <!-- ── Middle row: 3 columns ── -->
                         <GridPane hgap="14" vgap="14">
                             <columnConstraints>
-                                <ColumnConstraints percentWidth="50"/>
-                                <ColumnConstraints percentWidth="50"/>
+                                <ColumnConstraints percentWidth="30"/>
+                                <ColumnConstraints percentWidth="36"/>
+                                <ColumnConstraints percentWidth="34"/>
                             </columnConstraints>
-                            <VBox styleClass="summary-stat" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                                <Label text="Total" styleClass="metric-caption"/>
-                                <Label fx:id="totalSeancesLabel" text="0" styleClass="metric-value"/>
+
+                            <!-- Col 0: Utilisateurs panel (style "No of users") -->
+                            <VBox styleClass="surface-card" GridPane.columnIndex="0"
+                                  spacing="14">
+                                <HBox alignment="CENTER_LEFT" spacing="8">
+                                    <Label text="Utilisateurs"
+                                           styleClass="section-title"
+                                           style="-fx-font-size:14px;"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Button text="⋯" styleClass="icon-btn-v2"
+                                            onAction="#handleUsers"
+                                            style="-fx-font-size:14px;"/>
+                                </HBox>
+
+                                <Separator styleClass="card-separator"/>
+
+                                <!-- Big stat -->
+                                <HBox spacing="16" alignment="CENTER_LEFT">
+                                    <StackPane styleClass="big-icon-box-v2">
+                                        <Label text="👥"
+                                               style="-fx-font-size:28px;"/>
+                                    </StackPane>
+                                    <VBox spacing="4">
+                                        <Label fx:id=""
+                                               text="total Utilisateurs"
+                                               style="-fx-font-size:36px;
+                                                      -fx-font-weight:800;
+                                                      -fx-text-fill:#14324d;"/>
+                                        <Label text="Total inscrits"
+                                               styleClass="metric-caption"/>
+                                    </VBox>
+                                </HBox>
+
+                                <Separator styleClass="card-separator"/>
+
+                                <!-- Sub-stats -->
+                                <GridPane hgap="8" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="50"/>
+                                        <ColumnConstraints percentWidth="50"/>
+                                    </columnConstraints>
+                                    <VBox styleClass="mini-stat-card" spacing="4"
+                                          GridPane.columnIndex="0">
+                                        <Label text="✦" style="-fx-font-size:14px;
+                                                    -fx-text-fill:#2f6fad;"/>
+                                        <Label
+                                               text="total Enseignant"
+                                               style="-fx-font-size:18px;
+                                                      -fx-font-weight:800;
+                                                      -fx-text-fill:#14324d;"/>
+                                        <Label text="Enseignants"
+                                               styleClass="metric-caption"/>
+                                    </VBox>
+                                    <VBox styleClass="mini-stat-card" spacing="4"
+                                          GridPane.columnIndex="1">
+                                        <Label text="🏫" style="-fx-font-size:14px;"/>
+                                        <Label
+                                               text="total Responsable"
+                                               style="-fx-font-size:18px;
+                                                      -fx-font-weight:800;
+                                                      -fx-text-fill:#14324d;"/>
+                                        <Label text="Responsables"
+                                               styleClass="metric-caption"/>
+                                    </VBox>
+                                </GridPane>
+
+                                <Button text="Gérer les utilisateurs →"
+                                        onAction="#handleUsers"
+                                        styleClass="button-soft"
+                                        style="-fx-font-size:11px;
+                                               -fx-max-width:infinity;"/>
                             </VBox>
-                            <VBox styleClass="summary-stat" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                                <Label text="En attente" styleClass="metric-caption"/>
-                                <Label fx:id="seancesEnAttenteLabel" text="0" styleClass="metric-value-warning"/>
+
+                            <!-- Col 1: Séances "Inventory Values" style -->
+                            <VBox styleClass="surface-card" GridPane.columnIndex="1"
+                                  spacing="14">
+                                <HBox alignment="CENTER_LEFT" spacing="8">
+                                    <Label text="Suivi des séances"
+                                           styleClass="section-title"
+                                           style="-fx-font-size:14px;"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Button text="Voir tout →"
+                                            onAction="#handleOuvrirCahiers"
+                                            styleClass="button-soft"
+                                            style="-fx-font-size:10px;
+                                                   -fx-padding:4 10 4 10;"/>
+                                </HBox>
+
+                                <Separator styleClass="card-separator"/>
+
+                                <!-- Donut simulation with bar chart -->
+                                <HBox spacing="16" alignment="CENTER">
+
+                                    <!-- Visual: stacked bars as donut proxy -->
+                                    <VBox alignment="CENTER" spacing="4"
+                                          style="-fx-padding:8;">
+                                        <Label text="Répartition"
+                                               styleClass="metric-caption"/>
+
+                                        <!-- Bar chart simulation -->
+                                        <HBox spacing="6" alignment="BOTTOM_CENTER"
+                                              style="-fx-padding:10 0 0 0;">
+                                            <VBox alignment="BOTTOM_CENTER" spacing="2">
+                                                <Label fx:id="seancesValideesLabel"
+                                                       text="0"
+                                                       style="-fx-font-size:10px;
+                                                              -fx-font-weight:700;
+                                                              -fx-text-fill:#198754;"/>
+                                                <Region styleClass="bar-success-v2"
+                                                        prefWidth="28" prefHeight="70"/>
+                                                <Label text="✓"
+                                                       style="-fx-font-size:10px;
+                                                              -fx-text-fill:#198754;"/>
+                                            </VBox>
+                                            <VBox alignment="BOTTOM_CENTER" spacing="2">
+                                                <Label fx:id="seancesEnAttenteLabel"
+                                                       text="0"
+                                                       style="-fx-font-size:10px;
+                                                              -fx-font-weight:700;
+                                                              -fx-text-fill:#cb8616;"/>
+                                                <Region styleClass="bar-warning-v2"
+                                                        prefWidth="28" prefHeight="50"/>
+                                                <Label text="⏳"
+                                                       style="-fx-font-size:10px;
+                                                              -fx-text-fill:#cb8616;"/>
+                                            </VBox>
+                                            <VBox alignment="BOTTOM_CENTER" spacing="2">
+                                                <Label fx:id="seancesRejeteesLabel"
+                                                       text="0"
+                                                       style="-fx-font-size:10px;
+                                                              -fx-font-weight:700;
+                                                              -fx-text-fill:#c0392b;"/>
+                                                <Region styleClass="bar-danger-v2"
+                                                        prefWidth="28" prefHeight="30"/>
+                                                <Label text="✗"
+                                                       style="-fx-font-size:10px;
+                                                              -fx-text-fill:#c0392b;"/>
+                                            </VBox>
+                                        </HBox>
+                                    </VBox>
+
+                                    <!-- Legend & values -->
+                                    <VBox spacing="10" HBox.hgrow="ALWAYS"
+                                          alignment="CENTER_LEFT">
+                                        <VBox spacing="2">
+                                            <Label text="Total séances"
+                                                   styleClass="metric-caption"/>
+                                            <Label
+                                                   text="total Seances"
+                                                   styleClass="metric-value"
+                                                   style="-fx-font-size:30px;"/>
+                                        </VBox>
+
+                                        <Separator styleClass="card-separator"/>
+
+                                        <HBox spacing="6" alignment="CENTER_LEFT">
+                                            <Region styleClass="legend-dot-success"
+                                                    prefWidth="10" prefHeight="10"/>
+                                            <Label text="Séances validées"
+                                                   styleClass="metric-caption"/>
+                                        </HBox>
+                                        <HBox spacing="6" alignment="CENTER_LEFT">
+                                            <Region styleClass="legend-dot-warning"
+                                                    prefWidth="10" prefHeight="10"/>
+                                            <Label text="En attente"
+                                                   styleClass="metric-caption"/>
+                                        </HBox>
+                                        <HBox spacing="6" alignment="CENTER_LEFT">
+                                            <Region styleClass="legend-dot-danger"
+                                                    prefWidth="10" prefHeight="10"/>
+                                            <Label text="Rejetées"
+                                                   styleClass="metric-caption"/>
+                                        </HBox>
+                                    </VBox>
+                                </HBox>
                             </VBox>
-                            <VBox styleClass="summary-stat" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                                <Label text="Validees" styleClass="metric-caption"/>
-                                <Label fx:id="seancesValideesLabel" text="0" styleClass="metric-value-success"/>
-                            </VBox>
-                            <VBox styleClass="summary-stat" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                <Label text="Rejetees" styleClass="metric-caption"/>
-                                <Label fx:id="seancesRejeteesLabel" text="0" styleClass="metric-value-danger"/>
+
+                            <!-- Col 2: Top structure (style "Top 10 Stores") -->
+                            <VBox styleClass="surface-card" GridPane.columnIndex="2"
+                                  spacing="14">
+                                <HBox alignment="CENTER_LEFT" spacing="8">
+                                    <Label text="Structure pédagogique"
+                                           styleClass="section-title"
+                                           style="-fx-font-size:13px;"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Button text="Gérer →"
+                                            onAction="#handleOuvrirFilieres"
+                                            styleClass="button-soft"
+                                            style="-fx-font-size:10px;
+                                                   -fx-padding:4 10 4 10;"/>
+                                </HBox>
+
+                                <Separator styleClass="card-separator"/>
+
+                                <!-- Progress-bar style rows -->
+                                <VBox spacing="10">
+                                    <!-- Filières -->
+                                    <VBox spacing="4">
+                                        <HBox alignment="CENTER_LEFT" spacing="6">
+                                            <Label text="◧"
+                                                   style="-fx-text-fill:#2f6fad;
+                                                          -fx-font-size:12px;"/>
+                                            <Label text="Filières"
+                                                   styleClass="metric-caption"
+                                                   HBox.hgrow="ALWAYS"/>
+                                            <Label fx:id="totalFilieresLabel"
+                                                   text="0"
+                                                   style="-fx-font-weight:800;
+                                                          -fx-text-fill:#14324d;
+                                                          -fx-font-size:12px;"/>
+                                        </HBox>
+                                        <HBox styleClass="progress-track-v2">
+                                            <Region styleClass="progress-fill-blue-v2"
+                                                    prefHeight="6"
+                                                    HBox.hgrow="ALWAYS"
+                                                    maxWidth="140"/>
+                                        </HBox>
+                                    </VBox>
+
+                                    <!-- Classes -->
+                                    <VBox spacing="4">
+                                        <HBox alignment="CENTER_LEFT" spacing="6">
+                                            <Label text="▣"
+                                                   style="-fx-text-fill:#198754;
+                                                          -fx-font-size:12px;"/>
+                                            <Label text="Classes"
+                                                   styleClass="metric-caption"
+                                                   HBox.hgrow="ALWAYS"/>
+                                            <Label fx:id="totalClassesLabel"
+                                                   text="0"
+                                                   style="-fx-font-weight:800;
+                                                          -fx-text-fill:#14324d;
+                                                          -fx-font-size:12px;"/>
+                                        </HBox>
+                                        <HBox styleClass="progress-track-v2">
+                                            <Region styleClass="progress-fill-green-v2"
+                                                    prefHeight="6"
+                                                    HBox.hgrow="ALWAYS"
+                                                    maxWidth="100"/>
+                                        </HBox>
+                                    </VBox>
+
+                                    <!-- Cours -->
+                                    <VBox spacing="4">
+                                        <HBox alignment="CENTER_LEFT" spacing="6">
+                                            <Label text="◉"
+                                                   style="-fx-text-fill:#d4a547;
+                                                          -fx-font-size:12px;"/>
+                                            <Label text="Cours"
+                                                   styleClass="metric-caption"
+                                                   HBox.hgrow="ALWAYS"/>
+                                            <Label fx:id="totalCoursLabel"
+                                                   text="0"
+                                                   style="-fx-font-weight:800;
+                                                          -fx-text-fill:#14324d;
+                                                          -fx-font-size:12px;"/>
+                                        </HBox>
+                                        <HBox styleClass="progress-track-v2">
+                                            <Region styleClass="progress-fill-amber-v2"
+                                                    prefHeight="6"
+                                                    HBox.hgrow="ALWAYS"
+                                                    maxWidth="120"/>
+                                        </HBox>
+                                    </VBox>
+
+                                    <!-- Séances validées -->
+                                    <VBox spacing="4">
+                                        <HBox alignment="CENTER_LEFT" spacing="6">
+                                            <Label text="✓"
+                                                   style="-fx-text-fill:#198754;
+                                                          -fx-font-size:12px;"/>
+                                            <Label text="Séances val."
+                                                   styleClass="metric-caption"
+                                                   HBox.hgrow="ALWAYS"/>
+                                            <Label fx:id=""
+                                                   text="seances Validees"
+                                                   style="-fx-font-weight:800;
+                                                          -fx-text-fill:#14324d;
+                                                          -fx-font-size:12px;"/>
+                                        </HBox>
+                                        <HBox styleClass="progress-track-v2">
+                                            <Region styleClass="progress-fill-green-v2"
+                                                    prefHeight="6"
+                                                    HBox.hgrow="ALWAYS"
+                                                    maxWidth="90"/>
+                                        </HBox>
+                                    </VBox>
+
+                                    <!-- Séances rejetées -->
+                                    <VBox spacing="4">
+                                        <HBox alignment="CENTER_LEFT" spacing="6">
+                                            <Label text="✗"
+                                                   style="-fx-text-fill:#c0392b;
+                                                          -fx-font-size:12px;"/>
+                                            <Label text="Séances rej."
+                                                   styleClass="metric-caption"
+                                                   HBox.hgrow="ALWAYS"/>
+                                            <Label fx:id=""
+                                                   text="seances Rejetees"
+                                                   style="-fx-font-weight:800;
+                                                          -fx-text-fill:#14324d;
+                                                          -fx-font-size:12px;"/>
+                                        </HBox>
+                                        <HBox styleClass="progress-track-v2">
+                                            <Region styleClass="progress-fill-red-v2"
+                                                    prefHeight="6"
+                                                    HBox.hgrow="ALWAYS"
+                                                    maxWidth="40"/>
+                                        </HBox>
+                                    </VBox>
+
+                                </VBox>
+
+                                <!-- Quick actions -->
+                                <HBox spacing="6">
+                                    <Button text="+ Filière"
+                                            onAction="#handleOuvrirFilieres"
+                                            styleClass="button-soft"
+                                            style="-fx-font-size:10px;
+                                                   -fx-padding:5 10 5 10;"/>
+                                    <Button text="+ Classe"
+                                            onAction="#handleOuvrirClasses"
+                                            styleClass="button-soft"
+                                            style="-fx-font-size:10px;
+                                                   -fx-padding:5 10 5 10;"/>
+                                </HBox>
                             </VBox>
                         </GridPane>
+
+                        <!-- ── Bottom row: Activity + Quick access ── -->
+                        <GridPane hgap="14" vgap="14">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="58"/>
+                                <ColumnConstraints percentWidth="42"/>
+                            </columnConstraints>
+
+                            <!-- Left: Activité (style "Expense vs Profit") -->
+                            <VBox styleClass="surface-card" GridPane.columnIndex="0"
+                                  spacing="14">
+                                <HBox alignment="CENTER_LEFT" spacing="10">
+                                    <VBox spacing="2" HBox.hgrow="ALWAYS">
+                                        <Label text="Activité des séances"
+                                               styleClass="section-title"
+                                               style="-fx-font-size:14px;"/>
+                                        <Label text="Évolution · Validations · Rejets"
+                                               styleClass="section-subtitle"/>
+                                    </VBox>
+                                    <Label text="En temps réel"
+                                           style="-fx-font-size:10px;
+                                                  -fx-text-fill:#aabacb;"/>
+                                </HBox>
+
+                                <Separator styleClass="card-separator"/>
+
+                                <!-- Chart area simulation -->
+                                <VBox spacing="8">
+                                    <!-- Legend -->
+                                    <HBox spacing="16" alignment="CENTER_LEFT">
+                                        <HBox spacing="5" alignment="CENTER_LEFT">
+                                            <Region styleClass="legend-dot-success"
+                                                    prefWidth="10" prefHeight="10"/>
+                                            <Label text="Validées"
+                                                   style="-fx-font-size:11px;
+                                                          -fx-text-fill:#6b7d91;"/>
+                                        </HBox>
+                                        <HBox spacing="5" alignment="CENTER_LEFT">
+                                            <Region styleClass="legend-dot-warning"
+                                                    prefWidth="10" prefHeight="10"/>
+                                            <Label text="En attente"
+                                                   style="-fx-font-size:11px;
+                                                          -fx-text-fill:#6b7d91;"/>
+                                        </HBox>
+                                        <HBox spacing="5" alignment="CENTER_LEFT">
+                                            <Region styleClass="legend-dot-danger"
+                                                    prefWidth="10" prefHeight="10"/>
+                                            <Label text="Rejetées"
+                                                   style="-fx-font-size:11px;
+                                                          -fx-text-fill:#6b7d91;"/>
+                                        </HBox>
+                                    </HBox>
+
+                                    <!-- Bar chart horizontal simulation -->
+                                    <VBox styleClass="chart-area-v2" spacing="12">
+
+                                        <!-- Row Validées -->
+                                        <HBox spacing="10" alignment="CENTER_LEFT">
+                                            <Label text="Validées"
+                                                   style="-fx-font-size:11px;
+                                                          -fx-text-fill:#6b7d91;
+                                                          -fx-min-width:70;"/>
+                                            <HBox styleClass="hbar-track-v2"
+                                                  HBox.hgrow="ALWAYS">
+                                                <Region styleClass="hbar-fill-success-v2"
+                                                        prefHeight="16"
+                                                        HBox.hgrow="ALWAYS"
+                                                        maxWidth="280"/>
+                                            </HBox>
+                                            <Label fx:id=""
+                                                   text="seances Validees"
+                                                   style="-fx-font-size:12px;
+                                                          -fx-font-weight:700;
+                                                          -fx-text-fill:#198754;
+                                                          -fx-min-width:30;"/>
+                                        </HBox>
+
+                                        <!-- Row En attente -->
+                                        <HBox spacing="10" alignment="CENTER_LEFT">
+                                            <Label text="En attente"
+                                                   style="-fx-font-size:11px;
+                                                          -fx-text-fill:#6b7d91;
+                                                          -fx-min-width:70;"/>
+                                            <HBox styleClass="hbar-track-v2"
+                                                  HBox.hgrow="ALWAYS">
+                                                <Region styleClass="hbar-fill-warning-v2"
+                                                        prefHeight="16"
+                                                        HBox.hgrow="ALWAYS"
+                                                        maxWidth="160"/>
+                                            </HBox>
+                                            <Label fx:id=""
+                                                   text="seances En Attente"
+                                                   style="-fx-font-size:12px;
+                                                          -fx-font-weight:700;
+                                                          -fx-text-fill:#cb8616;
+                                                          -fx-min-width:30;"/>
+                                        </HBox>
+
+                                        <!-- Row Rejetées -->
+                                        <HBox spacing="10" alignment="CENTER_LEFT">
+                                            <Label text="Rejetées"
+                                                   style="-fx-font-size:11px;
+                                                          -fx-text-fill:#6b7d91;
+                                                          -fx-min-width:70;"/>
+                                            <HBox styleClass="hbar-track-v2"
+                                                  HBox.hgrow="ALWAYS">
+                                                <Region styleClass="hbar-fill-danger-v2"
+                                                        prefHeight="16"
+                                                        HBox.hgrow="ALWAYS"
+                                                        maxWidth="80"/>
+                                            </HBox>
+                                            <Label fx:id=""
+                                                   text="seances Rejetees"
+                                                   style="-fx-font-size:12px;
+                                                          -fx-font-weight:700;
+                                                          -fx-text-fill:#c0392b;
+                                                          -fx-min-width:30;"/>
+                                        </HBox>
+
+                                        <!-- Row Total -->
+                                        <HBox spacing="10" alignment="CENTER_LEFT">
+                                            <Label text="Total"
+                                                   style="-fx-font-size:11px;
+                                                          -fx-text-fill:#6b7d91;
+                                                          -fx-min-width:70;"/>
+                                            <HBox styleClass="hbar-track-v2"
+                                                  HBox.hgrow="ALWAYS">
+                                                <Region styleClass="hbar-fill-blue-v2"
+                                                        prefHeight="16"
+                                                        HBox.hgrow="ALWAYS"
+                                                        maxWidth="360"/>
+                                            </HBox>
+                                            <Label fx:id="totalSeancesLabel"
+                                                   text="0"
+                                                   style="-fx-font-size:12px;
+                                                          -fx-font-weight:700;
+                                                          -fx-text-fill:#2f6fad;
+                                                          -fx-min-width:30;"/>
+                                        </HBox>
+
+                                    </VBox>
+                                </VBox>
+                            </VBox>
+
+                            <!-- Right: Quick access (4 mini-cards) -->
+                            <VBox styleClass="surface-card" GridPane.columnIndex="1"
+                                  spacing="14">
+                                <HBox alignment="CENTER_LEFT">
+                                    <Label text="Accès rapide"
+                                           styleClass="section-title"
+                                           style="-fx-font-size:14px;"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                </HBox>
+
+                                <Separator styleClass="card-separator"/>
+
+                                <VBox spacing="8">
+                                    <!-- Utilisateurs -->
+                                    <HBox styleClass="quick-row-v2" spacing="12"
+                                          alignment="CENTER_LEFT">
+                                        <StackPane styleClass="quick-icon-v2 quick-icon-blue">
+                                            <Label text="◫"
+                                                   style="-fx-font-size:14px;
+                                                          -fx-text-fill:#2f6fad;"/>
+                                        </StackPane>
+                                        <VBox spacing="1" HBox.hgrow="ALWAYS">
+                                            <Label text="Utilisateurs"
+                                                   style="-fx-font-size:12px;
+                                                          -fx-font-weight:700;
+                                                          -fx-text-fill:#14324d;"/>
+                                            <Label text="Comptes et rôles"
+                                                   styleClass="metric-caption"/>
+                                        </VBox>
+                                        <Button text="→" onAction="#handleUsers"
+                                                styleClass="arrow-btn-v2"/>
+                                    </HBox>
+
+                                    <!-- Enseignants -->
+                                    <HBox styleClass="quick-row-v2" spacing="12"
+                                          alignment="CENTER_LEFT">
+                                        <StackPane styleClass="quick-icon-v2 quick-icon-teal">
+                                            <Label text="✦"
+                                                   style="-fx-font-size:14px;
+                                                          -fx-text-fill:#0d7a6a;"/>
+                                        </StackPane>
+                                        <VBox spacing="1" HBox.hgrow="ALWAYS">
+                                            <Label text="Enseignants"
+                                                   style="-fx-font-size:12px;
+                                                          -fx-font-weight:700;
+                                                          -fx-text-fill:#14324d;"/>
+                                            <Label text="Corps pédagogique"
+                                                   styleClass="metric-caption"/>
+                                        </VBox>
+                                        <Button text="→" onAction="#handleEnseignants"
+                                                styleClass="arrow-btn-v2"/>
+                                    </HBox>
+
+                                    <!-- Cahiers -->
+                                    <HBox styleClass="quick-row-v2" spacing="12"
+                                          alignment="CENTER_LEFT">
+                                        <StackPane styleClass="quick-icon-v2 quick-icon-green">
+                                            <Label text="☰"
+                                                   style="-fx-font-size:14px;
+                                                          -fx-text-fill:#198754;"/>
+                                        </StackPane>
+                                        <VBox spacing="1" HBox.hgrow="ALWAYS">
+                                            <Label text="Cahiers de texte"
+                                                   style="-fx-font-size:12px;
+                                                          -fx-font-weight:700;
+                                                          -fx-text-fill:#14324d;"/>
+                                            <Label text="Suivi des séances"
+                                                   styleClass="metric-caption"/>
+                                        </VBox>
+                                        <Button text="→" onAction="#handleOuvrirCahiers"
+                                                styleClass="arrow-btn-v2"/>
+                                    </HBox>
+
+                                    <!-- Statistiques -->
+                                    <HBox styleClass="quick-row-v2" spacing="12"
+                                          alignment="CENTER_LEFT">
+                                        <StackPane styleClass="quick-icon-v2 quick-icon-amber">
+                                            <Label text="◌"
+                                                   style="-fx-font-size:14px;
+                                                          -fx-text-fill:#d4a547;"/>
+                                        </StackPane>
+                                        <VBox spacing="1" HBox.hgrow="ALWAYS">
+                                            <Label text="Statistiques"
+                                                   style="-fx-font-size:12px;
+                                                          -fx-font-weight:700;
+                                                          -fx-text-fill:#14324d;"/>
+                                            <Label text="Analyses et tendances"
+                                                   styleClass="metric-caption"/>
+                                        </VBox>
+                                        <Button text="→" onAction="#handleStatistiques"
+                                                styleClass="arrow-btn-v2"/>
+                                    </HBox>
+
+                                    <!-- Rapports -->
+                                    <HBox styleClass="quick-row-v2" spacing="12"
+                                          alignment="CENTER_LEFT">
+                                        <StackPane styleClass="quick-icon-v2 quick-icon-red">
+                                            <Label text="↗"
+                                                   style="-fx-font-size:14px;
+                                                          -fx-text-fill:#c0392b;"/>
+                                        </StackPane>
+                                        <VBox spacing="1" HBox.hgrow="ALWAYS">
+                                            <Label text="Rapports"
+                                                   style="-fx-font-size:12px;
+                                                          -fx-font-weight:700;
+                                                          -fx-text-fill:#14324d;"/>
+                                            <Label text="Export et synthèses"
+                                                   styleClass="metric-caption"/>
+                                        </VBox>
+                                        <Button text="→" onAction="#handleRapports"
+                                                styleClass="arrow-btn-v2"/>
+                                    </HBox>
+
+                                </VBox>
+                            </VBox>
+                        </GridPane>
+
+                        <!-- Bottom padding -->
+                        <Region minHeight="16"/>
+
                     </VBox>
-                </GridPane>
-            </VBox>
-            </ScrollPane>
-        </StackPane>
+                </ScrollPane>
+            </StackPane>
+        </VBox>
     </center>
+
 </BorderPane>

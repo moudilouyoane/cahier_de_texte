@@ -1,95 +1,245 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" prefWidth="1080" prefHeight="760"
+<BorderPane xmlns:fx="http://javafx.com/fxml" prefWidth="1180" prefHeight="780"
             fx:controller="yoanemoudilou.cahiertexte.ui.users.UserManagementController"
             styleClass="app-shell">
 
+    <!-- ════════════════════ TOP BAR ════════════════════ -->
     <top>
         <HBox styleClass="top-bar">
-            <Label text="US" styleClass="icon-badge, icon-badge-light"/>
-            <VBox spacing="3">
-                <Label text="Gestion des utilisateurs" styleClass="header-label"/>
-                <Label text="Comptes, roles, validation et activation depuis un seul espace" styleClass="header-label-muted"/>
-            </VBox>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <StackPane styleClass="icon-badge, icon-badge-light">
+                    <Label text="US"/>
+                </StackPane>
+                <VBox spacing="3">
+                    <Label text="Gestion des utilisateurs" styleClass="header-label"/>
+                    <Label text="Comptes, rôles, validation et activation depuis un seul espace" styleClass="header-label-muted"/>
+                </VBox>
+            </HBox>
+
             <Region HBox.hgrow="ALWAYS"/>
-            <Button text="Dashboard" onAction="#handleRetourDashboard" styleClass="button-ghost, module-back-button"/>
+
+            <!-- Pills de contexte (style breadcrumb moderne) -->
+            <HBox spacing="8" alignment="CENTER_RIGHT">
+                <Label text="● Espace administrateur" styleClass="status-pill"/>
+                <Button text="←  Dashboard" onAction="#handleRetourDashboard" styleClass="button-ghost">
+                    <tooltip><Tooltip text="Revenir au tableau de bord"/></tooltip>
+                </Button>
+            </HBox>
         </HBox>
     </top>
 
+    <!-- ════════════════════ CONTENU ════════════════════ -->
     <center>
-        <ScrollPane fitToWidth="true" styleClass="content-scroll">
-        <VBox styleClass="page-content">
-            <VBox styleClass="surface-card, hero-card">
-                <Label text="Administration des comptes" styleClass="page-title"/>
-                <Label text="Selectionnez un utilisateur pour modifier son profil, son role ou lier un responsable a une classe." styleClass="page-subtitle" wrapText="true"/>
-            </VBox>
+        <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="content-scroll" hbarPolicy="NEVER">
+            <VBox styleClass="page-content" spacing="20">
 
-            <VBox styleClass="surface-card" VBox.vgrow="ALWAYS">
-                <Label text="Utilisateurs enregistres" styleClass="section-title"/>
-                <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
-                    <columns>
-                        <TableColumn fx:id="idColumn" text="ID" prefWidth="55"/>
-                        <TableColumn fx:id="nomColumn" text="Nom" prefWidth="145"/>
-                        <TableColumn fx:id="prenomColumn" text="Prenom" prefWidth="145"/>
-                        <TableColumn fx:id="emailColumn" text="Email" prefWidth="235"/>
-                        <TableColumn fx:id="roleColumn" text="Role" prefWidth="170"/>
-                        <TableColumn fx:id="valideColumn" text="Valide" prefWidth="85"/>
-                        <TableColumn fx:id="actifColumn" text="Actif" prefWidth="85"/>
-                    </columns>
-                </TableView>
-            </VBox>
+                <!-- ── HERO + KPI ─────────────────────────────────── -->
+                <HBox styleClass="surface-card, hero-card" spacing="0" style="-fx-padding: 0;">
 
-            <VBox styleClass="surface-card">
-                <Label text="Edition du compte" styleClass="section-title"/>
-                <GridPane hgap="16" vgap="12">
-                    <Label text="Nom" styleClass="helper-text" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                    <TextField fx:id="nomField" prefWidth="220" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <!-- Bande d'accent verticale -->
+                    <Region styleClass="hero-accent-strip"/>
 
-                    <Label text="Prenom" styleClass="helper-text" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                    <TextField fx:id="prenomField" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    <HBox spacing="24" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                        <padding><Insets top="20" right="22" bottom="20" left="22"/></padding>
 
-                    <Label text="Email" styleClass="helper-text" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-                    <TextField fx:id="emailField" prefWidth="250" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                        <!-- Titre + sous-titre -->
+                        <VBox spacing="10" HBox.hgrow="ALWAYS">
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Label text="ADMINISTRATION" styleClass="page-tag"/>
+                                <Label text="UTILISATEURS &amp; ACCÈS" styleClass="section-eyebrow"/>
+                            </HBox>
+                            <Label text="Gestion des comptes utilisateurs" styleClass="page-title"/>
+                            <Label text="Gérez les profils, les rôles et les accès de tous les utilisateurs de la plateforme."
+                                   styleClass="page-subtitle" wrapText="true"/>
+                        </VBox>
 
-                    <Label text="Mot de passe" styleClass="helper-text" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                    <PasswordField fx:id="passwordField" prefWidth="220" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-
-                    <Label text="Role" styleClass="helper-text" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                    <ComboBox fx:id="roleComboBox" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-
-                    <Label text="Classe du responsable" styleClass="helper-text" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-                    <ComboBox fx:id="classeComboBox" prefWidth="250" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
-
-                    <CheckBox fx:id="valideCheckBox" text="Compte valide" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-                    <CheckBox fx:id="actifCheckBox" text="Compte actif" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-                </GridPane>
-
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Button text="+ Nouveau" onAction="#handleNouveau" prefWidth="120"/>
-                    <Button text="Enregistrer" onAction="#handleEnregistrer" prefWidth="150" styleClass="button-success"/>
-                    <Button text="Supprimer" onAction="#handleSupprimer" prefWidth="140" styleClass="button-danger"/>
-                    <Button text="Valider compte" onAction="#handleValiderUtilisateur" prefWidth="150" styleClass="button-accent"/>
-                    <Button text="Activer / Desactiver" onAction="#handleBasculerActivation" prefWidth="170" styleClass="button-soft"/>
-                    <Button text="Rafraichir" onAction="#handleRafraichir" prefWidth="140" styleClass="button-soft"/>
+                        <!-- KPI cards façon dashboard -->
+                        <HBox spacing="14" alignment="CENTER_RIGHT">
+                            <VBox styleClass="summary-stat" spacing="6" alignment="CENTER_LEFT"
+                                  style="-fx-min-height: 0; -fx-min-width: 140;">
+                                <Label text="UTILISATEURS" styleClass="section-eyebrow"/>
+                                <Label text="0" styleClass="metric-value"/>
+                                <Label text="comptes au total" styleClass="trend-neutral"/>
+                            </VBox>
+                            <VBox styleClass="summary-stat-success" spacing="6" alignment="CENTER_LEFT"
+                                  style="-fx-min-height: 0; -fx-min-width: 140;">
+                                <Label text="ACTIFS" styleClass="section-eyebrow"/>
+                                <Label text="0" styleClass="metric-value-success"/>
+                                <Label text="▲ accès autorisés" styleClass="trend-up"/>
+                            </VBox>
+                            <VBox styleClass="summary-stat-warning" spacing="6" alignment="CENTER_LEFT"
+                                  style="-fx-min-height: 0; -fx-min-width: 140;">
+                                <Label text="EN ATTENTE" styleClass="section-eyebrow"/>
+                                <Label text="0" styleClass="metric-value-warning"/>
+                                <Label text="⚠ à valider" styleClass="trend-alert"/>
+                            </VBox>
+                        </HBox>
+                    </HBox>
                 </HBox>
+
+                <!-- ── MASTER / DETAIL ───────────────────────────── -->
+                <HBox spacing="20" VBox.vgrow="ALWAYS">
+
+                    <!-- ▌LISTE DES UTILISATEURS (master) -->
+                    <VBox styleClass="surface-card" spacing="14" HBox.hgrow="ALWAYS">
+
+                        <!-- Header de card -->
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <StackPane styleClass="card-icon-box, card-icon-box-blue">
+                                <Label text="👥" styleClass="quick-card-icon"/>
+                            </StackPane>
+                            <VBox spacing="2">
+                                <Label text="ANNUAIRE" styleClass="section-eyebrow"/>
+                                <Label text="Utilisateurs enregistrés" styleClass="section-title"/>
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label text="Sélectionnez une ligne pour éditer" styleClass="info-chip"/>
+                            <Button text="↻  Actualiser" onAction="#handleRafraichir" styleClass="button-soft">
+                                <tooltip><Tooltip text="Recharger la liste des utilisateurs"/></tooltip>
+                            </Button>
+                        </HBox>
+
+                        <Separator styleClass="card-separator"/>
+
+                        <!-- Tableau pleine largeur, colonnes proportionnelles -->
+                        <TableView fx:id="usersTable" VBox.vgrow="ALWAYS" styleClass="table-view">
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            </columnResizePolicy>
+                            <columns>
+                                <TableColumn fx:id="idColumn"     text="#"       maxWidth="600"  prefWidth="50"/>
+                                <TableColumn fx:id="nomColumn"    text="Nom"     prefWidth="140"/>
+                                <TableColumn fx:id="prenomColumn" text="Prénom"  prefWidth="140"/>
+                                <TableColumn fx:id="emailColumn"  text="Email"   prefWidth="240"/>
+                                <TableColumn fx:id="roleColumn"   text="Rôle"    prefWidth="150"/>
+                                <TableColumn fx:id="valideColumn" text="Validé"  maxWidth="900"  prefWidth="80"/>
+                                <TableColumn fx:id="actifColumn"  text="Actif"   maxWidth="900"  prefWidth="80"/>
+                            </columns>
+                        </TableView>
+
+                        <!-- Pied de tableau : actions rapides sur la sélection -->
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Actions rapides sur la sélection :" styleClass="helper-text"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="✓  Valider le compte" onAction="#handleValiderUtilisateur" styleClass="button-accent">
+                                <tooltip><Tooltip text="Approuver l'inscription de l'utilisateur sélectionné"/></tooltip>
+                            </Button>
+                            <Button text="⏻  Activer / Désactiver" onAction="#handleBasculerActivation" styleClass="button-soft">
+                                <tooltip><Tooltip text="Basculer l'état d'activation du compte"/></tooltip>
+                            </Button>
+                        </HBox>
+                    </VBox>
+
+                    <!-- ▌PANNEAU D'ÉDITION (detail) -->
+                    <VBox styleClass="surface-card" spacing="14" prefWidth="370" minWidth="340" maxWidth="400">
+
+                        <!-- Header de card -->
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <StackPane styleClass="card-icon-box, card-icon-box-green">
+                                <Label text="✎" styleClass="quick-card-icon"/>
+                            </StackPane>
+                            <VBox spacing="2">
+                                <Label text="FICHE COMPTE" styleClass="section-eyebrow"/>
+                                <Label text="Édition du compte" styleClass="section-title"/>
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="＋ Nouveau" onAction="#handleNouveau" styleClass="button-soft">
+                                <tooltip><Tooltip text="Vider le formulaire pour créer un compte"/></tooltip>
+                            </Button>
+                        </HBox>
+
+                        <Separator styleClass="card-separator"/>
+
+                        <!-- Identité -->
+                        <Label text="IDENTITÉ" styleClass="section-eyebrow"/>
+                        <HBox spacing="12">
+                            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                <Label text="Nom" styleClass="helper-text"/>
+                                <TextField fx:id="nomField" promptText="Dupont" styleClass="text-field"/>
+                            </VBox>
+                            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                <Label text="Prénom" styleClass="helper-text"/>
+                                <TextField fx:id="prenomField" promptText="Jean" styleClass="text-field"/>
+                            </VBox>
+                        </HBox>
+                        <VBox spacing="6">
+                            <Label text="Email" styleClass="helper-text"/>
+                            <TextField fx:id="emailField" promptText="jean.dupont@email.com" styleClass="text-field"/>
+                        </VBox>
+                        <VBox spacing="6">
+                            <Label text="Mot de passe" styleClass="helper-text"/>
+                            <PasswordField fx:id="passwordField" promptText="••••••••  (laisser vide pour conserver)" styleClass="password-field"/>
+                        </VBox>
+
+                        <Separator styleClass="card-separator"/>
+
+                        <!-- Rôle & affectation -->
+                        <Label text="RÔLE &amp; AFFECTATION" styleClass="section-eyebrow"/>
+                        <VBox spacing="6">
+                            <Label text="Rôle" styleClass="helper-text"/>
+                            <ComboBox fx:id="roleComboBox" promptText="Sélectionner un rôle"
+                                      maxWidth="Infinity" styleClass="combo-box"/>
+                        </VBox>
+                        <VBox spacing="6">
+                            <Label text="Classe du responsable" styleClass="helper-text"/>
+                            <ComboBox fx:id="classeComboBox" promptText="Sélectionner une classe"
+                                      maxWidth="Infinity" styleClass="combo-box"/>
+                        </VBox>
+
+                        <Separator styleClass="card-separator"/>
+
+                        <!-- Statut du compte -->
+                        <Label text="STATUT DU COMPTE" styleClass="section-eyebrow"/>
+                        <HBox spacing="12">
+                            <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
+                                  styleClass="summary-stat" style="-fx-min-height: 0; -fx-padding: 12 14 12 14;">
+                                <CheckBox fx:id="valideCheckBox" text="Compte validé" styleClass="check-box"/>
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
+                                  styleClass="summary-stat" style="-fx-min-height: 0; -fx-padding: 12 14 12 14;">
+                                <CheckBox fx:id="actifCheckBox" text="Compte actif" styleClass="check-box"/>
+                            </HBox>
+                        </HBox>
+
+                        <Region VBox.vgrow="ALWAYS"/>
+
+                        <Separator styleClass="card-separator"/>
+
+                        <!-- Actions principales -->
+                        <Button text="✓  Enregistrer les modifications" onAction="#handleEnregistrer"
+                                maxWidth="Infinity" styleClass="button-success"/>
+                        <Button text="✕  Supprimer le compte" onAction="#handleSupprimer"
+                                maxWidth="Infinity" styleClass="button-danger">
+                            <tooltip><Tooltip text="Suppression définitive du compte sélectionné"/></tooltip>
+                        </Button>
+                        <Label text="La suppression est irréversible. Préférez la désactivation si vous souhaitez conserver l'historique."
+                               styleClass="helper-text" wrapText="true"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Espace de respiration -->
+                <Region prefHeight="6"/>
+
             </VBox>
-        </VBox>
         </ScrollPane>
     </center>
-
 </BorderPane>

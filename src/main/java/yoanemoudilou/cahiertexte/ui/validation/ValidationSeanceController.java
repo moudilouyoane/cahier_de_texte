@@ -112,6 +112,26 @@ public class ValidationSeanceController {
         AppNavigator.goToDashboardForCurrentUser();
     }
 
+    @FXML
+    private void handleOuvrirProgression(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/dashboard/responsable_progression.fxml", "Progression des cours");
+    }
+
+    @FXML
+    private void handleOuvrirCahierTexte(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/cahier.fxml", "Cahier de texte");
+    }
+
+    @FXML
+    private void handleToggleNotifications(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/notifications.fxml", "Notifications");
+    }
+
+    @FXML
+    private void handleLogout(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/login.fxml", "Connexion");
+    }
+
     private void configurerTable() {
         if (idColumn != null) {
             idColumn.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getId()));

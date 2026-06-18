@@ -122,6 +122,26 @@ public class CahierTexteController {
         AppNavigator.goToDashboardForCurrentUser();
     }
 
+    @FXML
+    private void handleOuvrirValidation(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/validation.fxml", "Validation de seances");
+    }
+
+    @FXML
+    private void handleOuvrirProgression(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/dashboard/responsable_progression.fxml", "Progression des cours");
+    }
+
+    @FXML
+    private void handleToggleNotifications(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/notifications.fxml", "Notifications");
+    }
+
+    @FXML
+    private void handleLogout(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/login.fxml", "Connexion");
+    }
+
     private void configurerTables() {
         if (cahierClasseColumn != null) {
             cahierClasseColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(

@@ -69,11 +69,11 @@
                     <Label text="Date" styleClass="helper-text" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
                     <DatePicker fx:id="dateSeancePicker" prefWidth="160" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
 
-                    <Label text="Heure" styleClass="helper-text" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
-                    <TextField fx:id="heureField" promptText="08:00" prefWidth="120" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                    <Label text="Heure début" styleClass="helper-text" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                    <TextField fx:id="heureDebutField" promptText="08:00" prefWidth="120" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
 
-                    <Label text="Duree (min)" styleClass="helper-text" GridPane.columnIndex="4" GridPane.rowIndex="0"/>
-                    <TextField fx:id="dureeField" promptText="60" prefWidth="120" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+                    <Label text="Heure fin" styleClass="helper-text" GridPane.columnIndex="4" GridPane.rowIndex="0"/>
+                    <TextField fx:id="heureFinField" promptText="09:00" prefWidth="120" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
 
                     <Label text="Contenu" styleClass="helper-text" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                     <TextArea fx:id="contenuArea" prefHeight="92" prefWidth="420" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2"/>

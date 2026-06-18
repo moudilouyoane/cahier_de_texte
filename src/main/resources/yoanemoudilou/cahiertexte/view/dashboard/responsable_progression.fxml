@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            prefWidth="1200" prefHeight="820"
+            fx:controller="yoanemoudilou.cahiertexte.ui.dashboard.ResponsableProgressionController"
+            styleClass="app-shell">
+
+    <!-- ══════════════════════════════════════ SIDEBAR ══ -->
+    <left>
+        <VBox styleClass="sidebar-v2" prefWidth="190" spacing="0">
+
+            <!-- Avatar block -->
+            <VBox alignment="CENTER" spacing="6"
+                  style="-fx-padding:28 16 20 16;">
+                <StackPane styleClass="avatar-circle">
+                    <Label text="RC"
+                           style="-fx-font-size:16px;
+                                  -fx-font-weight:800;
+                                  -fx-text-fill:white;"/>
+                </StackPane>
+                <Label text="Responsable"
+                       style="-fx-font-size:12px;
+                              -fx-font-weight:700;
+                              -fx-text-fill:white;
+                              -fx-wrap-text:true;
+                              -fx-text-alignment:center;"/>
+                <Label text="PROGRESSION"
+                       style="-fx-font-size:10px;
+                              -fx-text-fill:rgba(255,255,255,0.55);"/>
+            </VBox>
+
+            <Separator style="-fx-opacity:0.15;"/>
+
+            <!-- Nav items -->
+            <VBox spacing="2" style="-fx-padding:12 10 12 10;">
+
+                <Button text="⌂   Tableau de bord"
+                        onAction="#handleRetourDashboard"
+                        styleClass="nav-button-v2"/>
+
+                <Button text="⇢   Progression"
+                        styleClass="nav-button-active-v2"/>
+
+                <Button text="✓   Validation séances"
+                        onAction="#handleOuvrirValidation"
+                        styleClass="nav-button-v2"/>
+
+                <Button text="☰   Cahier de texte"
+                 onAction="#handleOuvrirCahierTexte"
+                        styleClass="nav-button-v2"/>
+
+
+                <Button text="✉   Notifications"
+                        onAction="#handleToggleNotifications"
+                        styleClass="nav-button-v2"/>
+
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Separator style="-fx-opacity:0.15;"/>
+            <VBox style="-fx-padding:12 10 20 10;">
+                <Button text="⏻   Déconnexion"
+                        styleClass="nav-button-v2"/>
+            </VBox>
+
+        </VBox>
+    </left>
+
+    <!-- ── Centre ──────────────────────────────────────────────── -->
+    <center>
+        <VBox styleClass="page-content" spacing="20">
+
+            <!-- Intro subtitle -->
+            <Label text="Suivi des heures réalisées par rapport au volume horaire défini."
+                   styleClass="page-subtitle"
+                   wrapText="true"/>
+
+            <!-- Grille des cards -->
+            <ScrollPane fitToWidth="true" fitToHeight="true"
+                        styleClass="content-scroll"
+                        VBox.vgrow="ALWAYS">
+                <FlowPane fx:id="cardsContainer"
+                          hgap="24" vgap="24"
+                          prefWrapLength="1100"
+                          style="-fx-background-color:transparent; -fx-padding:4;"/>
+            </ScrollPane>
+
+        </VBox>
+    </center>
+</BorderPane>

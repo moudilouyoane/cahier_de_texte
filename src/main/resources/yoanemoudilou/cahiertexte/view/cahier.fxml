@@ -5,10 +5,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
@@ -27,9 +29,33 @@
             <Label text="Classe" styleClass="helper-text"/>
             <ComboBox fx:id="classeFilterComboBox" prefWidth="220" onAction="#handleFiltrer"/>
             <Button text="Rafraichir" onAction="#handleRafraichir" styleClass="button-soft"/>
-            <Button text="Dashboard" onAction="#handleRetourDashboard" styleClass="button-ghost, module-back-button"/>
         </HBox>
     </top>
+
+    <left>
+        <VBox styleClass="sidebar-v2" prefWidth="190" spacing="0">
+            <VBox alignment="CENTER" spacing="6"
+                  style="-fx-padding:28 16 20 16;">
+                <StackPane styleClass="avatar-circle">
+                    <Label text="RC" style="-fx-font-size:16px; -fx-font-weight:800; -fx-text-fill:white;"/>
+                </StackPane>
+                <Label text="Responsable" style="-fx-font-size:12px; -fx-font-weight:700; -fx-text-fill:white; -fx-wrap-text:true; -fx-text-alignment:center;"/>
+                <Label text="CAHIER" style="-fx-font-size:10px; -fx-text-fill:rgba(255,255,255,0.55);"/>
+            </VBox>
+            <Separator style="-fx-opacity:0.15;"/>
+            <VBox spacing="2" style="-fx-padding:12 10 12 10;">
+                <Button text="⌂   Tableau de bord" onAction="#handleRetourDashboard" styleClass="nav-button-v2"/>
+                <Button text="✓   Validation séances" onAction="#handleOuvrirValidation" styleClass="nav-button-v2"/>
+                <Button text="⇢   Progression" onAction="#handleOuvrirProgression" styleClass="nav-button-v2"/>
+                <Button text="✉   Notifications" onAction="#handleToggleNotifications" styleClass="nav-button-v2"/>
+            </VBox>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Separator style="-fx-opacity:0.15;"/>
+            <VBox style="-fx-padding:12 10 20 10;">
+                <Button text="⏻   Déconnexion" onAction="#handleLogout" styleClass="nav-button-v2"/>
+            </VBox>
+        </VBox>
+    </left>
 
     <center>
         <ScrollPane fitToWidth="true" styleClass="content-scroll">

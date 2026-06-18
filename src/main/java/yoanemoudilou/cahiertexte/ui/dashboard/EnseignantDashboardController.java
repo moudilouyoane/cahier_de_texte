@@ -67,6 +67,8 @@ public class EnseignantDashboardController {
 
     @FXML
     private TableColumn<Cours, Integer> coursVolumeColumn;
+    @FXML
+    private TableColumn<Cours, String> coursProgressColumn;
 
     @FXML
     private TableView<Seance> dernieresSeancesTable;
@@ -160,6 +162,19 @@ public class EnseignantDashboardController {
         if (coursVolumeColumn != null) {
             coursVolumeColumn.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getVolumeHoraire()));
         }
+        if (coursProgressColumn != null) {
+            coursProgressColumn.setCellValueFactory(data -> {
+                Cours cours = data.getValue();
+                int volume = cours.getVolumeHoraire() != null ? cours.getVolumeHoraire() : 0;
+                int minutes = seanceService.getSeancesByCoursId(cours.getId())
+                        .stream()
+                        .mapToInt(s -> s.getDuree() != null ? s.getDuree() : 0)
+                        .sum();
+                int heures = Math.round(minutes / 60.0f);
+                int pct = (volume > 0) ? (int) Math.round((double) heures / volume * 100) : 0;
+                return new ReadOnlyStringWrapper(pct + "%");
+            });
+        }
         if (seanceDateColumn != null) {
             seanceDateColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(
                     DateUtils.formatDate(data.getValue().getDateSeance()))
@@ -235,7 +250,7 @@ public class EnseignantDashboardController {
                         .sorted(Comparator
                                 .comparing(Seance::getDateSeance, Comparator.nullsLast(Comparator.reverseOrder()))
                                 .thenComparing(Seance::getHeureSeance, Comparator.nullsLast(Comparator.reverseOrder())))
-                        .limit(10)
+                        .limit(4)
                         .toList();
                 dernieresSeancesTable.setItems(FXCollections.observableArrayList(recentes));
             }
@@ -260,7 +275,16 @@ public class EnseignantDashboardController {
             ));
         }
         setLabel(notificationsCountLabel, String.valueOf(notificationService.countNotificationsNonLues(currentUser.getId())));
-        notificationService.marquerToutesCommeLues(currentUser.getId());
+    }
+
+    @FXML
+    private void handleMarquerToutCommeLu(ActionEvent event) {
+        User currentUser = sessionManager.getUtilisateurConnecte();
+        if (currentUser != null && currentUser.getId() != null) {
+            notificationService.marquerToutesCommeLues(currentUser.getId());
+            chargerNotifications(currentUser);
+            setLabel(notificationsCountLabel, String.valueOf(notificationService.countNotificationsNonLues(currentUser.getId())));
+        }
     }
 
     private void setLabel(Label label, String value) {

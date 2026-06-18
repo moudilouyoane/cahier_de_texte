@@ -23,6 +23,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,10 +74,10 @@ public class SeanceController {
     private DatePicker dateSeancePicker;
 
     @FXML
-    private TextField heureField;
+    private TextField heureDebutField;
 
     @FXML
-    private TextField dureeField;
+    private TextField heureFinField;
 
     @FXML
     private TextArea contenuArea;
@@ -139,10 +141,8 @@ public class SeanceController {
             configurerUtilisateurConnecte();
             selectedSeance = null;
 
-        } catch (NumberFormatException e) {
-            AlertUtils.showWarning("Saisie invalide", null, "La durée doit être un nombre entier positif.");
         } catch (java.time.format.DateTimeParseException e) {
-            AlertUtils.showWarning("Format d'heure invalide", null, "L'heure doit être au format HH:mm (ex: 08:00)");
+            AlertUtils.showWarning("Format d'heure invalide", null, "Les heures de début et de fin doivent être au format HH:mm (ex: 08:00)");
         } catch (IllegalArgumentException e) {
             AlertUtils.showWarning("Validation échouée", null, e.getMessage());
         } catch (Exception e) {
@@ -373,12 +373,15 @@ public class SeanceController {
             dateSeancePicker.setValue(seance.getDateSeance());
         }
 
-        if (heureField != null) {
-            heureField.setText(DateUtils.formatTime(seance.getHeureSeance()));
+        if (heureDebutField != null) {
+            heureDebutField.setText(DateUtils.formatTime(seance.getHeureSeance()));
         }
 
-        if (dureeField != null) {
-            dureeField.setText(seance.getDuree() != null ? String.valueOf(seance.getDuree()) : "");
+        if (heureFinField != null) {
+            int minutes = seance.getDuree() != null ? seance.getDuree() : 0;
+            LocalTime debut = DateUtils.parseTime(DateUtils.formatTime(seance.getHeureSeance()));
+            LocalTime fin = debut != null ? debut.plusMinutes(minutes) : null;
+            heureFinField.setText(DateUtils.formatTime(fin));
         }
 
         if (contenuArea != null) {
@@ -400,11 +403,11 @@ public class SeanceController {
         if (dateSeancePicker != null) {
             dateSeancePicker.setValue(null);
         }
-        if (heureField != null) {
-            heureField.clear();
+        if (heureDebutField != null) {
+            heureDebutField.clear();
         }
-        if (dureeField != null) {
-            dureeField.clear();
+        if (heureFinField != null) {
+            heureFinField.clear();
         }
         if (contenuArea != null) {
             contenuArea.clear();
@@ -418,26 +421,25 @@ public class SeanceController {
         Cours cours = coursComboBox != null ? coursComboBox.getValue() : null;
         User enseignant = enseignantComboBox != null ? enseignantComboBox.getValue() : null;
 
-        String heureText = heureField != null ? heureField.getText().trim().replaceAll("\\s+", "") : null;
-        String dureeText = dureeField != null ? dureeField.getText().trim() : null;
+        String heureDebutText = heureDebutField != null ? heureDebutField.getText().trim().replaceAll("\\s+", "") : null;
+        String heureFinText = heureFinField != null ? heureFinField.getText().trim().replaceAll("\\s+", "") : null;
 
+        LocalTime debut = DateUtils.parseTime(heureDebutText);
+        LocalTime fin = DateUtils.parseTime(heureFinText);
         Integer duree = null;
-        if (dureeText != null && !dureeText.isBlank()) {
-            try {
-                duree = Integer.parseInt(dureeText);
-                if (duree <= 0) {
-                    throw new IllegalArgumentException("La durée doit être positive (> 0).");
-                }
-            } catch (NumberFormatException e) {
-                throw new NumberFormatException("La durée doit être un nombre entier valide.");
+
+        if (debut != null && fin != null) {
+            if (!fin.isAfter(debut)) {
+                throw new IllegalArgumentException("L'heure de fin doit être après l'heure de début.");
             }
+            duree = (int) Duration.between(debut, fin).toMinutes();
         }
 
         return new Seance(
                 cours != null ? cours.getId() : null,
                 enseignant != null ? enseignant.getId() : null,
                 dateSeancePicker != null ? dateSeancePicker.getValue() : null,
-                DateUtils.parseTime(heureText),
+                debut,
                 duree,
                 contenuArea != null ? contenuArea.getText().trim() : null,
                 observationsArea != null ? observationsArea.getText().trim() : null,
@@ -459,14 +461,14 @@ public class SeanceController {
             throw new IllegalArgumentException("Veuillez sélectionner une date.");
         }
 
-        String heureText = heureField != null ? heureField.getText() : null;
-        if (heureText == null || heureText.trim().isBlank()) {
-            throw new IllegalArgumentException("Veuillez saisir une heure (format: HH:mm).");
+        String heureDebutText = heureDebutField != null ? heureDebutField.getText() : null;
+        if (heureDebutText == null || heureDebutText.trim().isBlank()) {
+            throw new IllegalArgumentException("Veuillez saisir une heure de début (format: HH:mm).");
         }
 
-        String dureeText = dureeField != null ? dureeField.getText() : null;
-        if (dureeText == null || dureeText.trim().isBlank()) {
-            throw new IllegalArgumentException("Veuillez saisir une durée en minutes.");
+        String heureFinText = heureFinField != null ? heureFinField.getText() : null;
+        if (heureFinText == null || heureFinText.trim().isBlank()) {
+            throw new IllegalArgumentException("Veuillez saisir une heure de fin (format: HH:mm).");
         }
 
         String contenu = contenuArea != null ? contenuArea.getText() : null;

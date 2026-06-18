@@ -51,9 +51,11 @@ public class ResponsableDashboardController {
 
     @FXML
     private Label seancesEnAttenteLabel;
-
     @FXML
     private Label seancesValideesLabel;
+
+    @FXML
+    private Label seancesRejeteesLabel;
 
     @FXML
     private TableView<Seance> seancesTable;
@@ -127,14 +129,18 @@ public class ResponsableDashboardController {
         mettreAJourStatut(StatutSeance.REJETEE, "Seance rejetee avec succes.");
     }
 
-    @FXML
-    private void handleOuvrirRapports(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/report.fxml", "Rapports");
+    public void handleOuvrirValidation(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/validation.fxml", "Validation de seances");
     }
 
     @FXML
     private void handleOuvrirCahierTexte(ActionEvent event) {
         AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/cahier.fxml", "Cahier de texte");
+    }
+
+    @FXML
+    private void handleOuvrirProgression(ActionEvent event) {
+        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/dashboard/responsable_progression.fxml", "Progression des cours");
     }
 
     @FXML
@@ -264,6 +270,9 @@ public class ResponsableDashboardController {
             setLabel(seancesValideesLabel, String.valueOf(
                     seances.stream().filter(s -> s.getStatut() == StatutSeance.VALIDEE).count()
             ));
+            setLabel(seancesRejeteesLabel, String.valueOf(
+                    seances.stream().filter(s -> s.getStatut() == StatutSeance.REJETEE).count()
+            ));
 
             if (seancesTable != null) {
                 seancesTable.setItems(FXCollections.observableArrayList(seances));
@@ -334,6 +343,7 @@ public class ResponsableDashboardController {
         setLabel(totalSeancesLabel, "0");
         setLabel(seancesEnAttenteLabel, "0");
         setLabel(seancesValideesLabel, "0");
+        setLabel(seancesRejeteesLabel, "0");
         coursLabels.clear();
         if (seancesTable != null) {
             seancesTable.setItems(FXCollections.emptyObservableList());
@@ -360,6 +370,16 @@ public class ResponsableDashboardController {
             ));
         }
         setLabel(notificationsCountLabel, String.valueOf(notificationService.countNotificationsNonLues(currentUser.getId())));
+    }
+
+    @FXML
+    private void handleMarquerToutCommeLu(ActionEvent event) {
+        User currentUser = sessionManager.getUtilisateurConnecte();
+        if (currentUser == null || currentUser.getId() == null) {
+            return;
+        }
+
         notificationService.marquerToutesCommeLues(currentUser.getId());
+        chargerNotifications(currentUser);
     }
 }

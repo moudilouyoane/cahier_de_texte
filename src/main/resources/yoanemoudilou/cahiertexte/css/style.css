@@ -1,3 +1,10 @@
+/* ═══════════════════════════════════════════════════════════════
+   CAHIER DE TEXTE — Design System
+   CSS complet : classes d'origine + nouvelles classes dashboard
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Base ─────────────────────────────────────────────────────── */
+
 .root {
     -fx-font-family: "Segoe UI";
     -fx-background-color: linear-gradient(to bottom right, #f5f8fc, #e8eef7);
@@ -7,6 +14,8 @@
 .label {
     -fx-text-fill: #203247;
 }
+
+/* ── Shells ───────────────────────────────────────────────────── */
 
 .app-shell {
     -fx-background-color: linear-gradient(to bottom right, #f3f7fc, #e7eef8);
@@ -19,6 +28,8 @@
     -fx-padding: 30;
 }
 
+/* ── Scroll panes ─────────────────────────────────────────────── */
+
 .content-scroll,
 .content-scroll > .viewport,
 .scroll-pane,
@@ -26,10 +37,14 @@
     -fx-background-color: transparent;
 }
 
+/* ── Page layout ──────────────────────────────────────────────── */
+
 .page-content {
     -fx-spacing: 18;
     -fx-padding: 22;
 }
+
+/* ── Top bar ──────────────────────────────────────────────────── */
 
 .top-bar {
     -fx-padding: 18 24 18 24;
@@ -38,12 +53,16 @@
     -fx-background-color: linear-gradient(to right, #123a63, #2f6fad);
 }
 
+/* ── Sidebar ──────────────────────────────────────────────────── */
+
 .sidebar {
     -fx-padding: 22 16 22 16;
     -fx-spacing: 10;
     -fx-pref-width: 210;
     -fx-background-color: linear-gradient(to bottom, #16324f, #214a70);
 }
+
+/* ── Cards ────────────────────────────────────────────────────── */
 
 .auth-card,
 .surface-card,
@@ -79,6 +98,8 @@
     -fx-background-color: linear-gradient(to bottom right, rgba(14, 35, 62, 0.92), rgba(33, 88, 134, 0.84));
 }
 
+/* ── Icon badge ───────────────────────────────────────────────── */
+
 .icon-badge {
     -fx-min-width: 46;
     -fx-min-height: 46;
@@ -96,6 +117,8 @@
     -fx-text-fill: white;
 }
 
+/* ── Top bar labels ───────────────────────────────────────────── */
+
 .header-label {
     -fx-text-fill: white;
     -fx-font-size: 22px;
@@ -106,6 +129,8 @@
     -fx-text-fill: rgba(255,255,255,0.82);
     -fx-font-size: 12px;
 }
+
+/* ── Typography scale ─────────────────────────────────────────── */
 
 .nav-title,
 .nav-subtitle,
@@ -166,6 +191,8 @@
     -fx-text-fill: #708195;
 }
 
+/* ── Metric values ────────────────────────────────────────────── */
+
 .metric-value,
 .metric-value-warning,
 .metric-value-success,
@@ -190,6 +217,8 @@
     -fx-text-fill: #c0392b;
 }
 
+/* ── Pills & chips ────────────────────────────────────────────── */
+
 .status-pill,
 .info-chip {
     -fx-background-radius: 999;
@@ -202,6 +231,8 @@
     -fx-background-color: rgba(255,255,255,0.16);
     -fx-text-fill: white;
 }
+
+/* ── Notification elements ────────────────────────────────────── */
 
 .notification-button {
     -fx-background-color: rgba(255,255,255,0.12);
@@ -238,6 +269,8 @@
     -fx-max-height: 520;
 }
 
+/* ── Floating / panels ────────────────────────────────────────── */
+
 .floating-actions {
     -fx-background-color: rgba(255,255,255,0.94);
     -fx-background-radius: 18;
@@ -247,6 +280,8 @@
     -fx-padding: 12;
     -fx-effect: dropshadow(gaussian, rgba(18, 42, 66, 0.16), 22, 0.18, 0, 10);
 }
+
+/* ── Summary panels ───────────────────────────────────────────── */
 
 .summary-panel {
     -fx-min-height: 190;
@@ -262,6 +297,8 @@
     -fx-min-height: 110;
 }
 
+/* ── Chips & misc labels ──────────────────────────────────────── */
+
 .info-chip {
     -fx-background-color: #e9f1ff;
     -fx-text-fill: #245c96;
@@ -272,6 +309,8 @@
     -fx-font-weight: 700;
 }
 
+/* ── Form controls base ───────────────────────────────────────── */
+
 .button,
 .combo-box,
 .date-picker,
@@ -280,6 +319,8 @@
 .text-area {
     -fx-font-size: 13px;
 }
+
+/* ── Buttons ──────────────────────────────────────────────────── */
 
 .button {
     -fx-background-color: linear-gradient(to right, #21517d, #2f6fad);
@@ -334,6 +375,8 @@
     -fx-text-fill: white;
 }
 
+/* ── Nav buttons ──────────────────────────────────────────────── */
+
 .nav-button,
 .nav-button-active {
     -fx-max-width: infinity;
@@ -353,6 +396,26 @@
     -fx-background-color: linear-gradient(to right, rgba(255,255,255,0.22), rgba(255,255,255,0.08));
     -fx-text-fill: white;
 }
+
+/* ── Sidebar section label ────────────────────────────────────── */
+/*    Labels "PRINCIPAL / STRUCTURE / SUIVI" dans la sidebar      */
+
+.nav-section-label {
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+    -fx-text-fill: rgba(255,255,255,0.38);
+    -fx-padding: 10 4 4 4;
+}
+
+/* ── Sidebar footer label ─────────────────────────────────────── */
+
+.sidebar-footer {
+    -fx-font-size: 10px;
+    -fx-text-fill: rgba(255,255,255,0.32);
+    -fx-padding: 6 4 0 4;
+}
+
+/* ── Inputs ───────────────────────────────────────────────────── */
 
 .text-field,
 .password-field,
@@ -383,6 +446,8 @@
     -fx-background-color: white;
     -fx-background-radius: 10;
 }
+
+/* ── Tables & lists ───────────────────────────────────────────── */
 
 .table-view,
 .list-view {
@@ -431,6 +496,8 @@
     -fx-text-fill: #16324f;
 }
 
+/* ── Titled pane ──────────────────────────────────────────────── */
+
 .titled-pane {
     -fx-text-fill: #17324d;
 }
@@ -441,10 +508,530 @@
     -fx-font-weight: 700;
 }
 
+/* ── Separator ────────────────────────────────────────────────── */
+
 .separator *.line {
     -fx-border-color: #dfe7f0;
 }
 
+/* ── Charts ───────────────────────────────────────────────────── */
+
 .chart {
     -fx-background-color: transparent;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   NOUVELLES CLASSES — Dashboard v2
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Hero banner ──────────────────────────────────────────────── */
+/*    Bande accent verticale gauche du hero card                  */
+
+.hero-accent-strip {
+    -fx-background-color: linear-gradient(to bottom, #2f6fad, #d4a547);
+    -fx-background-radius: 20 0 0 20;
+    -fx-min-width: 6;
+}
+
+/* ── Breadcrumb / page tag ────────────────────────────────────── */
+/*    Petit pill coloré au-dessus du titre de page                */
+
+.page-tag {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #2f6fad;
+    -fx-background-color: #e9f1ff;
+    -fx-background-radius: 999;
+    -fx-padding: 3 10 3 10;
+}
+
+/* ── Section header row ───────────────────────────────────────── */
+/*    Ligne "INDICATEURS CLÉS / ACCÈS RAPIDE" au-dessus d'une section */
+
+.section-eyebrow {
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #9aafbf;
+}
+
+.section-eyebrow-right {
+    -fx-font-size: 11px;
+    -fx-text-fill: #aabacb;
+}
+
+/* ── Card icon box ────────────────────────────────────────────── */
+/*    Carré arrondi coloré contenant une icône dans les card headers */
+
+.card-icon-box {
+    -fx-background-radius: 10;
+    -fx-padding: 8 10 8 10;
+    -fx-alignment: center;
+}
+
+.card-icon-box-blue {
+    -fx-background-color: #e9f1ff;
+}
+
+.card-icon-box-green {
+    -fx-background-color: #f0faf5;
+}
+
+.card-icon-box-amber {
+    -fx-background-color: #fff8e6;
+}
+
+.card-icon-box-red {
+    -fx-background-color: #fff0ef;
+}
+
+/* ── Metric card with warning tint ───────────────────────────── */
+
+.metric-card-warning {
+    -fx-background-color: linear-gradient(to bottom right, #fffbf0, #fff8e6);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: #f5d98a;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(20, 42, 74, 0.08), 22, 0.16, 0, 10);
+    -fx-padding: 18;
+    -fx-spacing: 10;
+}
+
+/* ── Trend label inside metric cards ─────────────────────────── */
+
+.trend-up {
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #198754;
+}
+
+.trend-neutral {
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #6b7d91;
+}
+
+.trend-alert {
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #cb8616;
+}
+
+/* ── Coloured summary stats ───────────────────────────────────── */
+/*    Variantes colorées de .summary-stat pour les 4 états séances */
+
+.summary-stat-warning {
+    -fx-background-color: linear-gradient(to bottom right, #fffbef, #fff3d0);
+    -fx-background-radius: 16;
+    -fx-border-color: #f5d98a;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-padding: 16;
+    -fx-spacing: 8;
+    -fx-min-height: 80;
+}
+
+.summary-stat-success {
+    -fx-background-color: linear-gradient(to bottom right, #f0faf5, #e0f5ea);
+    -fx-background-radius: 16;
+    -fx-border-color: #a3e0ba;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-padding: 16;
+    -fx-spacing: 8;
+    -fx-min-height: 80;
+}
+
+.summary-stat-danger {
+    -fx-background-color: linear-gradient(to bottom right, #fff5f5, #ffe8e8);
+    -fx-background-radius: 16;
+    -fx-border-color: #f0a8a0;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-padding: 16;
+    -fx-spacing: 8;
+    -fx-min-height: 80;
+}
+
+/* ── Quick-access cards (bottom row) ──────────────────────────── */
+/*    Cards cliquables de la section Accès rapide                 */
+
+.quick-card {
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: rgba(164, 180, 200, 0.35);
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(20, 42, 74, 0.06), 18, 0.14, 0, 8);
+    -fx-padding: 18;
+    -fx-spacing: 10;
+    -fx-cursor: hand;
+}
+
+.quick-card:hover {
+    -fx-background-color: rgba(255,255,255,0.98);
+    -fx-border-color: rgba(47, 111, 173, 0.30);
+    -fx-effect: dropshadow(gaussian, rgba(20, 42, 74, 0.13), 24, 0.18, 0, 10);
+}
+
+/* ── Quick-card icon label ────────────────────────────────────── */
+
+.quick-card-icon {
+    -fx-font-size: 22px;
+    -fx-text-fill: #2f6fad;
+}
+
+/* ── Card section divider (Separator inside a surface-card) ───── */
+/*    Surcharge légère pour que le Separator soit plus discret     */
+
+.card-separator *.line {
+    -fx-border-color: #eaf0f7;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DASHBOARD V2 — Nouvelles classes (design image)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Sidebar v2 ───────────────────────────────────────────────── */
+
+.sidebar-v2 {
+    -fx-background-color: linear-gradient(to bottom, #0e2233, #16324f);
+    -fx-pref-width: 190;
+    -fx-min-width: 190;
+}
+
+/* ── Avatar circle ────────────────────────────────────────────── */
+
+.avatar-circle {
+    -fx-min-width: 62;
+    -fx-min-height: 62;
+    -fx-max-width: 62;
+    -fx-max-height: 62;
+    -fx-background-color: linear-gradient(to bottom right, #2f6fad, #d4a547);
+    -fx-background-radius: 999;
+    -fx-alignment: center;
+}
+
+/* ── Nav buttons v2 ───────────────────────────────────────────── */
+
+.nav-button-v2 {
+    -fx-max-width: infinity;
+    -fx-alignment: center-left;
+    -fx-padding: 10 14 10 14;
+    -fx-background-radius: 10;
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.72);
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+}
+
+.nav-button-v2:hover {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-text-fill: white;
+}
+
+.nav-button-active-v2 {
+    -fx-max-width: infinity;
+    -fx-alignment: center-left;
+    -fx-padding: 10 14 10 14;
+    -fx-background-radius: 10;
+    -fx-background-color: linear-gradient(to right, #2f6fad, #1e5a8e);
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(47,111,173,0.38), 10, 0.2, 0, 4);
+}
+
+/* ── Top bar v2 ───────────────────────────────────────────────── */
+
+.topbar-v2 {
+    -fx-background-color: rgba(255,255,255,0.95);
+    -fx-border-color: transparent transparent #e4eaf2 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-effect: dropshadow(gaussian, rgba(18,42,74,0.06), 12, 0.12, 0, 4);
+}
+
+/* ── Search bar v2 ────────────────────────────────────────────── */
+
+.search-bar-v2 {
+    -fx-background-color: #f3f7fc;
+    -fx-background-radius: 10;
+    -fx-border-color: #dce8f2;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-padding: 6 12 6 12;
+}
+
+/* ── Icon button v2 ───────────────────────────────────────────── */
+
+.icon-btn-v2 {
+    -fx-background-color: #f0f4f9;
+    -fx-background-radius: 10;
+    -fx-border-color: #dce8f2;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-text-fill: #4c627a;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.icon-btn-v2:hover {
+    -fx-background-color: #e4edf7;
+}
+
+/* ── Welcome banner v2 ────────────────────────────────────────── */
+
+.welcome-banner-v2 {
+    -fx-background-color: linear-gradient(to right, rgba(255,255,255,0.98), #f0f6ff);
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: rgba(164,180,200,0.30);
+    -fx-border-width: 1;
+    -fx-padding: 20 24 20 24;
+    -fx-effect: dropshadow(gaussian, rgba(18,42,74,0.06), 14, 0.12, 0, 6);
+}
+
+/* ── KPI cards v2 ─────────────────────────────────────────────── */
+
+.kpi-card-v2 {
+    -fx-background-color: rgba(255,255,255,0.96);
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: rgba(164,180,200,0.30);
+    -fx-border-width: 1;
+    -fx-padding: 18 20 18 20;
+    -fx-effect: dropshadow(gaussian, rgba(18,42,74,0.07), 16, 0.12, 0, 6);
+}
+
+.kpi-card-warning-v2 {
+    -fx-background-color: linear-gradient(to bottom right, #fffbf0, #fff8e6);
+    -fx-border-color: #f5d98a;
+}
+
+/* ── KPI icon boxes ───────────────────────────────────────────── */
+
+.kpi-icon-box-v2 {
+    -fx-min-width: 52;
+    -fx-min-height: 52;
+    -fx-max-width: 52;
+    -fx-max-height: 52;
+    -fx-background-radius: 14;
+    -fx-alignment: center;
+}
+
+.kpi-icon-blue  { -fx-background-color: #e4eeff; }
+.kpi-icon-teal  { -fx-background-color: #e0f4ef; }
+.kpi-icon-green { -fx-background-color: #e6f7ee; }
+.kpi-icon-amber { -fx-background-color: #fff4dc; }
+.kpi-icon-red   { -fx-background-color: #ffeaea; }
+
+/* ── KPI typography v2 ────────────────────────────────────────── */
+
+.kpi-value-v2 {
+    -fx-font-size: 30px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #14324d;
+}
+
+.kpi-value-warning-v2 {
+    -fx-font-size: 30px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #cb8616;
+}
+
+.kpi-caption-v2 {
+    -fx-font-size: 12px;
+    -fx-text-fill: #8a9bb0;
+}
+
+/* ── Big icon box (users panel) ───────────────────────────────── */
+
+.big-icon-box-v2 {
+    -fx-min-width: 64;
+    -fx-min-height: 64;
+    -fx-max-width: 64;
+    -fx-max-height: 64;
+    -fx-background-color: linear-gradient(to bottom right, #e4eeff, #d0dff8);
+    -fx-background-radius: 18;
+    -fx-alignment: center;
+}
+
+/* ── Mini stat cards ──────────────────────────────────────────── */
+
+.mini-stat-card {
+    -fx-background-color: linear-gradient(to bottom right, #f5f9fe, #edf3fa);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(164,180,200,0.25);
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-padding: 12;
+}
+
+/* ── Bar charts v2 (vertical) ─────────────────────────────────── */
+
+.bar-success-v2 {
+    -fx-background-color: linear-gradient(to top, #198754, #36b676);
+    -fx-background-radius: 6 6 0 0;
+}
+
+.bar-warning-v2 {
+    -fx-background-color: linear-gradient(to top, #cb8616, #e8a82e);
+    -fx-background-radius: 6 6 0 0;
+}
+
+.bar-danger-v2 {
+    -fx-background-color: linear-gradient(to top, #c0392b, #e05a50);
+    -fx-background-radius: 6 6 0 0;
+}
+
+/* ── Legend dots ──────────────────────────────────────────────── */
+
+.legend-dot-success {
+    -fx-background-color: #198754;
+    -fx-background-radius: 999;
+}
+
+.legend-dot-warning {
+    -fx-background-color: #cb8616;
+    -fx-background-radius: 999;
+}
+
+.legend-dot-danger {
+    -fx-background-color: #c0392b;
+    -fx-background-radius: 999;
+}
+
+/* ── Progress bars v2 (horizontal, structure panel) ───────────── */
+
+.progress-track-v2 {
+    -fx-background-color: #edf2f8;
+    -fx-background-radius: 999;
+    -fx-min-height: 6;
+    -fx-max-height: 6;
+    -fx-pref-height: 6;
+}
+
+.progress-fill-blue-v2 {
+    -fx-background-color: linear-gradient(to right, #2f6fad, #5b9ad6);
+    -fx-background-radius: 999;
+}
+
+.progress-fill-green-v2 {
+    -fx-background-color: linear-gradient(to right, #198754, #36b676);
+    -fx-background-radius: 999;
+}
+
+.progress-fill-amber-v2 {
+    -fx-background-color: linear-gradient(to right, #d4a547, #e8c168);
+    -fx-background-radius: 999;
+}
+
+.progress-fill-red-v2 {
+    -fx-background-color: linear-gradient(to right, #c0392b, #e05a50);
+    -fx-background-radius: 999;
+}
+
+/* ── Chart area v2 ────────────────────────────────────────────── */
+
+.chart-area-v2 {
+    -fx-background-color: #f8fbfe;
+    -fx-background-radius: 12;
+    -fx-border-color: #e8eef6;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-padding: 16;
+}
+
+/* ── Horizontal bar tracks ────────────────────────────────────── */
+
+.hbar-track-v2 {
+    -fx-background-color: #edf2f8;
+    -fx-background-radius: 999;
+    -fx-min-height: 16;
+    -fx-max-height: 16;
+    -fx-pref-height: 16;
+}
+
+.hbar-fill-success-v2 {
+    -fx-background-color: linear-gradient(to right, #198754, #36b676);
+    -fx-background-radius: 999;
+    -fx-min-height: 16;
+    -fx-max-height: 16;
+}
+
+.hbar-fill-warning-v2 {
+    -fx-background-color: linear-gradient(to right, #cb8616, #e8a82e);
+    -fx-background-radius: 999;
+    -fx-min-height: 16;
+    -fx-max-height: 16;
+}
+
+.hbar-fill-danger-v2 {
+    -fx-background-color: linear-gradient(to right, #c0392b, #e05a50);
+    -fx-background-radius: 999;
+    -fx-min-height: 16;
+    -fx-max-height: 16;
+}
+
+.hbar-fill-blue-v2 {
+    -fx-background-color: linear-gradient(to right, #2f6fad, #5b9ad6);
+    -fx-background-radius: 999;
+    -fx-min-height: 16;
+    -fx-max-height: 16;
+}
+
+/* ── Quick access rows ────────────────────────────────────────── */
+
+.quick-row-v2 {
+    -fx-background-color: #f8fbfe;
+    -fx-background-radius: 12;
+    -fx-border-color: #eaeef4;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-padding: 10 14 10 14;
+    -fx-cursor: hand;
+}
+
+.quick-row-v2:hover {
+    -fx-background-color: #eef4fb;
+    -fx-border-color: rgba(47,111,173,0.22);
+}
+
+/* ── Quick icon boxes ─────────────────────────────────────────── */
+
+.quick-icon-v2 {
+    -fx-min-width: 36;
+    -fx-min-height: 36;
+    -fx-max-width: 36;
+    -fx-max-height: 36;
+    -fx-background-radius: 10;
+    -fx-alignment: center;
+}
+
+.quick-icon-blue  { -fx-background-color: #e4eeff; }
+.quick-icon-teal  { -fx-background-color: #e0f4ef; }
+.quick-icon-green { -fx-background-color: #e6f7ee; }
+.quick-icon-amber { -fx-background-color: #fff4dc; }
+.quick-icon-red   { -fx-background-color: #ffeaea; }
+
+/* ── Arrow button ─────────────────────────────────────────────── */
+
+.arrow-btn-v2 {
+    -fx-background-color: #edf2f8;
+    -fx-background-radius: 8;
+    -fx-border-color: transparent;
+    -fx-text-fill: #4c627a;
+    -fx-font-weight: 700;
+    -fx-padding: 5 10 5 10;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.arrow-btn-v2:hover {
+    -fx-background-color: #dce8f2;
+    -fx-text-fill: #2f6fad;
 }
