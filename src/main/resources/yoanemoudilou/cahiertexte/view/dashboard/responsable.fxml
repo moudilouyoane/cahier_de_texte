@@ -65,7 +65,7 @@
                         onAction="#handleOuvrirCahierTexte"
                         styleClass="nav-button-v2"/>
 
-                <Button text="⇢   Progression"
+                <Button text="⇢   cours"
                         onAction="#handleOuvrirProgression"
                         styleClass="nav-button-v2"/>
 
@@ -107,10 +107,6 @@
                 </VBox>
 
                 <HBox spacing="10" alignment="CENTER">
-                    <Button text="↻"
-                            onAction="#handleRafraichir"
-                            styleClass="icon-btn-v2"
-                            style="-fx-font-size:14px;"/>
                     <StackPane>
                         <Button text="🔔"
                                 onAction="#handleToggleNotifications"
@@ -124,9 +120,9 @@
             </HBox>
 
             <!-- ── Scrollable content + overlay ── -->
-            <StackPane VBox.vgrow="ALWAYS">
+            <StackPane fx:id="contentContainer" VBox.vgrow="ALWAYS">
 
-                <ScrollPane fitToWidth="true"
+                <ScrollPane fx:id="dashboardContent" fitToWidth="true"
                             styleClass="content-scroll">
                     <VBox styleClass="page-content" spacing="20">
 

@@ -9,11 +9,17 @@ import yoanemoudilou.cahiertexte.utils.PasswordUtils;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * Service metier lie aux utilisateurs.
  */
 public class UserService {
+
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(
+            "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,63}$",
+            Pattern.CASE_INSENSITIVE
+    );
 
     private final UserRepository userRepository;
 
@@ -109,6 +115,9 @@ public class UserService {
     public Optional<User> getUtilisateurByEmail(String email) {
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("L'email est requis.");
+        }
+        if (!isEmailValide(email)) {
+            throw new IllegalArgumentException("Le format de l'email est invalide.");
         }
 
         try {
@@ -231,9 +240,22 @@ public class UserService {
             throw new IllegalArgumentException("L'email est requis.");
         }
 
+        if (!isEmailValide(user.getEmail())) {
+            throw new IllegalArgumentException("Le format de l'email est invalide.");
+        }
+
         if (user.getRole() == null) {
             throw new IllegalArgumentException("Le role est requis.");
         }
+    }
+
+    private boolean isEmailValide(String email) {
+        if (email == null) {
+            return false;
+        }
+
+        String trimmed = email.trim();
+        return !trimmed.contains(" ") && EMAIL_PATTERN.matcher(trimmed).matches();
     }
 
     private String normalizeEmail(String email) {

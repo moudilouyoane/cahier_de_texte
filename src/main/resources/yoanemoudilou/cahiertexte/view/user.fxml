@@ -77,19 +77,19 @@
                             <VBox styleClass="summary-stat" spacing="6" alignment="CENTER_LEFT"
                                   style="-fx-min-height: 0; -fx-min-width: 140;">
                                 <Label text="UTILISATEURS" styleClass="section-eyebrow"/>
-                                <Label text="0" styleClass="metric-value"/>
+                                <Label fx:id="totalUtilisateursKpiLabel" text="0" styleClass="metric-value"/>
                                 <Label text="comptes au total" styleClass="trend-neutral"/>
                             </VBox>
                             <VBox styleClass="summary-stat-success" spacing="6" alignment="CENTER_LEFT"
                                   style="-fx-min-height: 0; -fx-min-width: 140;">
                                 <Label text="ACTIFS" styleClass="section-eyebrow"/>
-                                <Label text="0" styleClass="metric-value-success"/>
+                                <Label fx:id="accesAutorisesKpiLabel" text="0" styleClass="metric-value-success"/>
                                 <Label text="▲ accès autorisés" styleClass="trend-up"/>
                             </VBox>
                             <VBox styleClass="summary-stat-warning" spacing="6" alignment="CENTER_LEFT"
                                   style="-fx-min-height: 0; -fx-min-width: 140;">
                                 <Label text="EN ATTENTE" styleClass="section-eyebrow"/>
-                                <Label text="0" styleClass="metric-value-warning"/>
+                                <Label fx:id="comptesEnAttenteKpiLabel" text="0" styleClass="metric-value-warning"/>
                                 <Label text="⚠ à valider" styleClass="trend-alert"/>
                             </VBox>
                         </HBox>

@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -51,6 +52,15 @@ public class UserManagementController {
 
     @FXML
     private TableColumn<User, Boolean> actifColumn;
+
+    @FXML
+    private Label totalUtilisateursKpiLabel;
+
+    @FXML
+    private Label accesAutorisesKpiLabel;
+
+    @FXML
+    private Label comptesEnAttenteKpiLabel;
 
     @FXML
     private TextField nomField;
@@ -265,9 +275,22 @@ public class UserManagementController {
     }
 
     private void chargerUtilisateurs() {
+        var utilisateurs = userService.getAllUtilisateurs();
+
         if (usersTable != null) {
-            usersTable.setItems(FXCollections.observableArrayList(userService.getAllUtilisateurs()));
+            usersTable.setItems(FXCollections.observableArrayList(utilisateurs));
         }
+
+        long accesAutorises = utilisateurs.stream()
+                .filter(user -> user.isValide() && user.isActif())
+                .count();
+        long comptesEnAttente = utilisateurs.stream()
+                .filter(user -> !user.isValide())
+                .count();
+
+        setLabel(totalUtilisateursKpiLabel, String.valueOf(utilisateurs.size()));
+        setLabel(accesAutorisesKpiLabel, String.valueOf(accesAutorises));
+        setLabel(comptesEnAttenteKpiLabel, String.valueOf(comptesEnAttente));
     }
 
     private void ecouterSelectionTable() {
@@ -397,5 +420,11 @@ public class UserManagementController {
                 .filter(item -> item.getId() != null && item.getId().equals(classe.getId()))
                 .findFirst()
                 .ifPresentOrElse(classeComboBox::setValue, () -> classeComboBox.setValue(classe));
+    }
+
+    private void setLabel(Label label, String value) {
+        if (label != null) {
+            label.setText(value != null ? value : "");
+        }
     }
 }

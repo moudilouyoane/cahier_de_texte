@@ -3,13 +3,17 @@ package yoanemoudilou.cahiertexte.ui.dashboard;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import yoanemoudilou.cahiertexte.config.SessionManager;
@@ -93,6 +97,12 @@ public class ResponsableDashboardController {
     @FXML
     private VBox notificationsPanel;
 
+    @FXML
+    private StackPane contentContainer;
+
+    @FXML
+    private ScrollPane dashboardContent;
+
     private final SessionManager sessionManager = SessionManager.getInstance();
     private final AuthService authService = new AuthService();
     private final CoursService coursService = new CoursService();
@@ -112,6 +122,7 @@ public class ResponsableDashboardController {
         configurerClasseResponsable();
         chargerDonnees();
         ecouterSelection();
+        afficherDashboard();
     }
 
     @FXML
@@ -130,22 +141,23 @@ public class ResponsableDashboardController {
     }
 
     public void handleOuvrirValidation(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/validation.fxml", "Validation de seances");
+        afficherModule("/yoanemoudilou/cahiertexte/view/validation.fxml");
     }
 
     @FXML
     private void handleOuvrirCahierTexte(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/cahier.fxml", "Cahier de texte");
+        afficherModule("/yoanemoudilou/cahiertexte/view/cahier.fxml");
     }
 
     @FXML
     private void handleOuvrirProgression(ActionEvent event) {
-        AppNavigator.navigate(event, "/yoanemoudilou/cahiertexte/view/dashboard/responsable_progression.fxml", "Progression des cours");
+        afficherModule("/yoanemoudilou/cahiertexte/view/dashboard/responsable_progression.fxml");
     }
 
     @FXML
     private void handleRafraichir() {
         chargerDonnees();
+        afficherDashboard();
     }
 
     @FXML
@@ -160,6 +172,9 @@ public class ResponsableDashboardController {
             return;
         }
 
+        if (contentContainer != null && !contentContainer.getChildren().contains(notificationsPanel)) {
+            contentContainer.getChildren().add(notificationsPanel);
+        }
         boolean show = !notificationsPanel.isVisible();
         notificationsPanel.setVisible(show);
         notificationsPanel.setManaged(show);
@@ -347,6 +362,71 @@ public class ResponsableDashboardController {
         coursLabels.clear();
         if (seancesTable != null) {
             seancesTable.setItems(FXCollections.emptyObservableList());
+        }
+    }
+
+    private void afficherDashboard() {
+        if (contentContainer != null && dashboardContent != null) {
+            afficherDansContenu(dashboardContent);
+        }
+    }
+
+    private void afficherModule(String fxmlPath) {
+        if (contentContainer == null) {
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            masquerBoutonsRetour(root);
+            afficherDansContenu(root);
+            chargerDonnees();
+        } catch (Exception e) {
+            AlertUtils.showException("Erreur", "Impossible de charger le module.", e);
+        }
+    }
+
+    private void afficherDansContenu(Parent root) {
+        if (contentContainer == null || root == null) {
+            return;
+        }
+
+        if (notificationsPanel != null) {
+            notificationsPanel.setVisible(false);
+            notificationsPanel.setManaged(false);
+            contentContainer.getChildren().setAll(root, notificationsPanel);
+        } else {
+            contentContainer.getChildren().setAll(root);
+        }
+    }
+
+    private void masquerBoutonsRetour(Parent root) {
+        if (root == null) {
+            return;
+        }
+
+        if (root instanceof javafx.scene.layout.BorderPane borderPane) {
+            borderPane.setLeft(null);
+        }
+
+        for (var node : root.lookupAll(".module-back-button")) {
+            node.setManaged(false);
+            node.setVisible(false);
+        }
+
+        for (var node : root.lookupAll(".top-bar")) {
+            if (node instanceof javafx.scene.layout.Pane pane) {
+                for (var child : pane.getChildren()) {
+                    if (child instanceof javafx.scene.control.Button button
+                            && (button.getStyleClass().contains("module-back-button")
+                            || "Dashboard".equals(button.getText())
+                            || (button.getText() != null && button.getText().contains("Dashboard")))) {
+                        button.setManaged(false);
+                        button.setVisible(false);
+                    }
+                }
+            }
         }
     }
 

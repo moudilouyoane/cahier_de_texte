@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import yoanemoudilou.cahiertexte.config.SessionManager;
 import yoanemoudilou.cahiertexte.model.Role;
@@ -57,6 +58,15 @@ public class AdminDashboardController {
     private Label utilisateursEnAttenteLabel;
 
     @FXML
+    private Label utilisateursTotalPanelLabel;
+
+    @FXML
+    private Label enseignantsPanelLabel;
+
+    @FXML
+    private Label responsablesPanelLabel;
+
+    @FXML
     private Label totalFilieresLabel;
 
     @FXML
@@ -79,6 +89,15 @@ public class AdminDashboardController {
 
     @FXML
     private Label notificationsCountLabel;
+
+    @FXML
+    private Region structureFilieresBar;
+
+    @FXML
+    private Region structureClassesBar;
+
+    @FXML
+    private Region structureCoursBar;
 
     @FXML
     private StackPane contentContainer;
@@ -161,17 +180,34 @@ public class AdminDashboardController {
     private void chargerInfos() {
         try {
             User user = sessionManager.getUtilisateurConnecte();
+            var utilisateurs = userService.getAllUtilisateurs();
+            var enseignants = userService.getUtilisateursByRole(Role.ENSEIGNANT);
+            var responsables = userService.getUtilisateursByRole(Role.RESPONSABLE_CLASSE);
+            var utilisateursEnAttente = userService.getUtilisateursEnAttenteValidation();
+            var filieres = filiereService.getAllFilieres();
+            var classes = classeService.getAllClasses();
+            var cours = coursService.getAllCours();
             var seances = seanceService.getAllSeances();
+
+            int totalUtilisateurs = utilisateurs.size();
+            int totalEnseignants = enseignants.size();
+            int totalResponsables = responsables.size();
+            int totalFilieres = filieres.size();
+            int totalClasses = classes.size();
+            int totalCours = cours.size();
 
             setLabel(bienvenuLabel, user != null ? "Bienvenue, " + user.getNomComplet() : "Bienvenue");
             setLabel(roleLabel, user != null && user.getRole() != null ? user.getRole().name() : "");
-            setLabel(totalUtilisateursLabel, String.valueOf(userService.getAllUtilisateurs().size()));
-            setLabel(totalEnseignantsLabel, String.valueOf(userService.getUtilisateursByRole(Role.ENSEIGNANT).size()));
-            setLabel(totalResponsablesLabel, String.valueOf(userService.getUtilisateursByRole(Role.RESPONSABLE_CLASSE).size()));
-            setLabel(utilisateursEnAttenteLabel, String.valueOf(userService.getUtilisateursEnAttenteValidation().size()));
-            setLabel(totalFilieresLabel, String.valueOf(filiereService.getAllFilieres().size()));
-            setLabel(totalClassesLabel, String.valueOf(classeService.getAllClasses().size()));
-            setLabel(totalCoursLabel, String.valueOf(coursService.getAllCours().size()));
+            setLabel(totalUtilisateursLabel, String.valueOf(totalUtilisateurs));
+            setLabel(totalEnseignantsLabel, String.valueOf(totalEnseignants));
+            setLabel(totalResponsablesLabel, String.valueOf(totalResponsables));
+            setLabel(utilisateursEnAttenteLabel, String.valueOf(utilisateursEnAttente.size()));
+            setLabel(utilisateursTotalPanelLabel, String.valueOf(totalUtilisateurs));
+            setLabel(enseignantsPanelLabel, String.valueOf(totalEnseignants));
+            setLabel(responsablesPanelLabel, String.valueOf(totalResponsables));
+            setLabel(totalFilieresLabel, String.valueOf(totalFilieres));
+            setLabel(totalClassesLabel, String.valueOf(totalClasses));
+            setLabel(totalCoursLabel, String.valueOf(totalCours));
             setLabel(totalSeancesLabel, String.valueOf(seances.size()));
             setLabel(seancesEnAttenteLabel, String.valueOf(
                     seances.stream().filter(s -> s.getStatut() == StatutSeance.EN_ATTENTE).count()
@@ -182,6 +218,11 @@ public class AdminDashboardController {
             setLabel(seancesRejeteesLabel, String.valueOf(
                     seances.stream().filter(s -> s.getStatut() == StatutSeance.REJETEE).count()
             ));
+
+            int maxStructure = Math.max(totalFilieres, Math.max(totalClasses, totalCours));
+            ajusterBarre(structureFilieresBar, ratio(totalFilieres, maxStructure));
+            ajusterBarre(structureClassesBar, ratio(totalClasses, maxStructure));
+            ajusterBarre(structureCoursBar, ratio(totalCours, maxStructure));
             chargerNotifications(user);
         } catch (Exception e) {
             AlertUtils.showException("Erreur", "Impossible de charger le dashboard admin.", e);
@@ -199,6 +240,28 @@ public class AdminDashboardController {
     private void setLabel(Label label, String value) {
         if (label != null) {
             label.setText(value != null ? value : "");
+        }
+    }
+
+    private double ratio(int value, int max) {
+        if (value <= 0 || max <= 0) {
+            return 0;
+        }
+        return Math.max(0.06, Math.min(1, (double) value / max));
+    }
+
+    private void ajusterBarre(Region bar, double ratio) {
+        if (bar == null) {
+            return;
+        }
+
+        bar.setMinWidth(0);
+        bar.setMaxWidth(Region.USE_PREF_SIZE);
+        bar.prefWidthProperty().unbind();
+        if (bar.getParent() instanceof Region track) {
+            bar.prefWidthProperty().bind(track.widthProperty().multiply(ratio));
+        } else {
+            bar.setPrefWidth(0);
         }
     }
 
@@ -232,6 +295,10 @@ public class AdminDashboardController {
             return;
         }
 
+        if (root instanceof javafx.scene.layout.BorderPane borderPane) {
+            borderPane.setLeft(null);
+        }
+
         for (var node : root.lookupAll(".module-back-button")) {
             node.setManaged(false);
             node.setVisible(false);
@@ -240,7 +307,10 @@ public class AdminDashboardController {
         for (var node : root.lookupAll(".top-bar")) {
             if (node instanceof javafx.scene.layout.Pane pane) {
                 for (var child : pane.getChildren()) {
-                    if (child instanceof Button button && button.getStyleClass().contains("module-back-button")) {
+                    if (child instanceof Button button
+                            && (button.getStyleClass().contains("module-back-button")
+                            || "Dashboard".equals(button.getText())
+                            || (button.getText() != null && button.getText().contains("Dashboard")))) {
                         button.setManaged(false);
                         button.setVisible(false);
                     }

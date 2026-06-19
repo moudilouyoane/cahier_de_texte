@@ -54,6 +54,7 @@
 
                 <Button text="◉   Mes cours"
                         
+                        onAction="#handleVoirMesCours"
                         styleClass="nav-button-v2"/>
 
                 <Button text="☰   Mes séances"
@@ -100,27 +101,8 @@
                            style="-fx-font-size:11px; -fx-text-fill:#8a9bb0;"/>
                 </VBox>
 
-                <!-- Search bar -->
-                <HBox styleClass="search-bar-v2" spacing="8"
-                      alignment="CENTER_LEFT">
-                    <Label text="🔍"
-                           style="-fx-font-size:12px;
-                                  -fx-text-fill:#8a9bb0;"/>
-                    <TextField promptText="Rechercher..."
-                               style="-fx-background-color:transparent;
-                                      -fx-border-color:transparent;
-                                      -fx-font-size:12px;
-                                      -fx-text-fill:#203247;
-                                      -fx-prompt-text-fill:#aabacb;
-                                      -fx-pref-width:160;"/>
-                </HBox>
-
                 <!-- Right actions -->
                 <HBox spacing="10" alignment="CENTER">
-                    <Button text="↻"
-                            onAction="#handleRafraichir"
-                            styleClass="icon-btn-v2"
-                            style="-fx-font-size:14px;"/>
                     <StackPane>
                         <Button text="🔔"
                                 onAction="#handleToggleNotifications"
@@ -138,9 +120,9 @@
             </HBox>
 
             <!-- ── Scrollable content + notifications overlay ── -->
-            <StackPane VBox.vgrow="ALWAYS">
+            <StackPane fx:id="contentContainer" VBox.vgrow="ALWAYS">
 
-                <ScrollPane fitToWidth="true"
+                <ScrollPane fx:id="dashboardContent" fitToWidth="true"
                             styleClass="content-scroll">
                     <VBox styleClass="page-content" spacing="20">
 
@@ -174,11 +156,6 @@
                                             styleClass="button-soft"
                                             style="-fx-font-size:12px;
                                                    -fx-padding:8 14 8 14;"/>
-                                    <Button text="＋ Nouvelle séance"
-                                            onAction="#handleNouvelleSeance"
-                                            styleClass="button"
-                                            style="-fx-font-size:12px;
-                                                   -fx-padding:8 14 8 14;"/>
                                 </HBox>
                             </VBox>
                         </HBox>
@@ -199,11 +176,8 @@
 
                             <GridPane hgap="14" vgap="0">
                                 <columnConstraints>
-                                    <ColumnConstraints percentWidth="20"/>
-                                    <ColumnConstraints percentWidth="20"/>
-                                    <ColumnConstraints percentWidth="20"/>
-                                    <ColumnConstraints percentWidth="20"/>
-                                    <ColumnConstraints percentWidth="20"/>
+                                    <ColumnConstraints percentWidth="50"/>
+                                    <ColumnConstraints percentWidth="50"/>
                                 </columnConstraints>
 
                                 <!-- Mes cours -->
@@ -218,7 +192,7 @@
                                                       -fx-text-fill:#2f6fad;"/>
                                     </StackPane>
                                     <VBox spacing="3">
-                                        <Label fx:id=""
+                                        <Label fx:id="mesCoursKpiLabel"
                                                text="0"
                                                styleClass="kpi-value-v2"/>
                                         <Label text="Mes cours"
@@ -240,85 +214,13 @@
                                                       -fx-text-fill:#0d7a6a;"/>
                                     </StackPane>
                                     <VBox spacing="3">
-                                        <Label fx:id=""
+                                        <Label fx:id="mesSeancesKpiLabel"
                                                text="0"
                                                styleClass="kpi-value-v2"/>
                                         <Label text="Mes séances"
                                                styleClass="kpi-caption-v2"/>
                                         <Label text="— Total saisies"
                                                styleClass="trend-neutral"/>
-                                    </VBox>
-                                </HBox>
-
-                                <!-- En attente -->
-                                <HBox styleClass="kpi-card-v2
-                                                  kpi-card-warning-v2"
-                                      GridPane.columnIndex="2"
-                                      spacing="12"
-                                      alignment="CENTER_LEFT">
-                                    <StackPane styleClass="kpi-icon-box-v2
-                                                           kpi-icon-amber">
-                                        <Label text="⏳"
-                                               style="-fx-font-size:18px;"/>
-                                    </StackPane>
-                                    <VBox spacing="3">
-                                        <Label fx:id=""
-                                               text="0"
-                                               styleClass="kpi-value-warning-v2"/>
-                                        <Label text="En attente"
-                                               styleClass="kpi-caption-v2"/>
-                                        <Label text="● À valider"
-                                               styleClass="trend-alert"/>
-                                    </VBox>
-                                </HBox>
-
-                                <!-- Validées -->
-                                <HBox styleClass="kpi-card-v2"
-                                      GridPane.columnIndex="3"
-                                      spacing="12"
-                                      alignment="CENTER_LEFT"
-                                      style="-fx-border-color:#a3e0ba;">
-                                    <StackPane styleClass="kpi-icon-box-v2
-                                                           kpi-icon-green">
-                                        <Label text="✓"
-                                               style="-fx-font-size:18px;
-                                                      -fx-text-fill:#198754;"/>
-                                    </StackPane>
-                                    <VBox spacing="3">
-                                        <Label fx:id=""
-                                               text="0"
-                                               styleClass="metric-value-success"
-                                               style="-fx-font-size:28px;"/>
-                                        <Label text="Validées"
-                                               styleClass="kpi-caption-v2"/>
-                                        <Label text="↑ Approuvées"
-                                               styleClass="trend-up"/>
-                                    </VBox>
-                                </HBox>
-
-                                <!-- Rejetées -->
-                                <HBox styleClass="kpi-card-v2"
-                                      GridPane.columnIndex="4"
-                                      spacing="12"
-                                      alignment="CENTER_LEFT"
-                                      style="-fx-border-color:#f0a8a0;">
-                                    <StackPane styleClass="kpi-icon-box-v2
-                                                           kpi-icon-red">
-                                        <Label text="✗"
-                                               style="-fx-font-size:18px;
-                                                      -fx-text-fill:#c0392b;"/>
-                                    </StackPane>
-                                    <VBox spacing="3">
-                                        <Label fx:id=""
-                                               text="0"
-                                               styleClass="metric-value-danger"
-                                               style="-fx-font-size:28px;"/>
-                                        <Label text="Rejetées"
-                                               styleClass="kpi-caption-v2"/>
-                                        <Label text="↓ À corriger"
-                                               style="-fx-font-size:10px;
-                                                      -fx-font-weight:700;
-                                                      -fx-text-fill:#c0392b;"/>
                                     </VBox>
                                 </HBox>
 
@@ -354,6 +256,7 @@
                                                styleClass="section-subtitle"/>
                                     </VBox>
                                     <Button text="Voir →"
+                                            onAction="#handleVoirMesCours"
                                  styleClass="button-soft"
                                  style="-fx-font-size:10px;
                                         -fx-padding:4 10 4 10;"/>
@@ -472,7 +375,7 @@
                                     <Label text="Total :"
                                            style="-fx-font-size:11px;
                                                   -fx-text-fill:#8a9bb0;"/>
-                                    <Label fx:id=""
+                                    <Label fx:id="activiteTotalHeaderLabel"
                                            text="0"
                                            style="-fx-font-size:13px;
                                                   -fx-font-weight:800;
@@ -488,14 +391,15 @@
                                                style="-fx-font-size:11px;
                                                       -fx-text-fill:#6b7d91;
                                                       -fx-min-width:80;"/>
-                                        <HBox styleClass="hbar-track-v2"
+                                        <HBox fx:id="activiteValideesTrack"
+                                              styleClass="hbar-track-v2"
                                               HBox.hgrow="ALWAYS">
-                                            <Region styleClass="hbar-fill-success-v2"
-                                                    prefHeight="16"
-                                                    HBox.hgrow="ALWAYS"
-                                                    maxWidth="280"/>
+                                            <Region fx:id="activiteValideesBar"
+                                                    styleClass="hbar-fill-success-v2"
+                                                    prefWidth="0"
+                                                    prefHeight="16"/>
                                         </HBox>
-                                        <Label fx:id=""
+                                        <Label fx:id="activiteValideesLabel"
                                                text="0"
                                                style="-fx-font-size:12px;
                                                       -fx-font-weight:700;
@@ -509,14 +413,15 @@
                                                style="-fx-font-size:11px;
                                                       -fx-text-fill:#6b7d91;
                                                       -fx-min-width:80;"/>
-                                        <HBox styleClass="hbar-track-v2"
+                                        <HBox fx:id="activiteEnAttenteTrack"
+                                              styleClass="hbar-track-v2"
                                               HBox.hgrow="ALWAYS">
-                                            <Region styleClass="hbar-fill-warning-v2"
-                                                    prefHeight="16"
-                                                    HBox.hgrow="ALWAYS"
-                                                    maxWidth="160"/>
+                                            <Region fx:id="activiteEnAttenteBar"
+                                                    styleClass="hbar-fill-warning-v2"
+                                                    prefWidth="0"
+                                                    prefHeight="16"/>
                                         </HBox>
-                                        <Label fx:id=""
+                                        <Label fx:id="activiteEnAttenteLabel"
                                                text="0"
                                                style="-fx-font-size:12px;
                                                       -fx-font-weight:700;
@@ -530,14 +435,15 @@
                                                style="-fx-font-size:11px;
                                                       -fx-text-fill:#6b7d91;
                                                       -fx-min-width:80;"/>
-                                        <HBox styleClass="hbar-track-v2"
+                                        <HBox fx:id="activiteRejeteesTrack"
+                                              styleClass="hbar-track-v2"
                                               HBox.hgrow="ALWAYS">
-                                            <Region styleClass="hbar-fill-danger-v2"
-                                                    prefHeight="16"
-                                                    HBox.hgrow="ALWAYS"
-                                                    maxWidth="90"/>
+                                            <Region fx:id="activiteRejeteesBar"
+                                                    styleClass="hbar-fill-danger-v2"
+                                                    prefWidth="0"
+                                                    prefHeight="16"/>
                                         </HBox>
-                                        <Label fx:id=""
+                                        <Label fx:id="activiteRejeteesLabel"
                                                text="0"
                                                style="-fx-font-size:12px;
                                                       -fx-font-weight:700;
@@ -551,14 +457,15 @@
                                                style="-fx-font-size:11px;
                                                       -fx-text-fill:#6b7d91;
                                                       -fx-min-width:80;"/>
-                                        <HBox styleClass="hbar-track-v2"
+                                        <HBox fx:id="activiteTotalTrack"
+                                              styleClass="hbar-track-v2"
                                               HBox.hgrow="ALWAYS">
-                                            <Region styleClass="hbar-fill-blue-v2"
-                                                    prefHeight="16"
-                                                    HBox.hgrow="ALWAYS"
-                                                    maxWidth="380"/>
+                                            <Region fx:id="activiteTotalBar"
+                                                    styleClass="hbar-fill-blue-v2"
+                                                    prefWidth="0"
+                                                    prefHeight="16"/>
                                         </HBox>
-                                        <Label fx:id=""
+                                        <Label fx:id="activiteTotalLabel"
                                                text="0"
                                                style="-fx-font-size:12px;
                                                       -fx-font-weight:700;
@@ -741,6 +648,7 @@
                                     </HBox>
                                     <Button text="Ouvrir →"
 
+                                            onAction="#handleVoirMesCours"
                                             styleClass="button-soft"
                                             style="-fx-font-size:11px;
                                                    -fx-padding:6 14 6 14;

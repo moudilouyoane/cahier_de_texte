@@ -113,22 +113,8 @@
                            style="-fx-font-size:11px; -fx-text-fill:#8a9bb0;"/>
                 </VBox>
 
-                <!-- Search bar -->
-                <HBox styleClass="search-bar-v2" spacing="8" alignment="CENTER_LEFT">
-                    <Label text="🔍" style="-fx-font-size:12px; -fx-text-fill:#8a9bb0;"/>
-                    <TextField promptText="Rechercher..."
-                               style="-fx-background-color:transparent;
-                                      -fx-border-color:transparent;
-                                      -fx-font-size:12px; -fx-text-fill:#203247;
-                                      -fx-prompt-text-fill:#aabacb;
-                                      -fx-pref-width:160;"/>
-                </HBox>
-
                 <!-- Right actions -->
                 <HBox spacing="10" alignment="CENTER">
-                    <Button text="↻" onAction="#handleRafraichir"
-                            styleClass="icon-btn-v2"
-                            style="-fx-font-size:14px;"/>
                     <StackPane>
                         <Button text="🔔" onAction="#handleNotifications"
                                 styleClass="icon-btn-v2"/>
@@ -159,9 +145,6 @@
                             <HBox spacing="8" alignment="CENTER_RIGHT">
                                 <Button text="📊 Rapports" onAction="#handleRapports"
                                         styleClass="button-soft"
-                                        style="-fx-font-size:12px;"/>
-                                <Button text="↻ Rafraîchir" onAction="#handleRafraichir"
-                                        styleClass="button"
                                         style="-fx-font-size:12px;"/>
                             </HBox>
                         </HBox>
@@ -229,21 +212,21 @@
                                 </VBox>
                             </HBox>
 
-                            <!-- En attente -->
-                            <HBox styleClass="kpi-card-v2 kpi-card-warning-v2"
+                            <!-- Comptes en attente -->
+                            <HBox styleClass="kpi-card-v2"
                                   GridPane.columnIndex="3" spacing="14"
                                   alignment="CENTER_LEFT">
                                 <StackPane styleClass="kpi-icon-box-v2 kpi-icon-amber">
-                                    <Label text="⏳"
+                                    <Label text="..."
                                            style="-fx-font-size:20px;"/>
                                 </StackPane>
                                 <VBox spacing="3">
                                     <Label fx:id="utilisateursEnAttenteLabel" text="0"
-                                           styleClass="kpi-value-warning-v2"/>
+                                           styleClass="kpi-value-v2"/>
                                     <Label text="En attente"
                                            styleClass="kpi-caption-v2"/>
-                                    <Label text="● Action requise"
-                                           styleClass="trend-alert"/>
+                                    <Label text="Validation"
+                                           styleClass="trend-neutral"/>
                                 </VBox>
                             </HBox>
                         </GridPane>
@@ -278,8 +261,8 @@
                                                style="-fx-font-size:28px;"/>
                                     </StackPane>
                                     <VBox spacing="4">
-                                        <Label fx:id=""
-                                               text="total Utilisateurs"
+                                        <Label fx:id="utilisateursTotalPanelLabel"
+                                               text="0"
                                                style="-fx-font-size:36px;
                                                       -fx-font-weight:800;
                                                       -fx-text-fill:#14324d;"/>
@@ -300,8 +283,8 @@
                                           GridPane.columnIndex="0">
                                         <Label text="✦" style="-fx-font-size:14px;
                                                     -fx-text-fill:#2f6fad;"/>
-                                        <Label
-                                               text="total Enseignant"
+                                        <Label fx:id="enseignantsPanelLabel"
+                                               text="0"
                                                style="-fx-font-size:18px;
                                                       -fx-font-weight:800;
                                                       -fx-text-fill:#14324d;"/>
@@ -311,8 +294,8 @@
                                     <VBox styleClass="mini-stat-card" spacing="4"
                                           GridPane.columnIndex="1">
                                         <Label text="🏫" style="-fx-font-size:14px;"/>
-                                        <Label
-                                               text="total Responsable"
+                                        <Label fx:id="responsablesPanelLabel"
+                                               text="0"
                                                style="-fx-font-size:18px;
                                                       -fx-font-weight:800;
                                                       -fx-text-fill:#14324d;"/>
@@ -346,91 +329,51 @@
                                 <Separator styleClass="card-separator"/>
 
                                 <!-- Donut simulation with bar chart -->
-                                <HBox spacing="16" alignment="CENTER">
-
-                                    <!-- Visual: stacked bars as donut proxy -->
-                                    <VBox alignment="CENTER" spacing="4"
-                                          style="-fx-padding:8;">
-                                        <Label text="Répartition"
+                                <HBox spacing="16" alignment="CENTER_LEFT">
+                                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                        <Label fx:id="totalSeancesLabel"
+                                               text="0"
+                                               style="-fx-font-size:34px;
+                                                      -fx-font-weight:800;
+                                                      -fx-text-fill:#14324d;"/>
+                                        <Label text="Seances au total"
                                                styleClass="metric-caption"/>
-
-                                        <!-- Bar chart simulation -->
-                                        <HBox spacing="6" alignment="BOTTOM_CENTER"
-                                              style="-fx-padding:10 0 0 0;">
-                                            <VBox alignment="BOTTOM_CENTER" spacing="2">
-                                                <Label fx:id="seancesValideesLabel"
-                                                       text="0"
-                                                       style="-fx-font-size:10px;
-                                                              -fx-font-weight:700;
-                                                              -fx-text-fill:#198754;"/>
-                                                <Region styleClass="bar-success-v2"
-                                                        prefWidth="28" prefHeight="70"/>
-                                                <Label text="✓"
-                                                       style="-fx-font-size:10px;
-                                                              -fx-text-fill:#198754;"/>
-                                            </VBox>
-                                            <VBox alignment="BOTTOM_CENTER" spacing="2">
-                                                <Label fx:id="seancesEnAttenteLabel"
-                                                       text="0"
-                                                       style="-fx-font-size:10px;
-                                                              -fx-font-weight:700;
-                                                              -fx-text-fill:#cb8616;"/>
-                                                <Region styleClass="bar-warning-v2"
-                                                        prefWidth="28" prefHeight="50"/>
-                                                <Label text="⏳"
-                                                       style="-fx-font-size:10px;
-                                                              -fx-text-fill:#cb8616;"/>
-                                            </VBox>
-                                            <VBox alignment="BOTTOM_CENTER" spacing="2">
-                                                <Label fx:id="seancesRejeteesLabel"
-                                                       text="0"
-                                                       style="-fx-font-size:10px;
-                                                              -fx-font-weight:700;
-                                                              -fx-text-fill:#c0392b;"/>
-                                                <Region styleClass="bar-danger-v2"
-                                                        prefWidth="28" prefHeight="30"/>
-                                                <Label text="✗"
-                                                       style="-fx-font-size:10px;
-                                                              -fx-text-fill:#c0392b;"/>
-                                            </VBox>
-                                        </HBox>
                                     </VBox>
-
-                                    <!-- Legend & values -->
-                                    <VBox spacing="10" HBox.hgrow="ALWAYS"
-                                          alignment="CENTER_LEFT">
-                                        <VBox spacing="2">
-                                            <Label text="Total séances"
-                                                   styleClass="metric-caption"/>
-                                            <Label
-                                                   text="total Seances"
-                                                   styleClass="metric-value"
-                                                   style="-fx-font-size:30px;"/>
+                                    <GridPane hgap="8" vgap="8">
+                                        <columnConstraints>
+                                            <ColumnConstraints percentWidth="33.33"/>
+                                            <ColumnConstraints percentWidth="33.33"/>
+                                            <ColumnConstraints percentWidth="33.33"/>
+                                        </columnConstraints>
+                                        <VBox styleClass="mini-stat-card" spacing="4" GridPane.columnIndex="0">
+                                            <Label text="Attente" styleClass="metric-caption"/>
+                                            <Label fx:id="seancesEnAttenteLabel"
+                                                   text="0"
+                                                   style="-fx-font-size:18px;
+                                                          -fx-font-weight:800;
+                                                          -fx-text-fill:#cb8616;"/>
                                         </VBox>
-
-                                        <Separator styleClass="card-separator"/>
-
-                                        <HBox spacing="6" alignment="CENTER_LEFT">
-                                            <Region styleClass="legend-dot-success"
-                                                    prefWidth="10" prefHeight="10"/>
-                                            <Label text="Séances validées"
-                                                   styleClass="metric-caption"/>
-                                        </HBox>
-                                        <HBox spacing="6" alignment="CENTER_LEFT">
-                                            <Region styleClass="legend-dot-warning"
-                                                    prefWidth="10" prefHeight="10"/>
-                                            <Label text="En attente"
-                                                   styleClass="metric-caption"/>
-                                        </HBox>
-                                        <HBox spacing="6" alignment="CENTER_LEFT">
-                                            <Region styleClass="legend-dot-danger"
-                                                    prefWidth="10" prefHeight="10"/>
-                                            <Label text="Rejetées"
-                                                   styleClass="metric-caption"/>
-                                        </HBox>
-                                    </VBox>
+                                        <VBox styleClass="mini-stat-card" spacing="4" GridPane.columnIndex="1">
+                                            <Label text="Validees" styleClass="metric-caption"/>
+                                            <Label fx:id="seancesValideesLabel"
+                                                   text="0"
+                                                   style="-fx-font-size:18px;
+                                                          -fx-font-weight:800;
+                                                          -fx-text-fill:#198754;"/>
+                                        </VBox>
+                                        <VBox styleClass="mini-stat-card" spacing="4" GridPane.columnIndex="2">
+                                            <Label text="Rejetees" styleClass="metric-caption"/>
+                                            <Label fx:id="seancesRejeteesLabel"
+                                                   text="0"
+                                                   style="-fx-font-size:18px;
+                                                          -fx-font-weight:800;
+                                                          -fx-text-fill:#c0392b;"/>
+                                        </VBox>
+                                    </GridPane>
                                 </HBox>
                             </VBox>
+
+
 
                             <!-- Col 2: Top structure (style "Top 10 Stores") -->
                             <VBox styleClass="surface-card" GridPane.columnIndex="2"
@@ -467,10 +410,10 @@
                                                           -fx-font-size:12px;"/>
                                         </HBox>
                                         <HBox styleClass="progress-track-v2">
-                                            <Region styleClass="progress-fill-blue-v2"
-                                                    prefHeight="6"
-                                                    HBox.hgrow="ALWAYS"
-                                                    maxWidth="140"/>
+                                            <Region fx:id="structureFilieresBar"
+                                                    styleClass="progress-fill-blue-v2"
+                                                    prefWidth="0"
+                                                    prefHeight="6"/>
                                         </HBox>
                                     </VBox>
 
@@ -490,10 +433,10 @@
                                                           -fx-font-size:12px;"/>
                                         </HBox>
                                         <HBox styleClass="progress-track-v2">
-                                            <Region styleClass="progress-fill-green-v2"
-                                                    prefHeight="6"
-                                                    HBox.hgrow="ALWAYS"
-                                                    maxWidth="100"/>
+                                            <Region fx:id="structureClassesBar"
+                                                    styleClass="progress-fill-green-v2"
+                                                    prefWidth="0"
+                                                    prefHeight="6"/>
                                         </HBox>
                                     </VBox>
 
@@ -513,56 +456,10 @@
                                                           -fx-font-size:12px;"/>
                                         </HBox>
                                         <HBox styleClass="progress-track-v2">
-                                            <Region styleClass="progress-fill-amber-v2"
-                                                    prefHeight="6"
-                                                    HBox.hgrow="ALWAYS"
-                                                    maxWidth="120"/>
-                                        </HBox>
-                                    </VBox>
-
-                                    <!-- Séances validées -->
-                                    <VBox spacing="4">
-                                        <HBox alignment="CENTER_LEFT" spacing="6">
-                                            <Label text="✓"
-                                                   style="-fx-text-fill:#198754;
-                                                          -fx-font-size:12px;"/>
-                                            <Label text="Séances val."
-                                                   styleClass="metric-caption"
-                                                   HBox.hgrow="ALWAYS"/>
-                                            <Label fx:id=""
-                                                   text="seances Validees"
-                                                   style="-fx-font-weight:800;
-                                                          -fx-text-fill:#14324d;
-                                                          -fx-font-size:12px;"/>
-                                        </HBox>
-                                        <HBox styleClass="progress-track-v2">
-                                            <Region styleClass="progress-fill-green-v2"
-                                                    prefHeight="6"
-                                                    HBox.hgrow="ALWAYS"
-                                                    maxWidth="90"/>
-                                        </HBox>
-                                    </VBox>
-
-                                    <!-- Séances rejetées -->
-                                    <VBox spacing="4">
-                                        <HBox alignment="CENTER_LEFT" spacing="6">
-                                            <Label text="✗"
-                                                   style="-fx-text-fill:#c0392b;
-                                                          -fx-font-size:12px;"/>
-                                            <Label text="Séances rej."
-                                                   styleClass="metric-caption"
-                                                   HBox.hgrow="ALWAYS"/>
-                                            <Label fx:id=""
-                                                   text="seances Rejetees"
-                                                   style="-fx-font-weight:800;
-                                                          -fx-text-fill:#14324d;
-                                                          -fx-font-size:12px;"/>
-                                        </HBox>
-                                        <HBox styleClass="progress-track-v2">
-                                            <Region styleClass="progress-fill-red-v2"
-                                                    prefHeight="6"
-                                                    HBox.hgrow="ALWAYS"
-                                                    maxWidth="40"/>
+                                            <Region fx:id="structureCoursBar"
+                                                    styleClass="progress-fill-amber-v2"
+                                                    prefWidth="0"
+                                                    prefHeight="6"/>
                                         </HBox>
                                     </VBox>
 
@@ -587,148 +484,11 @@
                         <!-- ── Bottom row: Activity + Quick access ── -->
                         <GridPane hgap="14" vgap="14">
                             <columnConstraints>
-                                <ColumnConstraints percentWidth="58"/>
-                                <ColumnConstraints percentWidth="42"/>
+                                <ColumnConstraints percentWidth="100"/>
                             </columnConstraints>
 
-                            <!-- Left: Activité (style "Expense vs Profit") -->
-                            <VBox styleClass="surface-card" GridPane.columnIndex="0"
-                                  spacing="14">
-                                <HBox alignment="CENTER_LEFT" spacing="10">
-                                    <VBox spacing="2" HBox.hgrow="ALWAYS">
-                                        <Label text="Activité des séances"
-                                               styleClass="section-title"
-                                               style="-fx-font-size:14px;"/>
-                                        <Label text="Évolution · Validations · Rejets"
-                                               styleClass="section-subtitle"/>
-                                    </VBox>
-                                    <Label text="En temps réel"
-                                           style="-fx-font-size:10px;
-                                                  -fx-text-fill:#aabacb;"/>
-                                </HBox>
-
-                                <Separator styleClass="card-separator"/>
-
-                                <!-- Chart area simulation -->
-                                <VBox spacing="8">
-                                    <!-- Legend -->
-                                    <HBox spacing="16" alignment="CENTER_LEFT">
-                                        <HBox spacing="5" alignment="CENTER_LEFT">
-                                            <Region styleClass="legend-dot-success"
-                                                    prefWidth="10" prefHeight="10"/>
-                                            <Label text="Validées"
-                                                   style="-fx-font-size:11px;
-                                                          -fx-text-fill:#6b7d91;"/>
-                                        </HBox>
-                                        <HBox spacing="5" alignment="CENTER_LEFT">
-                                            <Region styleClass="legend-dot-warning"
-                                                    prefWidth="10" prefHeight="10"/>
-                                            <Label text="En attente"
-                                                   style="-fx-font-size:11px;
-                                                          -fx-text-fill:#6b7d91;"/>
-                                        </HBox>
-                                        <HBox spacing="5" alignment="CENTER_LEFT">
-                                            <Region styleClass="legend-dot-danger"
-                                                    prefWidth="10" prefHeight="10"/>
-                                            <Label text="Rejetées"
-                                                   style="-fx-font-size:11px;
-                                                          -fx-text-fill:#6b7d91;"/>
-                                        </HBox>
-                                    </HBox>
-
-                                    <!-- Bar chart horizontal simulation -->
-                                    <VBox styleClass="chart-area-v2" spacing="12">
-
-                                        <!-- Row Validées -->
-                                        <HBox spacing="10" alignment="CENTER_LEFT">
-                                            <Label text="Validées"
-                                                   style="-fx-font-size:11px;
-                                                          -fx-text-fill:#6b7d91;
-                                                          -fx-min-width:70;"/>
-                                            <HBox styleClass="hbar-track-v2"
-                                                  HBox.hgrow="ALWAYS">
-                                                <Region styleClass="hbar-fill-success-v2"
-                                                        prefHeight="16"
-                                                        HBox.hgrow="ALWAYS"
-                                                        maxWidth="280"/>
-                                            </HBox>
-                                            <Label fx:id=""
-                                                   text="seances Validees"
-                                                   style="-fx-font-size:12px;
-                                                          -fx-font-weight:700;
-                                                          -fx-text-fill:#198754;
-                                                          -fx-min-width:30;"/>
-                                        </HBox>
-
-                                        <!-- Row En attente -->
-                                        <HBox spacing="10" alignment="CENTER_LEFT">
-                                            <Label text="En attente"
-                                                   style="-fx-font-size:11px;
-                                                          -fx-text-fill:#6b7d91;
-                                                          -fx-min-width:70;"/>
-                                            <HBox styleClass="hbar-track-v2"
-                                                  HBox.hgrow="ALWAYS">
-                                                <Region styleClass="hbar-fill-warning-v2"
-                                                        prefHeight="16"
-                                                        HBox.hgrow="ALWAYS"
-                                                        maxWidth="160"/>
-                                            </HBox>
-                                            <Label fx:id=""
-                                                   text="seances En Attente"
-                                                   style="-fx-font-size:12px;
-                                                          -fx-font-weight:700;
-                                                          -fx-text-fill:#cb8616;
-                                                          -fx-min-width:30;"/>
-                                        </HBox>
-
-                                        <!-- Row Rejetées -->
-                                        <HBox spacing="10" alignment="CENTER_LEFT">
-                                            <Label text="Rejetées"
-                                                   style="-fx-font-size:11px;
-                                                          -fx-text-fill:#6b7d91;
-                                                          -fx-min-width:70;"/>
-                                            <HBox styleClass="hbar-track-v2"
-                                                  HBox.hgrow="ALWAYS">
-                                                <Region styleClass="hbar-fill-danger-v2"
-                                                        prefHeight="16"
-                                                        HBox.hgrow="ALWAYS"
-                                                        maxWidth="80"/>
-                                            </HBox>
-                                            <Label fx:id=""
-                                                   text="seances Rejetees"
-                                                   style="-fx-font-size:12px;
-                                                          -fx-font-weight:700;
-                                                          -fx-text-fill:#c0392b;
-                                                          -fx-min-width:30;"/>
-                                        </HBox>
-
-                                        <!-- Row Total -->
-                                        <HBox spacing="10" alignment="CENTER_LEFT">
-                                            <Label text="Total"
-                                                   style="-fx-font-size:11px;
-                                                          -fx-text-fill:#6b7d91;
-                                                          -fx-min-width:70;"/>
-                                            <HBox styleClass="hbar-track-v2"
-                                                  HBox.hgrow="ALWAYS">
-                                                <Region styleClass="hbar-fill-blue-v2"
-                                                        prefHeight="16"
-                                                        HBox.hgrow="ALWAYS"
-                                                        maxWidth="360"/>
-                                            </HBox>
-                                            <Label fx:id="totalSeancesLabel"
-                                                   text="0"
-                                                   style="-fx-font-size:12px;
-                                                          -fx-font-weight:700;
-                                                          -fx-text-fill:#2f6fad;
-                                                          -fx-min-width:30;"/>
-                                        </HBox>
-
-                                    </VBox>
-                                </VBox>
-                            </VBox>
-
                             <!-- Right: Quick access (4 mini-cards) -->
-                            <VBox styleClass="surface-card" GridPane.columnIndex="1"
+                            <VBox styleClass="surface-card" GridPane.columnIndex="0"
                                   spacing="14">
                                 <HBox alignment="CENTER_LEFT">
                                     <Label text="Accès rapide"
