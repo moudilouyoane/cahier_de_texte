@@ -54,7 +54,10 @@ public class ResponsableDashboardController {
     private Label totalSeancesLabel;
 
     @FXML
-    private Label seancesEnAttenteLabel;
+    private Label seancesEnAttenteKpiLabel;
+
+    @FXML
+    private Label seancesEnAttenteValidationLabel;
     @FXML
     private Label seancesValideesLabel;
 
@@ -277,17 +280,16 @@ public class ResponsableDashboardController {
                 }
             }
 
+            long seancesEnAttente = seances.stream().filter(s -> s.getStatut() == StatutSeance.EN_ATTENTE).count();
+            long seancesValidees = seances.stream().filter(s -> s.getStatut() == StatutSeance.VALIDEE).count();
+            long seancesRejetees = seances.stream().filter(s -> s.getStatut() == StatutSeance.REJETEE).count();
+
             setLabel(totalCoursLabel, String.valueOf(cours.size()));
             setLabel(totalSeancesLabel, String.valueOf(seances.size()));
-            setLabel(seancesEnAttenteLabel, String.valueOf(
-                    seances.stream().filter(s -> s.getStatut() == StatutSeance.EN_ATTENTE).count()
-            ));
-            setLabel(seancesValideesLabel, String.valueOf(
-                    seances.stream().filter(s -> s.getStatut() == StatutSeance.VALIDEE).count()
-            ));
-            setLabel(seancesRejeteesLabel, String.valueOf(
-                    seances.stream().filter(s -> s.getStatut() == StatutSeance.REJETEE).count()
-            ));
+            setLabel(seancesEnAttenteKpiLabel, String.valueOf(seancesEnAttente));
+            setLabel(seancesEnAttenteValidationLabel, String.valueOf(seancesEnAttente));
+            setLabel(seancesValideesLabel, String.valueOf(seancesValidees));
+            setLabel(seancesRejeteesLabel, String.valueOf(seancesRejetees));
 
             if (seancesTable != null) {
                 seancesTable.setItems(FXCollections.observableArrayList(seances));
@@ -356,7 +358,8 @@ public class ResponsableDashboardController {
     private void viderDonnees() {
         setLabel(totalCoursLabel, "0");
         setLabel(totalSeancesLabel, "0");
-        setLabel(seancesEnAttenteLabel, "0");
+        setLabel(seancesEnAttenteKpiLabel, "0");
+        setLabel(seancesEnAttenteValidationLabel, "0");
         setLabel(seancesValideesLabel, "0");
         setLabel(seancesRejeteesLabel, "0");
         coursLabels.clear();

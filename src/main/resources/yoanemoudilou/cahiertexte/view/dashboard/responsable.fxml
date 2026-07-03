@@ -254,9 +254,9 @@
                                                style="-fx-font-size:18px;"/>
                                     </StackPane>
                                     <VBox spacing="3">
-                                        <Label fx:id="seancesEnAttenteLabel"
-                                               text="0"
-                                               styleClass="kpi-value-warning-v2"/>
+                                            <Label fx:id="seancesEnAttenteKpiLabel"
+                                                   text="0"
+                                                   styleClass="kpi-value-warning-v2"/>
                                         <Label text="En attente"
                                                styleClass="kpi-caption-v2"/>
                                         <Label text="● Action requise"
@@ -351,7 +351,7 @@
                                                    styleClass="section-subtitle"/>
                                         </VBox>
                                     </HBox>
-                                    <Label fx:id="seancesEnAttenteLabel"
+                                    <Label fx:id="seancesEnAttenteValidationLabel"
                                            text="0"
                                            style="-fx-font-size:32px;
                                                   -fx-font-weight:800;

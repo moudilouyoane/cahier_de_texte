@@ -8,7 +8,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -70,10 +69,24 @@
                     <DatePicker fx:id="dateSeancePicker" prefWidth="160" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
 
                     <Label text="Heure début" styleClass="helper-text" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
-                    <TextField fx:id="heureDebutField" promptText="08:00" prefWidth="120" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                    <VBox spacing="4" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                        <HBox spacing="6" alignment="CENTER_LEFT">
+                            <ComboBox fx:id="heureDebutComboBox" promptText="HH" prefWidth="70"/>
+                            <Label text=":" styleClass="helper-text"/>
+                            <ComboBox fx:id="minuteDebutComboBox" promptText="MM" prefWidth="70"/>
+                        </HBox>
+                        <Label fx:id="heureDebutSelectionLabel" text="Selection : --:--" styleClass="helper-text"/>
+                    </VBox>
 
                     <Label text="Heure fin" styleClass="helper-text" GridPane.columnIndex="4" GridPane.rowIndex="0"/>
-                    <TextField fx:id="heureFinField" promptText="09:00" prefWidth="120" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+                    <VBox spacing="4" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                        <HBox spacing="6" alignment="CENTER_LEFT">
+                            <ComboBox fx:id="heureFinComboBox" promptText="HH" prefWidth="70"/>
+                            <Label text=":" styleClass="helper-text"/>
+                            <ComboBox fx:id="minuteFinComboBox" promptText="MM" prefWidth="70"/>
+                        </HBox>
+                        <Label fx:id="heureFinSelectionLabel" text="Selection : --:--" styleClass="helper-text"/>
+                    </VBox>
 
                     <Label text="Contenu" styleClass="helper-text" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                     <TextArea fx:id="contenuArea" prefHeight="92" prefWidth="420" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2"/>

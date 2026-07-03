@@ -1,7 +1,12 @@
 package yoanemoudilou.cahiertexte.ui.dashboard;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -36,6 +41,7 @@ import yoanemoudilou.cahiertexte.utils.DateUtils;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -165,6 +171,8 @@ public class EnseignantDashboardController {
     private final SeanceService seanceService = new SeanceService();
     private final Map<Integer, String> coursLabels = new HashMap<>();
     private final Map<Integer, String> classeLabels = new HashMap<>();
+    private final Map<Region, DoubleProperty> barRatios = new IdentityHashMap<>();
+    private final Map<Region, Timeline> barAnimations = new IdentityHashMap<>();
     private List<Cours> coursAffiches = List.of();
     private TableView<Cours> coursViewTable;
 
@@ -510,12 +518,31 @@ public class EnseignantDashboardController {
             return;
         }
 
+        double ratioCible = Math.max(0, Math.min(1, ratio));
         bar.setMinWidth(0);
         bar.setMaxWidth(Region.USE_PREF_SIZE);
-        bar.prefWidthProperty().unbind();
         if (bar.getParent() instanceof Region track) {
-            bar.prefWidthProperty().bind(track.widthProperty().multiply(ratio));
+            DoubleProperty ratioAnime = barRatios.computeIfAbsent(bar, currentBar -> {
+                currentBar.prefWidthProperty().unbind();
+                DoubleProperty progress = new SimpleDoubleProperty(0);
+                currentBar.prefWidthProperty().bind(track.widthProperty().multiply(progress));
+                return progress;
+            });
+
+            Timeline ancienneAnimation = barAnimations.remove(bar);
+            if (ancienneAnimation != null) {
+                ancienneAnimation.stop();
+            }
+
+            Timeline animation = new Timeline(
+                    new KeyFrame(javafx.util.Duration.ZERO, new KeyValue(ratioAnime, ratioAnime.get())),
+                    new KeyFrame(javafx.util.Duration.millis(420), new KeyValue(ratioAnime, ratioCible))
+            );
+            barAnimations.put(bar, animation);
+            animation.setOnFinished(event -> barAnimations.remove(bar));
+            animation.play();
         } else {
+            bar.prefWidthProperty().unbind();
             bar.setPrefWidth(0);
         }
     }

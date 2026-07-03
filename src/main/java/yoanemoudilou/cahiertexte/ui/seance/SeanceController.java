@@ -20,11 +20,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,10 +74,22 @@ public class SeanceController {
     private DatePicker dateSeancePicker;
 
     @FXML
-    private TextField heureDebutField;
+    private ComboBox<String> heureDebutComboBox;
 
     @FXML
-    private TextField heureFinField;
+    private ComboBox<String> minuteDebutComboBox;
+
+    @FXML
+    private ComboBox<String> heureFinComboBox;
+
+    @FXML
+    private ComboBox<String> minuteFinComboBox;
+
+    @FXML
+    private Label heureDebutSelectionLabel;
+
+    @FXML
+    private Label heureFinSelectionLabel;
 
     @FXML
     private TextArea contenuArea;
@@ -269,6 +281,39 @@ public class SeanceController {
                 }
             });
         }
+
+        configurerSelectionHeures();
+    }
+
+    private void configurerSelectionHeures() {
+        List<String> heures = genererValeursTemps(0, 23);
+        List<String> minutes = genererValeursTemps(0, 59);
+
+        if (heureDebutComboBox != null) {
+            heureDebutComboBox.setItems(FXCollections.observableArrayList(heures));
+        }
+        if (minuteDebutComboBox != null) {
+            minuteDebutComboBox.setItems(FXCollections.observableArrayList(minutes));
+        }
+        if (heureFinComboBox != null) {
+            heureFinComboBox.setItems(FXCollections.observableArrayList(heures));
+        }
+        if (minuteFinComboBox != null) {
+            minuteFinComboBox.setItems(FXCollections.observableArrayList(minutes));
+        }
+
+        ecouterSelectionHeure(heureDebutComboBox, minuteDebutComboBox, heureDebutSelectionLabel);
+        ecouterSelectionHeure(heureFinComboBox, minuteFinComboBox, heureFinSelectionLabel);
+        actualiserAffichageHeure(heureDebutComboBox, minuteDebutComboBox, heureDebutSelectionLabel);
+        actualiserAffichageHeure(heureFinComboBox, minuteFinComboBox, heureFinSelectionLabel);
+    }
+
+    private List<String> genererValeursTemps(int debut, int fin) {
+        List<String> valeurs = new ArrayList<>();
+        for (int valeur = debut; valeur <= fin; valeur++) {
+            valeurs.add(String.format("%02d", valeur));
+        }
+        return valeurs;
     }
 
     private void chargerReferences() {
@@ -373,16 +418,11 @@ public class SeanceController {
             dateSeancePicker.setValue(seance.getDateSeance());
         }
 
-        if (heureDebutField != null) {
-            heureDebutField.setText(DateUtils.formatTime(seance.getHeureSeance()));
-        }
+        selectionnerHeure(heureDebutComboBox, minuteDebutComboBox, seance.getHeureSeance());
 
-        if (heureFinField != null) {
-            int minutes = seance.getDuree() != null ? seance.getDuree() : 0;
-            LocalTime debut = DateUtils.parseTime(DateUtils.formatTime(seance.getHeureSeance()));
-            LocalTime fin = debut != null ? debut.plusMinutes(minutes) : null;
-            heureFinField.setText(DateUtils.formatTime(fin));
-        }
+        int minutes = seance.getDuree() != null ? seance.getDuree() : 0;
+        LocalTime fin = seance.getHeureSeance() != null ? seance.getHeureSeance().plusMinutes(minutes) : null;
+        selectionnerHeure(heureFinComboBox, minuteFinComboBox, fin);
 
         if (contenuArea != null) {
             contenuArea.setText(seance.getContenu());
@@ -403,12 +443,8 @@ public class SeanceController {
         if (dateSeancePicker != null) {
             dateSeancePicker.setValue(null);
         }
-        if (heureDebutField != null) {
-            heureDebutField.clear();
-        }
-        if (heureFinField != null) {
-            heureFinField.clear();
-        }
+        viderSelectionHeure(heureDebutComboBox, minuteDebutComboBox);
+        viderSelectionHeure(heureFinComboBox, minuteFinComboBox);
         if (contenuArea != null) {
             contenuArea.clear();
         }
@@ -421,11 +457,8 @@ public class SeanceController {
         Cours cours = coursComboBox != null ? coursComboBox.getValue() : null;
         User enseignant = enseignantComboBox != null ? enseignantComboBox.getValue() : null;
 
-        String heureDebutText = heureDebutField != null ? heureDebutField.getText().trim().replaceAll("\\s+", "") : null;
-        String heureFinText = heureFinField != null ? heureFinField.getText().trim().replaceAll("\\s+", "") : null;
-
-        LocalTime debut = DateUtils.parseTime(heureDebutText);
-        LocalTime fin = DateUtils.parseTime(heureFinText);
+        LocalTime debut = construireHeure(heureDebutComboBox, minuteDebutComboBox);
+        LocalTime fin = construireHeure(heureFinComboBox, minuteFinComboBox);
         Integer duree = null;
 
         if (debut != null && fin != null) {
@@ -461,14 +494,12 @@ public class SeanceController {
             throw new IllegalArgumentException("Veuillez sélectionner une date.");
         }
 
-        String heureDebutText = heureDebutField != null ? heureDebutField.getText() : null;
-        if (heureDebutText == null || heureDebutText.trim().isBlank()) {
-            throw new IllegalArgumentException("Veuillez saisir une heure de début (format: HH:mm).");
+        if (!selectionHeureComplete(heureDebutComboBox, minuteDebutComboBox)) {
+            throw new IllegalArgumentException("Veuillez selectionner l'heure et les minutes de debut.");
         }
 
-        String heureFinText = heureFinField != null ? heureFinField.getText() : null;
-        if (heureFinText == null || heureFinText.trim().isBlank()) {
-            throw new IllegalArgumentException("Veuillez saisir une heure de fin (format: HH:mm).");
+        if (!selectionHeureComplete(heureFinComboBox, minuteFinComboBox)) {
+            throw new IllegalArgumentException("Veuillez selectionner l'heure et les minutes de fin.");
         }
 
         String contenu = contenuArea != null ? contenuArea.getText() : null;
@@ -483,6 +514,78 @@ public class SeanceController {
 
     private String getEnseignantLabel(Integer enseignantId) {
         return enseignantId != null ? enseignantsLabels.getOrDefault(enseignantId, "Enseignant #" + enseignantId) : "";
+    }
+
+    private void selectionnerHeure(ComboBox<String> heuresComboBox, ComboBox<String> minutesComboBox, LocalTime heure) {
+        if (heuresComboBox == null || minutesComboBox == null) {
+            return;
+        }
+
+        if (heure == null) {
+            viderSelectionHeure(heuresComboBox, minutesComboBox);
+            return;
+        }
+
+        heuresComboBox.setValue(String.format("%02d", heure.getHour()));
+        minutesComboBox.setValue(String.format("%02d", heure.getMinute()));
+    }
+
+    private void viderSelectionHeure(ComboBox<String> heuresComboBox, ComboBox<String> minutesComboBox) {
+        if (heuresComboBox != null) {
+            heuresComboBox.setValue(null);
+        }
+        if (minutesComboBox != null) {
+            minutesComboBox.setValue(null);
+        }
+    }
+
+    private boolean selectionHeureComplete(ComboBox<String> heuresComboBox, ComboBox<String> minutesComboBox) {
+        return heuresComboBox != null
+                && minutesComboBox != null
+                && heuresComboBox.getValue() != null
+                && minutesComboBox.getValue() != null;
+    }
+
+    private LocalTime construireHeure(ComboBox<String> heuresComboBox, ComboBox<String> minutesComboBox) {
+        if (!selectionHeureComplete(heuresComboBox, minutesComboBox)) {
+            return null;
+        }
+
+        return LocalTime.of(
+                Integer.parseInt(heuresComboBox.getValue()),
+                Integer.parseInt(minutesComboBox.getValue())
+        );
+    }
+
+    private void ecouterSelectionHeure(
+            ComboBox<String> heuresComboBox,
+            ComboBox<String> minutesComboBox,
+            Label affichageLabel
+    ) {
+        if (heuresComboBox != null) {
+            heuresComboBox.valueProperty().addListener((obs, oldValue, newValue) ->
+                    actualiserAffichageHeure(heuresComboBox, minutesComboBox, affichageLabel));
+        }
+        if (minutesComboBox != null) {
+            minutesComboBox.valueProperty().addListener((obs, oldValue, newValue) ->
+                    actualiserAffichageHeure(heuresComboBox, minutesComboBox, affichageLabel));
+        }
+    }
+
+    private void actualiserAffichageHeure(
+            ComboBox<String> heuresComboBox,
+            ComboBox<String> minutesComboBox,
+            Label affichageLabel
+    ) {
+        if (affichageLabel == null) {
+            return;
+        }
+
+        if (selectionHeureComplete(heuresComboBox, minutesComboBox)) {
+            affichageLabel.setText("Selection : " + heuresComboBox.getValue() + ":" + minutesComboBox.getValue());
+        } else {
+            affichageLabel.setText("Selection : --:--");
+        }
     }
 
     private void notifierResponsableSiEnseignant(Seance seance) {
